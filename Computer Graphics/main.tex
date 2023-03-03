@@ -1,0 +1,2539 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{amsfonts}
+
+\title{Computer Graphics}
+\author{Riccardo Caprile}
+\date{March 2022}
+
+\begin{document}
+
+\maketitle
+
+\section{Linear Algebra}
+\subsection{Vectors}
+A vector describes a \textbf{direction} and a \textbf{length}. When you encode them in your program, they will both require 2 or 3 numbers to be represented, but they are not the same object. The C++ command is \textcolor{blue}{Eigen::VectorXd}
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{1.PNG}
+  \end{subfigure}
+\end{figure}
+\subsection{Sum and Difference}
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.25\linewidth}
+    \includegraphics[width=1\linewidth]{2.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{3.PNG}
+     \end{subfigure}
+\end{figure}
+The Operator in C++ for the sum is \textcolor{blue}{+} and for the difference \textcolor{blue}{-}
+
+\vspace{50mm}
+
+\subsection{Coordinates and Cartesian Coordinates}
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{4.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.2\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{5.PNG}
+     \end{subfigure}
+\end{figure}
+The operator is \textcolor{blue}{[]} and x and y form a canonical, Cartesian basis
+\subsection{Length}
+The length of a vector is denoted as \textbf{$||$a$||$}.
+
+If the vector is represented in cartesian coordinates, then it the L2 norm of the vector : $||$a$||$ = \[ \sqrt{a^2_1 + a^2_2} \]
+
+A vector can be  \textbf{normalized}, to change its length to 1 , without affecting the direction : b = \[\frac{a}{||a||}\]
+
+
+The command in C++ are \textcolor{blue}{a.norm()}, \textcolor{blue}{b.normalize()} in place, \textcolor{blue}{b.normalized()} returns the normalized vector
+
+\subsection{Dot Product and Projection}
+
+a $\cdot$ b = $||a||$ cos $\theta$ 
+The dot product is related to the length of vectors and to the angle between them. If both vectors are normalized, it is the cosine of the angle between them. \textcolor{blue}{a.dot(b), a.transpose()*b}
+The length of the projection of b onto a can be computed using the dot product : b \textrightarrow{a = $||b||$ cos $\theta$ = \[\frac{b \cdot a}{||a||}\] }
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{6.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.2\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{7.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsection{Cross Product}
+
+Defined only for 3D vectors.
+The resulting vector is perpendicular to both a and b, the direction depends on the right hand rule. The magnitude is equal to the area of the parallelogram formed by a and b. 
+\textcolor{blue}{Eigen::Vector3d v(1,2,3) Eigen::Vector3d w(4,5,6) v.cross(w)}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{8.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Coordinate Systems}
+You will often need to manipulate coordinate systems. You will always use \textbf{orthonormal bases}, which are formed by pairwise orthogonal unit vectors : \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{9.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Coordinate Frame}
+
+\begin{itemize}
+    \item \textbf{e} is the origin of the reference system 
+    \item \textbf{p} is the center of the pixel
+    \item \textbf{u,v,w} are the coordinates of p
+\end{itemize}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{10.PNG}
+  \end{subfigure}
+\end{figure}
+
+If you have a vector a expressed in global coordinates, and you want to convert it into a vector expressed in a local orthonormal u-v-w coordinate system , you can do it projections of a onto u,v,w : $a^C$ = (a $\cdot$ u , a $\cdot$ v, a $\cdot$ w)
+
+\subsection{Matrices}
+Matrices will allow us to conveniently represent and ally transformations on vectors, such as translation , scaling , and rotation.
+
+A matrix is an array of numeric elements. \textcolor{blue}{Eigen::MatrixXd A(2,2)}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{11.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{3mm}
+\textbf{Transpose}
+\vspace{3mm}
+
+The transpose of a matrix is new matrix whose entries are reflected over the diagonal .
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{12.PNG}
+  \end{subfigure}
+\end{figure}
+
+The transpose of a product is the product of the transposed, in reverse order (A$B^T$) = $B^T$ $A^T$
+
+\vspace{3mm}
+\textbf{Matrix Product}
+\vspace{3mm}
+
+The entry i,j is given by multiplying the entries on the i-th row of A with the entries of the j-th column of B and summing up the results and it is not commutative AB =/ BA.
+\textcolor{blue}{A*B}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{13.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{3mm}
+\textbf{Inverse Matrix}
+\vspace{3mm}
+
+The inverse of a matrix A is the matrix $A^-1$ such that A$A^-1$ = I where I is the identity matrix.
+$(AB)^-1$ = $B^-1$ $A^-1$
+\textcolor{blue}{A.inverse()}
+
+\vspace{3mm}
+\textbf{Diagonal Matrices}
+\vspace{3mm}
+
+They are zero everywhere except the diagonal.
+\textcolor{blue}{A = v.asDiagonal()}
+
+\vspace{3mm}
+\textbf{Orthogonal Matrices}
+\vspace{3mm}
+An orthogonal matrix is a matrix where each column is a vector of length 1 and each column is orthogonal to all the others. A useful property of orthogonal matrices that their inverse corresponds to their transpose :($R^T$R) = I = (R$R^T$)
+
+\subsection{Linear Systems}
+We will often encounter in this class linear systems with n linear equationd that depend on n variables : 
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{14.PNG}
+  \end{subfigure}
+\end{figure}
+
+\section{Images}
+\subsection{Vector devices and Transition to raster}
+The Cathode Ray Tube is a vector devices but the we have passed to raster. 
+Scan pattern fixed in display hardware. Intensity modulated to produce image. Originally for TV (c continuous along signal), whereas for computer : discretized in the horizontal direction ( matrix of pixels )
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{15.PNG}
+  \end{subfigure}
+\end{figure}
+
+Output Raster devices : 2D (Display LCD , LED) , 1D (Hardcopy)
+Input Raster  devices : 2D array(digital camera) , 1D array(scanner)
+
+\vspace{3mm}
+\textbf{Bayesian Color-Filter}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{16.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{3mm}
+\textbf{Pixel Values}
+1-bit greyscale - text , 8-bit RGB(24 bits) - web and email , 8 -bit  RGBA (32 bits) - alpha channel,  16/24/32 bits - high accuracy for photography and HDR.
+
+\vspace{3mm}
+\textbf{Monitors Intensity , Gamma Correction}
+
+What is the minimal and maximal light intensity?? THe intermediate intensities are different for each person , and it is non linear. Monitors needs to be calibrated for a certain viewer, using a procedure called \textbf{Gamme correction}. The rule is simple : displayed intensity = (max intensity) * $a^\gamma$ . $a^\gamma$ is a pixel value.
+
+We have to find the neutral gray : 0.5 = $a^\gamma$. 
+\vspace{2mm}
+Compute : $\gamma$ = \[\frac{ln 0.5}{ln a}\].
+
+The colors will not be uniform on normal screens , one of the major factor affecting the cost of screens is their ability to be consistent on all pixels.
+
+\subsection{Alpha Compositing}
+A way to represent transparency. The pixels of an image are blendend linearly with the image below.
+c = $\alpha c_new$ + ( 1 - $\alpha)c_old$
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{17.PNG}
+  \end{subfigure}
+\end{figure}
+
+Image formats can be lossy as \textbf{jpeg} or lossless such as \textbf{png} which is common for web applications.
+
+\vspace{50mm}
+\section{Ray Tracing}
+
+\subsection{Basic RayTracing}
+\begin{enumerate}
+    \item Generation of rays ( one per pixel ) 
+    \item Intersection with objects in the scene
+    \item Shading (  computation of the color of the pixel ) 
+\end{enumerate}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{18.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{3mm}
+\textbf{Projection - Parallel}
+
+Commonly used in modeling tools.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{19.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{3mm}
+\textbf{Perspective Projection}
+
+Each ray has a different direction.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{20.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{10mm}
+
+\subsection{First Step :Compute Rays}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{21.PNG}
+  \end{subfigure}
+\end{figure}
+
+e is the origin of the reference system and p is the center of the pixel. u,v,w in italic are the position of the pixel p
+
+\vspace{3mm}
+\textbf{Ortographic}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{22.PNG}
+  \end{subfigure}
+\end{figure}
+
+For the ray assigned to pixel p is the  Origin p and  -w the Direction.
+ 
+\vspace{3mm}
+\textbf{Perspective}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{23.PNG}
+  \end{subfigure}
+\end{figure}
+
+For the ray assigned to pixel p : e is the Origin and p - e the Direction. ( Ray in every direction)
+
+\subsection{Second Step : Intersections}
+This is an expensive operation and we will study two useful cases : 
+\begin{itemize}
+    \item Spheres
+    \item Triangles (by combining triangles you can approximate complex surfaces)
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Ray-Sphere Intersection}
+
+we have a ray in explicit form : $p(t) = e + td$. 
+
+
+\vspace{2mm}
+And we have a sphere of Radius r and Center c in implicit form  : $f(p) = (p - c) \cdot (p-c) -R^2 = 0$
+This equation just gives us a condition that the point belong to the sphere $||p-c||^2 = R^2$. To find the intersection we need to find the solutions of $f(p(t)) = 0$
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{24.PNG}
+  \end{subfigure}
+\end{figure}
+
+Normal at p : \[\frac{p - c }{||p - c ||}\]
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{25.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{3mm}
+\textbf{Ray-Triangle Intersection}
+
+Explicit parametrization of a triangle with vertices a,b,c : 
+$f(u,v) = a + u(b-a) + v(c-a)$
+
+\vspace{2mm}
+Explicit ray : $p(t) = e + td$
+
+\vspace{2mm}
+The ray intersects the triangle if a t,u,v exist : $f(u,v) = p(t)$ with $t > 0$ $0\leq u,v$  $u + v \leq 1$
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{26.PNG}
+  \end{subfigure}
+\end{figure}
+
+The solution of the system will give : Position - Intersection exists iff : $t>0$ and $v \geq 0 $ $u+v \leq 1$ in the \textbf{Parallelogram} $u \leq 1 $ and $v \leq 1$
+
+The normal : \[\frac{(b-a) x (b-a)}{(b-a) x (b-a)}\]
+
+\subsection{Third Step : Shading}
+
+Modeling accurately the behaviour of light is difficult and computationally expensive. We will use an approximation that is simple and efficient. It is divided in 3 parts : 
+\begin{itemize}
+    \item Diffuse Lambertian Shading
+    \item Specular Shading
+    \item Ambient Shading
+\end{itemize}
+The three terms will be summed together to obtain the final color
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{27.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{3mm}
+\textbf{Shading Variables}
+
+The shading depends on the entire scene, the light can bounce , reflect and be absorbed by anything that it encounters. We will simplify it so that it depends only on : 
+\begin{itemize}
+    \item The light Direction \textbf{l}( a unit vector pointing to the light source)
+    \item The view direction \textbf{v} ( a unit vector pointing toward the camera)
+    \item The surface normal \textbf{n} ( a vector perpendicular to the surface at the point of intersection)
+\end{itemize}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{28.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{3mm}
+\textbf{Diffuse Shading}
+
+Lambert observed that the amount of energy from a light source that falls on an area of surface depends on the angle of the surface of the light.
+To model it , we make the amount of light proportional to the angle $\theta$ between the n and l.
+$L = k_d I max(0,n)\cdot l$ , $k_d$ is the diffuse coefficient and I is the intensity of the light.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{29.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\vspace{3mm}
+\textbf{Specular Shading}
+
+Specular highlights depend on the position of the viewer.
+The idea is to produce a reflection that is bright if v and l are symmetric wrt n. To measure the asymmetry we measure the angle between h ( the bisector of v and l) and n.
+
+h = \[\frac{(v+l)}{v+l}\]
+$L = k_d I max(0,n)\cdot l + k_s I max(0,n \cdot h)^p$, $k_s$ is the specular coefficient and p is the Phong exponent. p = 100 Shiny , P = 1000 Glossy , p > 10000 Mirror
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{30.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{3mm}
+\textbf{Final Shading Equation}
+
+L  = $k_a I_a + k_d I max(0,n \cdot l) + k_s I max(0,n \cdot h)^p$
+First part is ambient then diffuse and specular.
+If you have multiple light, simply sum them up all together. Note that the ambient light should be considered only once.
+
+\vspace{3mm}
+\textbf{Shadows}
+
+The blue point does not receive light, while the orange one does. To check it , cast a ray from each point to the light , if you intersect (before reaching the light) then it is in a shadow area, and the light should not contribute to its color.
+These rays usually called \textbf{shadow rays}.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{31.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{3mm}
+\textbf{Ideal Reflections(Mirror Reflections)}
+It is easy to add ideal reflections to your ray tracing program.
+$r = d - 2(d \cdot n) n$
+
+\section{Spatial Data Structures}
+
+Graphic applications often requires spatial queries.
+\begin{itemize}
+    \item Find the k points closer to a specific point p
+    \item Is object X intersection with object Y?
+    \item What is the volume of the intersection between two objects
+\end{itemize}
+The data structure to use is application-specific.
+
+We have two main ideas : 
+\begin{enumerate}
+    \item You can explicitly index the space itself (Spatial Index)
+    \item You can sort the primitives in the scene , which implicitly induces a partition of the space.
+\end{enumerate}
+
+\subsection{Spatial Indexing Structures}
+
+Data structures to accelerate queries of the kind : "I'm here. Which object is around me?". Tasks : 1) Construction / update, for static parts of the scene , a preprocessing. For moving parts of the scene , an update. 2) Access/usage
+
+\subsection{Regular Grid aka lattice}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{32.PNG}
+  \end{subfigure}
+\end{figure}
+
+\begin{itemize}
+    \item Array 3D of cells : each cell contains a list of pointers to colliding objects.
+    \item Indexing function : Point3D \textrightarrow{ cell index}
+    \item Construction \textrightarrow{ for each object B[i] find the cells C[j] which it touches and add a pointer in C[j] to B[i]}
+    \item Queries \textrightarrow{ Given a point to p, find cell C[j], test all objects linked to it}
+    \item Problem \textrightarrow{ Cell size , too small (memory occupancy too large ) or too big( many objects in one cell)}
+\end{itemize}
+
+\subsection{kD-tree}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{33.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+First we compute the enclosing space. Then we start partitioning by dividing it into two parts ( or in the middle or to have the same number of objects in both parts). Now we keep splitting, we proceed this way until we have a maximum number of elements ( in this case 1).
+\vspace{3mm}
+Hierarchical structure : a tree. 
+Each node \textrightarrow{ a subpart of the 3D space}, root \textrightarrow{ all the world}, child nodes \textrightarrow{ partitions of the father}, objects linked to the leaves.
+\vspace{3mm}
+kD-tree : binary tree.
+Each node \textrightarrow{ split over one dimension}
+
+\vspace{50mm}
+
+\subsection{Quad-Tree (2D) and Oct-Tree(3D)}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{34.PNG}
+  \end{subfigure}
+\end{figure}
+
+The space is subdivided in a regular way. Split into four parts in of a 2D and then for each quadrant that is not empty you split again ( you will decide when you want to stop splitting
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{35.PNG}
+  \end{subfigure}
+\end{figure}
+
+They are similar to kD-trees, but : tree \textrightarrow{ branching factor ( 4(2D) or 8(3D)}, each node \textrightarrow{splits into all dimensions at once}
+The construction : continue splitting until a end nodes has few enough objects.
+
+\vspace{20mm}
+\subsection{Binary Spatial Partitioning tree}
+
+Equation of the plane : $f(x,y,z) = ax + by + cz = 0$.
+$P(x_p,y_p,z_p) f(p)$ = 0 the point is on the plane if >0 it is in a part of the plane if < 0 it is in the other part of the plane
+
+\vspace{3mm}
+\textbf{BSP-trees for the Concave Polyhedron proxy}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{37.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.5\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{38.PNG}
+     \end{subfigure}
+\end{figure}
+
+A binary tree but each node is split by an arbitrary plane , plane is stored at node , as(nx,ny,nz,k).
+There is another use to test polyhedron proxy : note with planes defined in its object space, each leaf is inside or outside
+
+\subsection{Primitive Sorting Structures - Bounding Volume Hierarchies}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{39.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.5\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{40.PNG}
+     \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{41.PNG}
+  \end{subfigure}
+\end{figure}
+
+The idea is to use the scene hierarchy by the scene graph (instead of a spatial derived one). Associate a bounding volume to each node (rule : a BV of a node bounds all objects in the subtree). The construction / update is fast ( bottum-up : recursive)
+
+\subsection{Pro and Cons of Spatial Indexing Structures}
+\begin{itemize}
+    \item Regular Grid \textrightarrow{ \textcolor{green}{ The most parallelizable , constant time access}, \textcolor{red}{ quadratic/cubic space}}
+    \item kD-tree,Oct-tree,Quad-tree \textrightarrow{ \textcolor{green}{ compact,simple}, \textcolor{red}{non costant accessing time}}
+    \item BSP-tree \textrightarrow{ \textcolor{green}{ optimazed splits, best performance when accessed, ideal for static parts of the scene, } \textcolor{red}{ optimazed splits, more complex construction}}
+    \item BVH \textrightarrow{ \textcolor{green}{ simplest construction, ideal for dynamic parts of the scene}, \textcolor{red}{non necessarily very efficient}}
+\end{itemize}
+
+
+\section{Intersection Acceleration Data Structures}
+\subsection{Collision Detection}
+
+It is easy to do , the challenge is to do it efficiently. Most pair of objects do not intersect each other in a scene because collisions are rare. Optimizing the intersections directly is important but not sufficient, we need to optimize the direction of non intersecting pairs.
+
+\subsection{Geometric Proxy}
+Extremely coarse approximation. Used as a Bounding volume : the entire object must be contained inside , exact result, you need to do more work if you detect a collision.
+Used as a Collision Object or Hit-Box : approximation of the object. No need to do anything else if an approximation is ok for your use case. Ex : Fighting Games
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{42.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{3mm}
+
+\subsection{Geometry Proxies : Sphere}
+
+It's easy to compute and update , compact and very efficient collision test. But it can only be transformed rigidly and the quality of the approximation is low.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.1\linewidth}
+    \includegraphics[width=1\linewidth]{43.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Geometry Proxies : Capsule}
+
+Def : Sphere == set of all points with dist from a point < radius. Capsule == set of all points with dist from a segment < radius .
+
+Store with a segment (two end-points) and a radius ( a scalar)
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{44.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Geometry Proxies : Half Space}
+Trivial but useful, for example for a flat terrain or a wall.
+Storage : (nx,ny,nz,k), a normal ( a distance from the origin)
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.05\linewidth}
+    \includegraphics[width=1\linewidth]{45.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Geometry Proxies : Axis-Aligned Bounding Box (AABB)}
+
+It's easy to update  , compact , and trivial to test but it can only be translated or scaled and rotations are not supported.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{46.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Geometry Proxies : Box}
+Similar to AABB, but not axis aligned. It's more expensive to compute and store and you need intervals and a rotation. Still not a great approximation
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{47.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Geometry Proxies (in 2D): Convex Polygon}
+Intersection of half-planes each delimited by a line. Stored as : a collection of oriented lines.
+A point is inside iff it is in each half-plane, it has a moderate complexity
+
+\subsection{Geometry Proxies (in 3D): Convex Polyhedron}
+
+Intersection of half-spaces, it is similar to the previous but in 3D. Stored as a collection of planes. Each plane is a normal + distance from origin. Inside proxy iff inside each half-space
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.1\linewidth}
+    \includegraphics[width=1\linewidth]{48.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{3D Meshes as Hit-Boxes}
+
+These are often NOT the mesh that you use for rendering because : much lower resolution , no attributes , closed , often convex only and can be polygonal
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{49.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Geometry Proxies : Composite Hit-Boxes}
+
+Union of Hit-Boxes. Inside iff insied of any sub Hit-Box. Union of convex HIt-Boxes ( Concave Hit.Box). Shape partially defined by a sphere, they are created typically by hand.
+
+\subsection{Collision Detection Strategies}
+
+\textbf{Static Collision Detection}. A posteriori, discrete, approximated, simple and quick
+
+\textbf{Dynamic Collision detection}, A priori , accurate, demanding
+
+\vspace{50mm}
+
+\section{Procedural Synthesis}
+\subsection{Procedural Noise}
+
+\subsubsection{We start with noise functions}
+
+Goal : create realistic "textures" at inexpensive costs.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{50.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{What is a good noise function?}
+
+Randomly controlled primitive F(p) : smooth function + salt.
+
+\subsubsection{Noise Requirements}
+
+We want noise with \textbf{controllable appearance}.
+Other desirable noise properties : Compact , Continuous , Non-periodic , Fast.
+
+Applied to 3D objects : map to surface or 3D function
+
+\subsubsection{Perlin Noise}
+
+Based on a regular lattice , with a 2D random vector v defined on every corner.
+
+Algorithm : 
+\begin{enumerate}
+    \item Given a point p in 2D find the 4 lattice corners $c_1,c_2,c_3,c_4$
+    \item Compute v($c_i$) $\cdot$ (p-$c_i)$
+    \item Return the bilinear interpolation of the dot products evaluated at p
+\end{enumerate}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{51.PNG}
+  \end{subfigure}
+\end{figure}
+
+Source code at 6.9 and 6.10
+
+
+\subsubsection{Why are procedural textures popular?}
+
+No needs to store them , Reduce GPU transfer for rasterization and Reduce scene size for ray tracing.
+
+They can be evaluated at any point.
+Computation-bound instead of memory-bound.
+Infinite resolution.
+
+\subsection{Impicit Modeling}
+
+S = {x $\in$ $R^n$ | f(x) = d}
+
+Distance field = it tells how much we are distant from the point
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{54.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.5\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{55.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsubsection{Implicit Model}
+
+All points  where f(p) = 0 
+
+f : $\mathbb{R}^3$ \textrightarrow{ $\mathbb{R}$}
+
+it directly defines an inside and outside :
+\begin{itemize}
+    \item f(p) $<$ 0 \textrightarrow{ p inside}
+    \item f(p) $>$ 0 \textrightarrow{ p outside}
+    \item f(p) = 0 \textrightarrow{ p on the surface}
+\end{itemize}
+
+By construction , it defines a closed watertight model.
+
+\subsubsection{Sphere}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{56.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\subsubsection{Categories}
+
+\begin{itemize}
+    \item \textbf{Algebraic surfaces} : f() is polynomial
+    \item \textbf{Quadratic surfaces} : f() degree is 2, simple equations have good expressive power
+    \item \textbf{Cubic surfaces}: f() degree is 3
+    \item Higher order
+\end{itemize}
+
+\subsubsection{Implicit Modeling : Pros and Cons}
+
+The pros are : compact , CSG , Good model for both fluids and solids and easy to render with ray tracing.
+Cons : difficult to render for rasterization-based pipelines
+
+\subsubsection{Implicit Solid Modeling}
+
+Let A and B be two solid objects described implicitly by implicit functions $f_A$ and $f_B$.
+We can define : 
+\begin{itemize}
+    \item \textbf{Complement} : -$f_A$ 
+    \item \textbf{Intersection} : max( $f_A$ , $f_B$ ) 
+    \item \textbf{Union} : min ($f_A$,$f_B$)
+    \item \textbf{Subtraction} : max($f_A$,$f_B$)
+\end{itemize}
+
+
+\subsubsection{Constructive Solid Geometry (CSG) and Geometric Solid Modelling }
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.29\linewidth}
+    \includegraphics[width=1\linewidth]{57.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{58.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\
+\subsection{Rendering Implicits Ray Marching}
+\subsubsection{Ray Marching}
+
+Similar to ray tracing.
+Since the implicit function might not be quadratic , we cannot find the intersection explicitly as we did for triangles and spheres.
+
+\vspace{3mm}
+\textbf{Algorithm 1}
+
+The simplest algorithm resembles gradient descent.
+You proceed on the ray by a fixed amount.
+You start to do bisection search if you get closer than a given to the surface.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{59.PNG}
+  \end{subfigure}
+\end{figure}
+
+\textbf{Algorithm 2 : "Sphere Tracing"}
+
+Instead of taking a constant step , you check the closest point on the surface , and you move by that amount.
+Can be done exactly with a distance field. It can be conservative estimate for more general cases.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{60.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+
+\subsection{Rendering Implicits Explicit Meshing}
+\subsubsection{Extracting the Surface}
+
+Wish to compute a manifold mesh of the level set
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{60.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Sample the SDF}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.29\linewidth}
+    \includegraphics[width=1\linewidth]{62.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{63.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsubsection{Tessellation}
+
+Want to approximate an implicit surface with a mesh.
+Can't explicitly compute all the roots ( sampling the level set is difficult)
+Solution : find an approximate roots by trapping the implicits surface in a grid ( lattice )
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.15\linewidth}
+    \includegraphics[width=3\linewidth]{64.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Marching Squares}
+
+16 different configurations in 2D.
+4 equivalence classes ( up to rotational and reflection symmetry + complement)
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{65.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\subsubsection{Tessellation in 2D}
+
+4 equivalence classes ( up to rotational and reflection symmetry + complement)
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.29\linewidth}
+    \includegraphics[width=1\linewidth]{66.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.7\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{67.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\subsubsection{Marching Cubes}
+\begin{enumerate}
+    \item Load 4 layers of the grid into memory
+    \item Create a cube whose vertices lie on the two layers
+    \item Classify the vertices of the cube according to the implicit function (inside,outside or on the surface)
+    \item Compute case index . We have $2^8$ = 256 cases (0/1 for each of the eight vertices ) - can store as 8 bit (1 byte) index
+    
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.29\linewidth}
+    \includegraphics[width=1\linewidth]{68.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.7\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{69.PNG}
+     \end{subfigure}
+\end{figure}
+    \item Using the case index , retrieve the connectivity in the look-up table. For example : the entry for index 33 in the look-up table indicates that the cut edges $e_1;e_4;e_5;e_6;e_9;e_10$; the output triangles are ($e_1;e_9;e_4$) and ($e_5;e_10;_e6$)
+    
+   \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{70.PNG}
+  \end{subfigure}
+\end{figure} 
+    
+    \item Compute the position of the cut vertices by linear interpolation
+    
+     \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{71.PNG}
+  \end{subfigure}
+\end{figure} 
+    
+    
+    \item Move to the next cube
+    
+\end{enumerate}
+
+\textbf{Problems}
+
+Have to make consistent choices for neighboring cubes - otherwise get holes.
+Resolving ambiguities.
+
+     \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{72.PNG}
+  \end{subfigure}
+\end{figure} 
+    
+Grid not adaptive. 
+Many polygons required to represent small features.
+
+
+
+
+\section{Transformation}
+
+\subsection{2D Linear Transformations}
+
+Each 2D linear map can be represented by a unique 2x2 matrix 
+
+     \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{73.PNG}
+  \end{subfigure}
+\end{figure} 
+
+Concatenation of mappings corresponds to multiplication of matrices : $L_2(L_1(x)) = L_2 L_1 x$
+
+Linear transformations are very common in computer graphics
+\subsubsection{2D Scaling}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{74.PNG}
+  \end{subfigure}
+\end{figure} 
+
+\subsubsection{2D Rotation}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{75.PNG}
+  \end{subfigure}
+\end{figure} 
+
+\vspace{20mm}
+\subsubsection{2D Shearing}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{76.PNG}
+  \end{subfigure}
+\end{figure} 
+
+\subsubsection{2D Translation}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{77.PNG}
+  \end{subfigure}
+\end{figure} 
+
+
+\subsection{Affine Transformations}
+
+Translation is not a linear transformation , but is affine.
+Origin is no longer a fixed point.
+
+\textbf{Affine map } = linear map + translation.
+
+Is there a matrix representation for affine transformations?
+
+We would like to handle all transformations in a unified framework and it is simpler to code and easier to optimize
+
+\subsubsection{The Affine Algebra}
+
+The constituents of the affine algebra belong to three classes : 
+
+
+
+\begin{itemize}
+    \item Points define objects ( characterized just from a position in space)
+    \item Vectors define displacement ( characterized from direction , orientation , norm)
+    \item Scalars define the amount of displacement ( characterized just from a value)
+\end{itemize}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{78.PNG}
+  \end{subfigure}
+\end{figure} 
+
+\subsubsection{Line in the affine space}
+
+
+Parametric representation of a line : P($\alpha$) = $P_0$ + $\alpha$ d
+
+Given point P0 and vector d , points of the straight line parallel to d and passing through P0 are obtained varying scalar parameter $\alpha$
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{79.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Affine sum}
+
+In the affine space there exist neither sum between points nor product between a scalar and a point.
+
+But there exists the affine sum : 
+
+v = R - Q 
+
+P = Q + av
+
+P = Q + a(R - Q) = a R + (1 - a)Q
+
+The affine sum allows us to linearly interpolate between points P and Q.
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{80.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{40mm}
+
+\subsubsection{The affine space}
+
+Geometric interpolation : 2 planes in $R^3$
+
+Vectors live in the plane through the origin.
+Points live in a parallel plane 
+
+\subsubsection{Homogenous Coordinates}
+
+Add a third coordinate : 
+
+2D point = $(x,y,1)^T$
+2D vector = $(x,y,0)^T$
+
+Now we can give a matrix representation of translations : 
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{81.PNG}
+  \end{subfigure}
+\end{figure}
+
+Valid operation if the resulting w-coordinate is 1 or 0
+
+\begin{itemize}
+    \item vector + vector = vector
+    \item point - point = vector
+    \item point + vector = point
+    \item point + point is undefined
+\end{itemize}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{82.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.5\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{83.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{84.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.5\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{85.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsubsection{Concatenation of Transformations}
+
+Sequence of affine maps $A_1,A_2,A_3$
+
+Concatenation by matrix multiplication : 
+
+$A_n(...A_2(A_1(x))) = A_n \cdot A_2 \cdot A_1 \cdot (x,y,1)^T$
+
+\subsection{Rotation and Translation}
+
+Matrix multiplication is not commutative!
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{86.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{2D Rotation}
+
+How to rotate around a given point c?
+
+\begin{enumerate}
+    \item Translate c to origin
+    \item Rotate 
+    \item Translate back
+\end{enumerate}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{87.PNG}
+  \end{subfigure}
+\end{figure}
+
+Matrix representation? 
+
+T(c) $\cdot$ R(a) $\cdot$ T(-c)
+
+\subsubsection{3D rotation about the origin}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{88.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.5\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{89.PNG}
+     \end{subfigure}
+\end{figure}
+
+Any rotation can be expressed as the combination of three rotations about coordinate axes.
+
+Therefore : given R about the origin , there always exists $R_x,R_y,R_z$ rotation matrices about the three coordinate axes such that R = $R_z R_y R_x$
+
+The order of the three rotations is not unique , but the resulting matrix is unique.
+
+Problem : how can we find the three matrices? not easy
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{90.PNG}
+  \end{subfigure}
+\end{figure}
+
+Euler's rotation theorem : any 3D rotation can be expressed as a single rotation about some axis
+
+
+\subsubsection{A note on transforming normals}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{91.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+
+\section{Viewing Transformations}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{93.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{20mm}
+\subsection{Coordinate Systems}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{92.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Viewport transformation}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{94.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Ortographic Projection}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{95.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.5\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{96.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+
+\subsection{Camera Transformation}
+
+\vspace{50mm}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{97.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\subsection{Change of frame}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{98.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{100mm}
+\subsubsection{Camera transformation : typical example}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{99.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.5\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{100.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{101.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.5\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{102.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsection{Reminder : inverting a rotation}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{103.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.5\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{104.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{105.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Roto-translation (isometry)}
+\vspace{31mm}
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{106.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Inverting a roto-translation}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{107.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{View transformation : summary}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{108.PNG}
+  \end{subfigure}
+\end{figure}
+
+The view transformation needed to place the camera at a given position is given by the inverse matrix of the modeling transformation needed to place an object at the same position.
+
+Two symmetrical ways to see placement : Operation that moves the camera with respect to the scene and operation that moves the world with respect to the camera.
+
+First way corresponds to a change of reference frame
+
+Second way corresponds to a further modeling transformation of the whole scene ( distinction between global modeling transformation and viewing transformations to place the camera can be blurred).
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.9\linewidth}
+    \includegraphics[width=1\linewidth]{109.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+
+\section{Rasterization - Theory}
+
+\subsection{2D Canvas}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{110.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Implicit Geometry Representation}
+
+Define a curve as a zero set of 2D implicit function
+
+\begin{itemize}
+    \item F(x,y) = 0 : on curve
+    \item F(x,y) $<$ 0 : inside curve
+    \item F(x,y) $>$ 0 : outside curve
+\end{itemize}
+
+Example : Circle with center ($c_x,c_y$) and radius r 
+
+F(x,y) = $(x-c_x)^2 + (y-c_y)^2 - r^2$
+
+\vspace{30mm}
+\subsection{Implicit Rasterization}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{111.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+
+\subsection{Point-in-triangle test}
+
+Triangle = intersection of 3 half-planes.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{112.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.5\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{113.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\subsection{Barycentric Interpolation}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{114.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.5\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{115.PNG}
+     \end{subfigure}
+\end{figure}
+
+inside iff alpha,beta,gamma $>=$ 0 and the area is = 1/2 (b-a) * (c-a)
+
+\subsection{Triangle Rasterization}
+
+Each triangle is represented as three 2D points ($x_0,y_0$),($x_1,y_1$),($x_2,y_2$).
+
+Rasterization using barycentric coordinates
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{116.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{117.PNG}
+     \end{subfigure}
+\end{figure}
+
+Barycentric interpolation uses barycentric coordinates to interpolate vertex normals ( or other data like colors)
+
+n(P) = $\alpha \cdot n(A) + \beta \cdot n(B) + \gamma \cdot n(C)$
+
+\subsection{Clipping}
+
+Start with a scene and a camera , we don't want to rasterize part of the object which is outside the canvas.
+
+It's ok if you do it brute force. Care is required if you are explicitly tracing the boundaries.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{118.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{119.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsection{Objects Depth Sorting}
+
+Objects can occlude other objects behind them. To handle occlusion , you can sort all the objects in a scene by depth but this is not always possible!
+
+\subsubsection{z - buffering}
+
+You render the image both in the image and in the depth buffer , where you store only the depth. 
+
+When a new fragment comes in , you draw it in the image only if it is closer.
+This always work and it is cheap to evaluate! It is the default in all graphics hardware
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{120.PNG}
+  \end{subfigure}
+\end{figure}
+
+The z-buffer is quantized ( the number of bits is heavily dependent on the hardware platform )
+
+Two close object might be quantized differently , leading to strange artifacts , usually called "z-fighting".
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{121.PNG}
+  \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{122.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\section{Rasterization - Implementation}
+
+How to do it ? With specialized hardware (GPU).
+There are APIs to interact with the hardware (OpenGL,DirectX,Metal).
+
+Before you can draw anything you need to : open a window and initialize the API and assign the available screen space to it.
+This is technical step and it is heavily dependent on the operating system and on the hardware.
+
+There are many libraries that take care of this for you , hiding all the complexity and providing a cross-platform and cross-hardware interface. A window manager usually provides an event management system.
+
+Writing code for the GPU makes debugging harder , since the standard debugging tools cannot be used.
+
+The code needs to be customized for the specific operating system you are developing for.
+The good news is that all modern APIs , at a high-level , offer the same concepts and the same features
+
+\subsection{Software Rasterization}
+
+\subsubsection{raster.h/raster.cpp}
+
+The rasterizer mimics the API of modern OpenGL.
+It is minimalistic , supporting only rendering of triangles and lines.
+
+
+\subsubsection{Rasterization Pipeline}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{123.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\subsubsection{Vertex Input}
+
+You have to send the rasterizer a set of vertex attributes : 
+
+\begin{itemize}
+    \item Standardized Coordinates
+    \item Color
+    \item Normal
+\end{itemize}
+
+You can pass as many as you want , but remember that memory/bandwidth is precious , you want to send only what is required by the shaders.
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{124.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{50mm}
+
+\subsubsection{Shaders}
+
+The name is historical - they were introduced to allow customization of the shading step ot the traditional graphics pipeline.
+Shaders are \textbf{general purpose functions} that will be executed in parallel on the GPU.
+They are usually written in a custom programming language , but in our case they will be standard C++ functions. They allow to customize the behavior of the rasterizer to achieve a variety of effects.
+
+\subsubsection{Vertex Shaders}
+
+The vertex shader is a function processing each vertex as they appear in the input.
+Its duty is to output the final vertex position in the canonical bi-unit cube and to output any data required by the fragment shader.
+All transformations from \textbf{world to device coordinates} happen here.
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.29\linewidth}
+    \includegraphics[width=1\linewidth]{125.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.7\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{126.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\vspace{80mm}
+
+\subsubsection{Fragment Shader}
+
+
+The output from the vertex shader is interpolated over all the pixels on the screen covered by a primitive.
+These pixels are called fragments and this is what the fragment shaders operates on.
+It has one mandatory ouptut , the final color of a fragment. It is up to you to write the code for computing this color from all the attributes that you attached to the vertices.
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.39\linewidth}
+    \includegraphics[width=1\linewidth]{127.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.6\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{128.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\subsubsection{Blending Shader}
+
+The blending shader decides how to blend a fragment with the colors/attributes already present on the corresponding pixel of the framebuffer.
+If the framebuffer uses bytes to represent the colors , the blending shader performs the conversion from float to byte.
+
+After specifying the 3 shaders (vertex,fragment,blending) we can rasterize the vertices and the framebuffer can be saved as a png as we did for raytracing.
+
+The rasterizer uses an additional file called attributes.h to define the struct used for vertex , fragment , and framebuffer attributes.
+
+You will have to change this depending on what information you want your shader to have access to.
+
+\subsubsection{If everything was done correctly}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.39\linewidth}
+    \includegraphics[width=1\linewidth]{129.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.5\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{130.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\subsubsection{Uniforms}
+
+Uniform are values that are constant for the entire scene , they are not attached to vertices.
+
+They are essentially global variables within the shaders.
+All the vertices and all fragments will see the same value.
+For example , let's change the demo code to use a uniform to store the triangle color.
+
+
+\subsection{Software Rasterization Examples}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.19\linewidth}
+    \includegraphics[width=1\linewidth]{131.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.5\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{132.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{133.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{134.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsubsection{View/Model Transformation}
+
+View/Model transformations are applied in the vertex shader.
+They are passed to the shader as uniform.
+To create transforation matrices you can do it by hand or use the geometry module of Eigen
+
+\subsubsection{How to prevent viewport distortion?}
+
+We need to adapt the view depending on the size of the framebuffer. We can then create a view transformation that maps a box with the same aspect-ratio of the viewport into the unit cube.
+Equivalently , we are using a camera that has the same aspect ratio as the window that we use for rendering.
+
+In this way , the distortion introduced by the viewport transformation will cancel out.
+
+\subsubsection{Tests}
+
+The tests determine if a fragment will affect the color in the framebuffer or if it should be discarded : there are main uses cases.
+
+Depth Test - Discards all fragments with a z coordinate bigger than the value in the depth buffer.
+
+Stencil Test - Discards all fragments outside a user-specified mask
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{135.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{136.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{137.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{138.PNG}
+     \end{subfigure}
+\end{figure}
+
+To interact with the scene , it is common to pick or select objects in the scene.
+
+The most common way to do it is to cast a ray , starting from the point where the mouse is and going inside the screen.
+
+The first object that is hit by the ray is going to be the selected object
+
+
+\section{Perspective Projection}
+\subsection{Projective Transformations}
+
+\vspace{20mm}
+\subsubsection{Ortographic Prjection}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{139.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\subsubsection{Perspective Projection}
+
+In Ortographic projection , the size of the objects does not change with distance.
+In Perspective projection , the objects that are far away look smaller 
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{140.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Divisions in Matrix Form}
+
+We would like to reuse the matrix machinery that we built in the previous lectures.
+
+How do we encode divisions? $y_s = dy/z$
+
+We extend homogeneous coordinates
+
+
+\vspace{40mm}
+
+\subsubsection{The affine space}
+
+Geometric interpolation : 2 planes in $R^3$
+
+Vectors live in the plane through the origin.
+Points live in all the rest (affine subspace)
+Points on a line through the origin are identified (projected to plane w = 1)
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{141.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Affine transformations until now and Intuition}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.29\linewidth}
+    \includegraphics[width=1\linewidth]{142.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.7\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{143.PNG}
+     \end{subfigure}
+\end{figure}
+
+A transformation of this form is called a \textbf{projective transformation}.
+
+The points are represented in homogenous coordinates : 
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{144.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{145.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\vspace{40mm}
+
+\subsubsection{Perspective Projection}
+
+Perspective projection is easily implementable using this machinery : 
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{146.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{147.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsubsection{Effect on the points}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{148.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.5\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{149.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsubsection{Ortographic Projection}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{150.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Complete Perspective Transformation}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{151.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\subsubsection{Parameters}
+
+How to set the parameters of the transformation?
+
+If we look at the center of the window then the barycenter of the back plane should be at(0,0,f).
+If we want no distortion on the image we need to keep a fixed aspect ration : width / height = r/t .
+
+There is only one degree of freedom left , the field of view angle $\theta$. $tan \theta/2 = t / |n|$
+
+The parameters can thus by found by fixing n and $\theta$. You can compute t and consequently all the other parameters needed to construct the transformation
+
+It is important to convert to Cartesian coordinates before interpolating attributes such as positions.
+
+\section{Texture Mapping}
+
+\subsubsection{Bump Mapping}
+
+Instead of encoding colors in a texture , you encode normals!
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{152.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{153.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsubsection{Texture Mapping}
+
+The idea is the same. Instead of encoding values at vertices of triangles, you encode them in images.
+
+You gain all the advantages of images.
+
+You can encode any property that you want , the most common are : colors (Texture Mapping) , Normals (Bump Mapping) , Displacements (Displacement Mapping)
+
+\vspace{3mm}
+\textbf{What do we need?}
+
+One additional per-vertex property , the UV coordinates.
+
+An image uploaded to the GPU memory.
+
+The UV coordinates are interpolated inside each triangle , and used to find the corresponding value in the texture.
+
+The texture value is interpolated before it is used in the shader
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{154.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{UV Mapping}
+
+In practice we are defining a mapping between a 3D triangle and a texture triangle.
+Each \textbf{fragment} has its own coordinates u,v in texture space 
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{155.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{156.PNG}
+     \end{subfigure}
+\end{figure}
+
+UV mapping is a difficult problem. 
+In practice , we must : 
+\begin{itemize}
+    \item unfold the surface of the object onto the UV plane (texture space)
+    \item assign(u,v) coordinates to each vertex of the unfolded mesh
+    \item different triangles of the unfolded mesh cannot overlap
+\end{itemize}
+
+We may need to cut the mesh open to unfold it : seams.
+In general , it is not possible to unfold a mesh isometrically : distortion.
+
+Checkboards are great to visualize a UV map
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{157.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{How are UV maps encoded?}
+
+2 versions of the mesh are stored , one for the triangles in 3D and one for those in 2D.
+
+The faces of the 2 meshes are in one-to-one correspondence.
+
+OpenGL does not support this you need to duplicate all the vertices on the seams and pass one single mesh. An easy way to do this is by duplicating all vertices and not using an element buffer.
+
+\vspace{60mm}
+\subsubsection{A minimal example}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{158.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+
+
+\subsubsection{Texture mapping as resampling}
+
+A 2D texture and the screen buffer are similar.
+
+A. texture : a rasterized image 
+B. screen buffer : a rasterized image.
+
+Standard use of texture mapping can be seen as an operation of image resampling 
+
+
+
+\subsubsection{Minification or Magnification?}
+
+Question : in which case are we?
+
+1 texel : 1 pixel - each texel falls to a different pixel , and vice-versa
+1 texel : N pixels - many pixels refer to the same texel, we are enlarging the texture (\textbf{Magnification})
+N texels : 1 pixel - many texels fall in the same pixel , we are shrinking the texture (\textbf{Minification}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{159.PNG}
+  \end{subfigure}
+\end{figure}
+
+Answer depends on : uv-mapping of the mesh , current transformations, resolution of the screen and resolution of the texture . Answer can be different from pixel to pixel even inside the same triangle!
+
+How to find it , for a specific access?
+
+\subsubsection{Derivatives in screen space}
+
+Idea : fragments are always processed in groups and in parallel.
+During fragment processing : given an expression , we can spy its values at adjacent fragments with a small overhead of synchronization / communication.
+
+Difference : how much the value of the expression is varying in screen space.
+
+If a fragment is accessing to texture coordinates (u,v) then also the neighboring fragments are accessing to texture coordinates.
+
+Difference between coordinates used by neighbors tell us if we are in case magnification or minification. Here , the derivative in screen space is used implicitly by the system.
+
+
+\subsubsection{Case Magnification}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{160.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{161.PNG}
+     \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{162.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{163.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{164.PNG}
+     \end{subfigure}
+\end{figure}
+
+Mode nearest : "texelation" , ok if borders between texels are intentional , cheaper
+Mode interpolation : usually better quality , heavier and slower, it may be "blurred"
+
+\subsubsection{Case Minification}
+
+N texels $<-->$ 1 pixel
+
+Further problem : texture subsampling , get one texel and skip N other texels. Bi-linear interpolation is not sufficient.
+
+
+Moire pattern : Artifacts due to interference when texture resolution is higher than age resolution. Appear on digital photos too!
+How to get rid of them?
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{165.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Case Minification : MIP-mapping}
+
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{166.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{167.PNG}
+     \end{subfigure}
+\end{figure}
+
+Define a scale factor , p = pixel / texel.
+
+Obtained from derivatives in screen coordinates of s and t.
+It can change inside the same triangle.
+
+The level of mipmap to be used is : log2 p. Level 0 = maximal resolution
+
+\section{View Details}
+\subsection{Viewing Transformations Details}
+
+\subsubsection{Transformations}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.75\linewidth}
+    \includegraphics[width=1\linewidth]{168.PNG}
+  \end{subfigure}
+\end{figure}
+
+Performed in the vertex shader : 
+\begin{itemize}
+    \item $M_{model}$ modeling matrix - depends on geometry of the scene ( applied per single object
+    \item $M_{cam}$ camera matrix - depends on the viewer
+    \item $M_{proj}$ projection matrix - depends only on the camera
+\end{itemize}
+
+Performed during Setup in the rasterizer : $M_vp$ viewport matrix - depends only on the rendering area
+
+\subsubsection{Modeling Transformation}
+
+Each object can be modeled in its own private reference frame : \textbf{Object Coordinates}. Different instances placed in the scene at different positions. Each transformation is expressed by an affine matrix. Objects can be moved or deformed
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{169.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Object Coordinates to World coordinates}
+Each object is modeled in its provate Object Coordinates.
+During transform , first of all we bring the object to the common space containing the whole scene : from Object Coordinates to World Coordinates.
+
+We can use the same model multiple times in the same scene. 
+Each instance has the same Object Coordinates of vertices , but a different modeling transformation to get to different World Coordinates.
+For example : wheels of a car ( 4 instances of the same wheel), cars on the road , chairs in a room , pieces on a checkerboard , houses in village ecc.
+
+\subsubsection{Modeling Transformations }
+
+How do we proceed to create an instance of an object in a scene???
+
+Assuming an object modeled about the origin :
+
+\begin{enumerate}
+    \item Scale first , to obtain desired size and proportioned
+    \item Next, rotate to orient
+    \item Finally, translate to the desired position
+\end{enumerate}
+
+Modeling transformations are usually different from object to object.
+Modeling transformations are the last ones to be specified in the code , just before defining the object.
+Modeling transformations accumulate to the right on the previous ones , unless we reset the model-view matrix.
+Therefore : 
+If we position object A first and object B next we do not want the transformations specified just for A to affect also B.
+We must reset the modeling matrix to its value preceding positioning of A, before we position B.
+On the other hand , there can be transformations that affect both A and B. We do not want to lose them when we reset the modeling matrix.
+
+Given objects A,B,C... that compose the scene , we cannot write code as follows : Transformation for A , Draw A , Transformations for B , Draw B.
+Otherwise transformation for B would accumulate on the ones for A and so on...
+
+On the other hand , we cannot just reset the matrix as follows : Reset matrix to Identity , Transformations for A , Draw A , Reset matrix to Identity , Transformations for B , Draw B.
+Because the reset operation cancels all transformations preceding it...
+
+Some transformation should affect all objects.
+General Scheme : 
+View transformations, Global modeling transformations , Transformations for A , Draw A , Transformations for B  , Draw B.
+
+How can we get rid of transformations for A without losing view and global modeling transformations?
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{170.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{171.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{172.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{173.PNG}
+     \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.45\linewidth}
+    \includegraphics[width=1\linewidth]{174.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\vspace{60mm}
+
+\subsubsection{Setting the model-view matrix}
+
+Idea : depth first navigation of scene graph. 
+Init : model-view = view
+Follow links from parents to children ( accumulate modeling matrices)
+When backtracking to parent : Recover its matrix keeping a stack of matrices.
+
+\subsubsection{View Transformation : typical example}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{175.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{176.PNG}
+     \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.55\linewidth}
+    \includegraphics[width=1\linewidth]{177.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\subsubsection{Example : Orbiting Camera}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.45\linewidth}
+    \includegraphics[width=1\linewidth]{178.PNG}
+  \end{subfigure}
+\end{figure}
+
+Basic user interface to select a point of view.
+Two angles (phi,theta) + distnace(ro)
+
+Useful to examine a single object. We can just orbit viewpoint about it and we are always looking towards the center.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.45\linewidth}
+    \includegraphics[width=1\linewidth]{179.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Camera on a car : a trick}
+
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{180.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{181.PNG}
+     \end{subfigure}
+\end{figure}
+
+The view transformation needed to place the camera at a given position and it is given by the inverse 
+matrix of the modeling transformation needed to place an object at the same position.
+
+
+
+\subsubsection{Object Viewer}
+
+We wish to pan/dolly/rotate an object with respect to the eye reference frame :
+\begin{itemize}
+    \item Pan is a translation of the scene in the uv plane
+    \item Dolly is a translation of the scene along the n axis
+    \item Rotation occurs about a point placed at the center of the view window and at a given distance from it.
+\end{itemize}
+
+Transformations must affect the object from its current position. They should be accumulated after the transformation used for current rendering and they should be specified before the current transformations in the code.
+
+\vspace{3mm}
+\textbf{Pan and Dolly}
+
+Translations are easy to combine with current transformation : While rendering , save current ModelView in matrix M; at the next frame , apply M first; then translate along z to zoom or along x and y to pan ; code must be written in reverse order
+
+\vspace{3mm}
+\textbf{Rotate}
+
+Problem : the current matrix M contains both rotation and translation.
+Object is translated of -d along the n axis.
+New rotation must occur about the origin
+Thus , we must bring back the object to the origin prior to rotate it.
+We should perform in order : 1. Previous rotation (in current matrix M) , 2. New rotation (specified by 
+angles about u and v axes), 3. translation (in current matrix M)
+
+
+How can we insert a rotation between two transformations that are incorporated in matrix M?
+
+Current view matrix is of type TR, where T corresponds to a translation of -d along the n axis. Thus $T^-1 M$ is a pure rotation.
+
+Thus we may : apply M (rotation and translation); translate with $T^-1$ to bring object back to the origin; apply new rotation R'; translate with T to push object back.
+
+Composite matrix will be : TR' $T^-1 M$
+
+
+To drive viewer with the mouse , angle alpha and beta are proportional to mouse motion in the vertical and horizontal directions , respectively.
+Distance d must be stored , and it is updated upon dolly ops.
+Order of rotations is relevant (risk of gimbal lock)
+Order of rotations can be disregarded with input from key pressure or mouse drag , if incremental angles are always very small.
+
+
+\subsubsection{Euler Angles}
+
+Generic rotation expressed as a sequence of three rotations about axes : Yaw about y axis , Pitch about x axis , Roll about z axis
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.35\linewidth}
+    \includegraphics[width=1\linewidth]{182.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Gimbal Lock}
+
+Problem with order of rotations.
+Result depends on order : rotation about an axis influences later rotations about different axes.
+For small angles , there are little differences.
+With large pitch angles , roll and yaw occur on about the same axis.
+
+\subsubsection{Trackball}
+A more elegant solution : 
+Put a sphere around the object. Get the intersections between the sphere and rays cast from consecutive mouse positions. Compute the angle and axis of rotation explicitly. Combine with previous rotation.
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{183.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{184.PNG}
+     \end{subfigure}
+\end{figure}
+
+An even more elegant solution : 
+Store the status of the trackball (center , radius , current rotation).
+Encode rotations with quaternions.
+
+\subsubsection{Quaternions}
+
+What is a quaternion?
+
+An extension of complex numbers , q = w + xi + yj + zk where $i \cdot i = j \cdot j = k \cdot k = i \cdot j \cdot k = -1$
+More often represented as a pair scalar-vector : q = [w,v] where v = (x,y,z)
+
+
+\subsubsection{The algebra of quaternions}
+
+Magnitude : $||q||$ = $\sqrt{w^2 + x^2 + y^2 + z^2}$
+
+Normalization to unit-length quaternion : q = q/$||q||$
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.55\linewidth}
+    \includegraphics[width=1\linewidth]{185.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\subsubsection{Quaternions and rotations}
+
+Each unit-length quaternion corresponds to a rotation in 3D: 
+
+q = [w,v] axis = v/|v| and angle = 2arccos(w)
+
+Multiplication between two quaternions corresponds to composing the two rotations : Store current rotation in a quaternion $q_curr$; compute new rotation into another quaternion $q_new$; update current rotation $q_curr$ \textleftarrow{$q_curr * q_new$}
+
+\vspace{30mm}
+
+\subsubsection{Conversions}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{186.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{187.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsubsection{Projection Transformation}
+
+Pin-hole camera model.
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.35\linewidth}
+    \includegraphics[width=1\linewidth]{188.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Intrinsic parameters of camera}
+
+Size of image plane (w,h)
+Focal distance (d) or angle Field of View (FoV)
+How to get one from the other??
+
+d used for computations , FoV more intuitive to set
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.35\linewidth}
+    \includegraphics[width=1\linewidth]{189.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Pin Hole camera and Clip Space}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{190.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{191.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsubsection{Projection}
+Projection affects all vertices that get to the projector : each vertex is converted to a different frame.
+Projection parameters define the projection matrix , which is not always affine : parallel projection is a combination of translation and scaling (affine) whereas perspective projection is a projective projection (not affine)
+
+Project matrix maps points of the view volume to points of the normalized cube; points outside the view volume fall outside the cube.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{192.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{193.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsubsection{Viewport transformation}
+
+The viewport is the portion of output window to which the frame buffer is mapped ( rectangle w x h pixels)
+Vertices in the Normalized projection coordinate systems are further transformed to express them in Window coordinates.
+3D coordinate system , with x,y in pixels and z in range [0,1].
+Origin at lower left corner.
+
+\subsubsection{Eventually 2d + depth}
+
+All primitives in devices coordinates are projected onto plane z = 0.
+These 2D primitives are passed on to the rasterizer.
+Actually the third coordinate of each vertex is preserved as an attribute for the depth test 
+
+\subsubsection{Aspect Ratio}
+
+The combined effect of projection and viewport transformations may deform the image.
+In order to keep the aspect ratio we need to have the same ratio w/h for the viewport as well as for the cross section of the view volume.
+Upon resize of the view window , we need to keep the aspect ratio consistent. Two ways : 1. Change the viewport , 2. Change the view volume
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.35\linewidth}
+    \includegraphics[width=1\linewidth]{194.PNG}
+  \end{subfigure}
+\end{figure}
+
+\end{document}
