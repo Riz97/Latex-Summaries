@@ -1,0 +1,438 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{amsfonts}
+
+\title{Data Visualization}
+\author{Riccardo Caprile}
+\date{September 2022}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction to Data Visualization}
+
+\subsection{Defining Data Visualization(vis)}
+
+Visual representation of facts , events , elements and their attributes that are encoded by data.
+Not necessarily connected with computer science : data visualization exists since centuries.
+
+The understanding of phenomena occurs through the interaction of methods and tools that facilitate the brain's ability to process information.
+
+Computer based visualization system provide visual representations of datasets designed to help people carry out task more effectively.
+Visualization is suitable when there is a need to augment human capabilities rather than replace people with computational decision-making methods.
+Viz allows people to analyze data when they don't know exactly what questions they need to ask in advance.
+
+\subsection{Possible uses of viz}
+\begin{itemize}
+    \item Long-term use for end users
+    \item Exploratory analysis of scientific data
+    \item Presentation of known results.
+    \item Stepping stone to better understanding of requirements before developing models
+    \item Help developers of automatic solution refine , determine parameters
+    \item Help end users of automatic solutions verify, build trust
+\end{itemize}
+
+\vspace{15mm}
+
+\subsection{Information design principles}
+
+\textbf{Idiom} : Distinct approach to create or manipulate visual representation.
+
+\textbf{Idiom design space} ; The design space of possible vis idioms is huge , and includes the considerations of both how to create and how to interact with visual representations.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{1.PNG}
+  \end{subfigure}
+\end{figure}
+
+The goal is to measure effectiveness , "It's not just pretty pictures".
+
+\subsection{Analysis : What , why , how}
+
+What is shown? : Data abstraction
+
+Why is the user looking at it? : Task abstraction
+
+How is it shown? : Idiom (visual encoding and interaction)
+
+\subsection{Vis Techniques}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{2.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\section{Visual Perception}
+
+\subsection{The human visual system}
+
+The world around us can be understood as a vast display of visual data , from which we can pick out useful pieces of information. The shape of objects give us clues about their use , the textures of surfaces about properties of materials and the body language of humans and animals about their intentions.
+
+At any moment , we can only accurately see a very small part of the entire visual field : \textbf{the fovea}, the small central area of the retina that provides accurate vision. All the rest is badly blurred and vaguely colored
+If we fix our gaze on a point somewhere within our field of vision and try to detect objects in the remaining field without moving your eye it's difficult.
+
+Where do we fixate our gaze??
+
+Where there's something attractive and where we know there's something we want to look at.
+
+The following three factors determine how easily we can find objects through visual searches : 
+
+\begin{itemize}
+    \item \textbf{A priori salience} : features that our visual system is specialized to recognize
+    \item \textbf{Top-down salience modification} : our sensitivity for different visual features is re-turned based on what we are looking for.
+    \item \textbf{Scene gist} : it is easier to interpret a familiar landscape or a figure than an unfamiliar one , as prior knowledge will help us select the appropriate search strategies.
+\end{itemize}
+
+\subsection{Perception and Cognition}
+
+Visual perception does not occur in the eye , but in the brain.
+
+Seeing is a multi-stage process , in which the sensory receptors in the eye transmit information via the optic nerve to the visual cortex for processing.
+
+The image the brain receives has already been processed by the retina.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{3.PNG}
+  \end{subfigure}
+\end{figure}
+
+\begin{itemize}
+    \item First Stage : The neurons in the retina and in the visual cortex work in parallel searching for "low level" features in the visual field. Unconscious process
+    \item Second Stage : The brain divides the visual field into regions and detects simple patterns , such as continuous contours.
+    \item Third stage : The basic features identified in the previous stages are combined into more complex visual objects that are stored in the visual working memory that are compared with pre-existing items in memory.
+\end{itemize}
+
+\textbf{Perception} : Identification and interpretation of sensory information. From the physical stimulus to recognising information. Shaped by learning memory.
+
+\textbf{Cognition} : The processing of information , applying knowledge
+
+\subsubsection{Pre-attentive processing}
+
+The distinctness of the features of an object in relation to its surroundings makes the object "pop out" from the background , catching our attention.
+
+These features can be roughly divided into three channels : 
+
+\begin{itemize}
+    \item \textbf{Shape features} : include such things as position,size, elongation,orientation and texture
+    \item \textbf{Color features} : include the hue,lightness and intensity  of color, w
+    \item \textbf{Motion} : include factors such as speed and direction of motion
+\end{itemize}
+
+We process these kind of features \textbf{pre-attentively}, which means that perceptual processing of such features happens faster than we can consciously direct our gaze.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{4.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{5.PNG}
+     \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{6.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{7.PNG}
+     \end{subfigure}
+\end{figure}
+
+Finding a red circle among red crosses or blue circles happens very quickly , but the search will slow down considerably when the task is to find a red circle among a mix of red crosses and blue circles.
+It it is a good idea to makes use of differences in these features sparingly and to use them only to highlight the most important details.
+
+\subsection{Gestalt Laws}
+
+A Gestalt is a shape that forms as a combination of tunable (pop up) features , the contours of elements , the areas enclosed by groups of elements. The perception of Gestalt relies on the focusing of attention.
+These laws describe the principles of our tendency to perceive individual visual features as \textbf{groups} and \textbf{entities}.
+
+Now we see the 7 laws.
+
+\subsubsection{Law of proximity}
+
+Elements that are close to each other tend to be perceived as belonging together.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{8.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Law of common fate}
+
+Elements that move together tend to be perceived and belonging together
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{9.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Law of Similarity}
+
+Elements that are similar to each other , for example with regard to color , size , or shape , tend to be perceived as belonging together
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{10.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{20mm}
+
+\subsubsection{Law of continuity}
+
+With intersecting shapes , parts that form a continuous line are perceived as belonging together
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{10.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Law of closure}
+
+Elements that form a closed shape are perceived as belonging together. This is true even when the figure is missing elements.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{11.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Law of good Gestalt}
+
+Elements that combine to form figures that have as simple a shape as possible tend to be perceived as belonging together or as being distinct.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{12.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Past experience principle}
+
+Elements that have , according to past experience , been seen together are perceived as belonging together when seen again or in a new context
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{13.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Connectedness and connecting regions}
+
+Cause elements to appear to belong together, even if the resulting combinations are in conflict with other Gestal principles.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{14.PNG}
+  \end{subfigure}
+\end{figure}
+
+\section{Color and Perception}
+\subsection{Physical and biological principles on vision}
+
+Colors have two distinct roles in information design.
+
+On one hand , they are directly related to encoding and organizing of information. On the other hand, colors are also esthetically and culturally significant.
+
+Colors are powerful visual codes , and readers always attach meanings to them 
+
+Humans have \textbf{trichromatic color vision}. The light sensitive cone cells in our eyes fall into three groups , each of which responds to different wavelength of light : red,green,blue. All other colors we see are mixtures of these primary colors.
+
+\textbf{Metamerism} : is a perceived matching of colors with different spectral power distributions. Colors that match this way are called metamers.
+
+
+\subsubsection{Human eye}
+
+Our retina is a layer of tissue at the back of the eye. It contains cells called \textbf{photoreceptors}.
+
+They convert light rays into nerve signals, which are then processed by nerve cells in the inner retina , sent to the brain , and translated as images.
+The two type of photoreceptors are known as \textbf{rods} and \textbf{cones}.
+Rods are responsible for peripheral and night vision. They detect brightness and shades of gray.
+Cones are responsible for day vision and color perception.
+Each type of cones is sensitive to a different range of frequencies in the visible spectrum. Called L,M,S from the zones of spectrum at which they have highest response
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{15.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{20mm}
+
+\subsection{Color Encoding}
+\subsubsection{How do we encode colors?}
+
+Adjust the levels of three different light sources ( R,G,B) to match a color in the spectrum. The levels of the three sources encode the given color with respect to such sources.
+
+\subsubsection{Grassman's Law}
+
+If tri-stimulus RGB1 matches S1 and tri-stimulus RGB2 matches spectrum S2 , then tri-stimulus RGB1 + RGB2 matches spectrum S1 + S2.
+
+We can encode an infinite set of colors.
+
+In practice : 
+
+\begin{enumerate}
+    \item Select three monochrome light sources (R 645 nm , G 526 nm , B 444 nm)
+    \item Sample the visible spectrum and match tri-stimuli for each sample
+    \item Interpolate color matching functions on the three channels.
+\end{enumerate}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{16.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\vspace{10mm}
+
+\subsubsection{RGB Space}
+
+Three sources of light R,G,B adjustable in the range [0,1].
+
+Maps RGB space to XYZ by determining the tri-stimulus for each base color.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{17.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Color Composition}
+
+Three primary colors can be combined to obtain all others.
+
+\textbf{Additive composition} : add colors by combining lights of a certain wavelength.
+
+\textbf{Subtractive composition}: subratract colors from a reflective surface using pigments that absorb light of a certain wavelength.
+
+\subsubsection{The elements of color perception}
+
+\begin{itemize}
+    \item \textbf{Hue}: Refers to whether the color perceived is , for example red or yellow. The perceived hue depends on the wavelength composition of light reflected or emitted into the eye from the object.
+    \item \textbf{Lightness} : is the visual system's interpretation  of the brightness of a light source. Most significant
+    \item \textbf{Saturation} : Refers to the intensity of color. 
+\end{itemize}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{18.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Transparency}
+
+Colors can be defined to have a certain degree of transparency/opacity.
+Transparency is encoded in a separate channel , called the alpha channel. Alpha in range [0,1] - [transparent,opaque].
+Useful when colors overlap. Result depends on order of overlap C = afront * Cfront+(1-afront) Cback.
+
+\subsection{Perceptual Illusion}
+
+Our eyes do not precisely measure the wavelength of the amount of light reflected from the object being looked at. Context and prior knowledge considerably affect our perception of color.
+We perceive an object to the same color , whether lit by a lamp or sun..
+This phenomenon is called \textbf{color constancy}.
+Color constancy creates problems when color is used for communicating abstract information , as the closely phenomenon of simultaneous contrast causes adjacent colors to affect each other. A color will appear lighter whether surrounded by dark colors.
+
+\subsubsection{Color anomalies in vision}
+
+\begin{itemize}
+    \item Color Blindness : Protanopia in case of red insensitivity and protanomaly in case of poor red sensitiviy.Deuteranopia in case of insensitivity to green and deuteranomaly in case of poor sensitivity to green. Triatanopia in case of insensitivity to blue and tritanomaly in case of poor sensitivity to blue
+    \item Low vision
+    \item Trauma
+    
+\end{itemize}
+
+\subsection{The use of colors in data visualization}
+
+It is recommended to use saturated but light pastel colors for large surfaces and dark and intense colors for small details. In this way , the interference caused by simultaneous contrast can be avoided and the most important thing stand out
+
+Using a color palette based on natural color has another advantage : a separate key is not necessarily required.
+Watery area blue , forest dark green etc.
+
+\subsection{Quantitative and Qualitative color scales}
+
+On a \textbf{Qualitative} color scale , different colors represent objects that belong in different groups or categories on a nominal scale. For example , election results can be presented in such a way that each party has its own distinctive color in the graphics.
+
+The goal is to create a color palette in which different colors are as distinct from each other other as possible.
+
+Using the highest number of colors is not practical and could be counterproductive.
+
+Most often, when discussing color scales, what is meant is \textbf{quantitative}, rather than qualitative scales.
+Visual encoding of quantitative data should be based on variation of lightness of color.
+
+In general , a color scale should be designed so that when the value of a variable increases , so does the contrast between the color and its background.
+
+Quantitative color scales can be divided into \textbf{classified} and \textbf{unclassified} scales.
+Classified color scales are used to represent an ordinal scale of measurement , and unclassified ones for ratio and interval scales.
+
+Classified colors scales are far easier to read precisely.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{19.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Types of color scales}
+
+The most common type of quantitative color scale is the \textbf{sequential scale}, in which the variation in the lightness of the color is used to encode values
+
+\textbf{Single hue scale} : a sequential scale based solely on lightness of color. Individual colors are more reliably distinguished from each other in sequential multi-hue scales, where the variation in lightness is combined with variation in hue and saturation
+
+\textbf{Two-color sequential scale} : is a multi-hue scale where a number of intermediate colors are located between two colors that mark the extremes of the scale in a uniform color space.
+
+\textbf{Bipolar scale} : is multi-hue scale where an intermediate , neutral color is added halfway between the two extremes.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{20.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{20mm}
+
+Scientific visualization , in particular , often use \textbf{spectral scale} , which is solely based on difference in hue. It has the advantage that reading precise values in a figure like this is easier than in visualization using an unclassified sequential color scale.
+Perceptually unordered and non linear.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{21.PNG}
+  \end{subfigure}
+\end{figure}
+
+\end{document}
+                                                                   
