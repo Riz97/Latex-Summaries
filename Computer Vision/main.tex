@@ -1,0 +1,1589 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{amsfonts}
+
+
+
+
+\title{Computer Vision}
+\author{Riccardo Caprile}
+\date{May 2022}
+
+\begin{document}
+
+\maketitle
+
+\section{Images}
+
+\textbf{Computer Vision} : Understanding the content of an image , usually by estimating a 3D model of the depicted scene
+
+\subsection{Introduction}
+
+The sense of vision plays an important role in the life of primates : it allows them to infer 3D spatio-temporal properties of the environment that are necessary to perform crucial tasks for survival.
+The inference is performed by using 2D spatio-temporal signals like images.
+
+But vision is deceivingly easy because it is immediate for us and we perceive the visual world as external to ourselves but it is a reconstruction within our brain. Vision is computationally demanding.
+
+The goal of computer vision is to bridge the gap between pixels and "meaning"
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{1.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+To interact with the real-world, we have to tackle the problem of inferring 3D information of a scene from a set of 2D images.
+In general this problem falls into the category of so called inverse problems , which are pone to be ill-conditioned and difficult to solve in their full generality unless additional assumptions are imposed. before we address how to reconstruct 3D geometry from 2D images , we first need to understand how 2D images are generated and processed.
+
+
+\vspace{30mm}
+
+\subsection{Computer Vision}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{2.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{3.PNG}
+     \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{4.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{5.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsection{Image Formation}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{6.PNG}
+  \end{subfigure}
+\end{figure}
+
+Visual signal s(x,y) : s : $R^2 -> R$.
+
+s(x,y) is a two dimensional function : x and y are spatial coordinates.
+
+The amplitude of s is called \textbf{intensity or gray level at the point (x,y)}
+
+s(x,y) = il(x,y) r(x,y).
+
+\begin{itemize}
+    \item s(x,y) : intensity at the point (x,y) 
+    \item il(x,y) : illumination at the point (x,y) (the amount of source illumination incident on the objects)
+    \item r(x,y) : reflectance at the point (x,y) (the amount of illumination/transmitted by the objects), where 0 < il(x,y) < inf and 0 < r(x,y) < 1
+\end{itemize}
+
+\textbf{Illumination}
+\vspace{3mm}
+
+Lumen is a unit of light flow.
+Lumen per square meter is the metric unit of measure for illuminance of a surface.
+
+
+Digital image formation is the first step in any digital image processing application. The \textbf{digital image formation system} (camera) consists basically of the optical system , the sensor and the digitizer.
+
+\subsection{Optical system}
+
+The optical system can be modeled as a linear shift invariant having a two-dimensional impulse response h(x,y).
+The input-output relation of the optical system is described by a 2D convolution.
+
+The two dimensional impulse response h(x,y) is also called PSF (point spread function) and its Fourier transform is called transfer function.
+
+Linear motion blur : it is due to the relative motion , during exposure , between the camera and the object being photographed.
+
+
+\subsection{Camera model}
+
+Images are two-dimensional patterns of brightness values. They are formed by the projection of 3D objects on the camera image plane.
+
+Basic abstraction is the \textbf{pinhole camera}.
+
+\subsubsection{Pinhole Camera}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{7.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{8.PNG}
+     \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{9.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{10.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+
+\subsubsection{Perspective Projection Matrix}
+Projection is a matrix multiplication using homogeneous coordinates : 
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{11.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+
+\subsubsection{Perspective projection \& Calibration}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{12.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+
+
+\subsection{Cameras with lenses}
+
+A lens focuses parallel rays onto a single focal point. Gather more light , while keeping focus; make pinhole perspective projection practical.
+
+\begin{itemize}
+    \item \textbf{Depth of field} : a smaller aperture increases the range in which the object approximately in focus
+    \item \textbf{Field of view (FOV)} : Angular measure of portion of 3D space seen by the camera.
+    As f gets smaller , image becomes more wide angle (more world points project onto the finite image plane. As f gets larger , image becomes more telescopic.
+\end{itemize}
+
+
+
+
+
+\subsection{Visual sensor and digitizer}
+
+We can think of an image as a function , $g : R^2 -> R$ g(x,y) gives the intensity at position (x,y). Realistically , g: [a,b]x[c,d] $->$ [0,1]
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{13.PNG}
+  \end{subfigure}
+\end{figure}
+\vspace{60mm}
+\subsection{Digital images representation}
+
+In Computer Vision we operate on digital(discrete) images : Sample the 2D space on a regular grid and quantize each sample.
+Image represented as a matrix of integer values(intensity)
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{14.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{15.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsubsection{Elementary digital image processing operations}
+
+We consider the images a(i,j) , b(i,j) and c(i,j) with i = 1,...,N and j = 1,...,M.
+
+\begin{itemize}
+    \item Image addition/subtraction : c(i,j) = a(i,j) +- b(i,j)
+    \item Thresholding : b(i,j) = a1 if a(i,j) < T , a2 if a(i,j) >= T
+    \item Contrast stretching : b(i,j) = ((a(i,j) - amin)) (omax-omin) + omin
+    \item Point nonlinear transformations : b(i,j) = h(a(i,j))
+\end{itemize}
+
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{16.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{17.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{18.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\vspace{70mm}
+\textbf{Forward Mapping}
+\vspace{3mm}
+
+(x,y) = T{(v,w)}.
+It's possible that two or more pixels can be transformed to the same location in the output image.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{19.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{30mm}
+\textbf{Inverse Mapping}
+\vspace{3mm}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{20.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{20mm}
+
+\subsection{Image Interpolation}
+
+\textbf{Interpolation} : Process of using known data to estimate unknown values.
+
+Interpolation sometimes called resampling , an imaging method to increase the number of pixels in a digital image
+
+\subsection{Image Processing}
+
+Standard image processing operators map pixel values from one image to another one : 
+\begin{itemize}
+    \item \textbf{Point Operators} : where each output pixel's value only depends on the corresponding input pixel value
+    \item \textbf{Neighborhood operators} : where each new pixel's value depends on a small number of neighboring input pixel values.
+    \item \textbf{Global Operators} : histogram and Fourier Transform
+\end{itemize}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{21.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Image Filtering (Convolution)}
+
+In order to form a new image , \textbf{whose pixels are a weighted sum of original pixel values}, by using the same set of weights at each point : 
+
+O(i,j) = I * H = sumk suml I(k,l) H(i-l,j-l).
+
+Where I is the input image , O is the output image and H is the convolution kernel.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{22.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Noise Models}
+
+Digital image are corrupted by noise during image formation process.
+We often assume the noise is additive : l(x,y) = s(x,y) + ni, where s(x,y) is the deterministic signal and ni is a random variable.
+
+Common types of noise : Gaussian noise ( variations in intensity drawn from a Gaussian normal) , Salt and pepper noise ( there are random occurences of black and white pixels)
+
+\subsection{Image Filtering(Median Filter)}
+
+It is a non-linear filter : 1) rank-order neighborhood intensities and 2) take middle value.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{23.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Image feature : edges}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{24.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{25.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\textbf{Edge Detection}
+\vspace{3mm}
+
+Goal : identify visual changes (discontinuities) in an image.
+
+Why : Intuitively , most semantic and shape information from the image can be encoded in the edges. More compact than pixels.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{26.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Boundaries}
+
+There are several techniques for representing the shape of boundaries (edges).
+These representations are the abstraction of edges in a symbolic form. 
+We consider the grouping of edge points into a straight line : Hough transform.
+
+\subsection{Line Fitting}
+
+Why fit lines? Many objects are characterized by straight lines.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{27.PNG}
+  \end{subfigure}
+\end{figure}
+
+Choose  a parametric model to represent a set of features.
+
+Membership criterion is not local - can't tell whether a point belongs to a given model just by looking at that point.
+
+Three main questions : 1) What model represents this set of features best? 2) Which of several model instances gets which feature? 3) How many model instances are there?
+
+Extra edge points(clutter) , multiple models : which points go with which line , if any?
+
+Only some parts of each line detected , and some parts are missing : How to find a line that bridges missing evidence?
+
+Noise in measured edge points , orientations : How to detect true underlying parameters?
+
+It's not feasible to check all combinations of features by fitting a model to each possible subset.
+\textbf{Voting} is a general technique , where we let the features vote for all models that are compatible with it ( Cycle through features , cast votes for model parameters and look for model parameters that receive a lot of votes.
+Noise \& clutter features will cast votes too , but typically their votes should be incosistent with the majority of good features.
+
+
+\subsection{Hough Transform}
+
+Hough Transform is a voting technique that can be used to solve all of those difficulties.
+
+Main Idea : 
+
+1. Record all possible lines on which each edge point lies.
+2. Look for lines that get many votes.
+
+We will use the Hough transform to fit the equation of a straight line to the edge points.
+
+The equation of a line y = mx+b can be rewritten as b = (-x)m+y , this is a the equation of a line in the m-b parametric space.
+
+Therefore, a point (x,y) in the x-y space is mapped to a straight line in the m-b space.
+
+The lines intersect at a single point(m',b') in the m-b space , if the (x,y) points belong to the same straight line in the x-y space.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{28.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{29.PNG}
+     \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{30.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{31.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\subsection{Polar representations for lines}
+
+The parametric model presented has some difficulties in the representation of vertical straight lines , because the parameter m tends to infinity.
+
+Thus , we chose the polar representation of a straight line.
+
+The polar form of the equation of a straight line : d = x cos $\theta$ + y sin$\theta$
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{32.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{33.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{34.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{35.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{36.PNG}
+     \end{subfigure}
+\end{figure}
+
+\section{Segmentation and Disparity}
+
+
+\subsection{Multi-Resolution Representation}
+
+We may wish to change the resolution of an image before proceeding further : - We may need to interpolate a small image to make its resolution match the desired one.
+- We may want to reduce the size of an image to speed up the execution of an algorithm.
+- Sometimes , we do not even know what the appopriate resolution for the image should be for example the task of finding a face in an image. Since we do not know the scale at which the face will appear, we need to generate a whole pyramid of differently sized images and scan each one for possible faces.
+
+\subsubsection{Concept : Scale Space}
+
+Basic idea : different scales are appropriate for describing different objects in the image and we may not know the correct size ahead of time
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{37.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{38.PNG}
+     \end{subfigure}
+\end{figure}
+
+\vspace{50mm}
+
+\subsection{Pyramid Representation}
+
+Because a large amount of smoothing limits the frequency of features in the image , we do not need to keep all the pixels around!.
+
+Strategy : progressively reduce the number of pixels, as we smooth more and more.
+Leads to a "pyramid" representation if we subsample at each level.
+
+\subsubsection{Gaussian Pyramid}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{39.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{40.PNG}
+     \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{41.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{42.PNG}
+     \end{subfigure}
+\end{figure}
+
+Can't shrink an image by taking every second pixel. If we do it , characteristics errors appear.
+Typically , small phenomena look bigger and fast can look slower.
+The message is that high frequencies lead to trouble with sampling.
+Solution : suppress high frequencies before sampling.
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{43.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{44.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\textbf{Upsample}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{45.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{46.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+Multi-resolution image analysis : Look for an object over various spatial scales by first finding a smaller instance of that object at a coarser level of the pyramid and then looking for the full resolution object only in the vicinity of coarse-level detections. \textbf{Coarse to fine image processing} : form blur estimate motion analysis on very low-resolution image , upsample and repeat. Often a successful strategy for avoiding local minima in complicated estimation tasks.
+
+\subsection{Derivative of Gaussian Filter : Scale}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{47.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{48.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsection{Derivative of Gaussian Filter : Matching}
+
+Convolution with a filter can be viewed as comparing a little picture of what you want to find against all local regions in the image.
+
+For this reason , it is sometimes called "matched filtering". In fact , you can prove that the best linear operator for finding an image patch is essentially the patch itself. This is the template matching.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{49.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\subsection{Laplacian of Gaussian (LoG) Filter}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{50.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{51.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsubsection{Other uses of LoG : Blob Detection}
+
+How can an edge finder also be used to find blobs in an image??
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{52.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{53.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\subsection{From edges to blobs}
+
+
+Blob = superposition of nearby edges
+
+\subsubsection{Scale selection}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{54.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{55.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsubsection{Characteristics Scale}
+
+We define the characteristics scale as the scale that produces peak of Laplacian response.
+
+\subsection{Scale-space blob detector}
+
+\begin{enumerate}
+    \item Convolve image with scale-normalized
+    \item Find maxima of squared Laplacian response in scale-space
+    \item Non-maxima suppression in scale-space
+\end{enumerate}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{56.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{57.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsection{Objects' description}
+
+The \textbf{shape of an object} can be described either in terms of its boundary or in terms of the region it occupies(blob).
+
+Region-based representation requires image segmentation in several homogeneous region.
+Image regions are expected to have homogeneous characteristics
+
+\subsection{Image segmentation based on color}
+
+To \textbf{segment an image} based on color , it is natural to think first of the HSV/HSI space , because color is conveniently represented in the hue channel.
+The objective is to classify each pixel in a given image as having a color in the specified range or not.
+Coding these two sets of pixel in an image with black and white produces a binary segmented image.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{58.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{59.PNG}
+     \end{subfigure}
+\end{figure}
+
+We choose a rectangular region that contains samples of color we wish to segment out of the color image.
+We compute the mean $h_m$ and the standard deviation $h_std$ of the hue values of pixels contained within the rectangle.
+Then , we code each point as 1 , if it is inside the range of hue values, otherwise as 0.
+
+\subsection{Geometrical properties of regions (blob analysis)}
+
+Once the scene is segmented into regions (blobs), we can determine the geometrical properties of these regions. We assume that the blob is represented by a m x n binary sub-image B(i,j).
+
+\vspace{3mm}
+
+Area or size of the region is a total number of pixels occupied by the region : \[\sum_{i=1}^m \]\[\sum_{j=1}^n B(i,j)\]
+
+The \textbf{centroid} is like the center of an arbitrary shaped region , and it can be used to represent the location of a region : 
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{60.PNG}
+  \end{subfigure}
+\end{figure}
+
+The \textbf{perimeter} of a region is the sum of its border pixels. A pixel which has at least one pixel in its neighborhood from the background is called a border pixel.
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{61.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Feature Points}
+
+The first kind of \textbf{feature} that you may notice are specific locations in the images , such as mountain peaks , building corners , doorways , or interestingly shaped patches.
+
+These kinds of localized feature are often called \textbf{keypoint features} or \textbf{interest points} and are often described by the appearance of patches of pixels surrounding the point location.
+Edges and lines provide information that is complementary to both keypoint and region-based descriptors.
+
+
+
+\subsection{Correspondence across views Example}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{62.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{63.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{64.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{65.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\subsection{Invariance and Covariance}
+
+Are keypoint invariant to photometric transformations and covariant to geometric transformations?
+
+\textbf{Invariance} : image is transformed , and corner locations do not change.
+\textbf{Covariance}: if we have two transformed versions of the same image , features should be detected in corresponding locations.
+
+\subsubsection{Harris corner detector : properties}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{66.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{67.PNG}
+     \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{68.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{69.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsubsection{Scale invariant interest points}
+
+How can we detect scale invariant interest points?
+Intuition : Find scale that gives local maxima of some function f in both position and scale.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{70.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{71.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+Design a function f on the region , which is scale invariant.
+This scale invariant region size is found in each image independently
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{72.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{73.PNG}
+     \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{74.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{75.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsection{Stereopsis}
+
+It is hard to recover 3D information from 2D images without extra knowledge.
+Much of geometric vision therefore is based on information from 2 or more camera locations.
+
+Some definitions of a stereo system : Parallel optical axes and converging optical axes.
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{76.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{50mm}
+
+\textbf{Stereopsis Problems}
+
+\vspace{3mm}
+
+\textbf{Stereo Correspondence} : Given a point in one of the images , where could its corresponding points be in the other images?
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{77.PNG}
+  \end{subfigure}
+\end{figure}
+
+\textbf{Structure} : Given the projections of the same 3D point in two or more images , compute the 3D coordinates of that point.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{78.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Stereo System}
+Stereo : structure from shift between two views.
+We'll need to consider : info on camera pose and image point correspondences.
+
+Let's look at a simple stereo system first.
+Assume : parallel optical axes and known camera parameters.
+
+For stereo systems , which differ only by an offset in x, the projection of y is the same in both images. We call this a rectified system.
+
+Stereo image rectification : we can always turn a verged system to a non verged system
+
+The goal is to generate a depth map of a world scene by triangulating 3D positions of points in space using a passive 2-camera system
+
+\vspace{30mm}
+
+\subsubsection{Depth from disparity}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{79.PNG}
+  \end{subfigure}
+\end{figure}
+
+There are two problems for stereo. Correspondence problem ( Given two images , how can you find corresponding points that match?) and Reconstruction problem ( Given matching points between images , how can you reconstruct the 3D scene?)
+
+\subsubsection{Correspondence Problem}
+
+\textbf{Region-Based} : Region-based matching only works where there is texture (compute a confidence measure for regions, apply continuity or match ordering constraints).
+Region matching can be sensitive to changes in surface orientation.
+
+\textbf{Feature-Based} : Feature-based leads to sparse disparity maps (interpolation to fill in gaps and scale-space approaches to fill in gaps.)
+Feature-based can be sensitive to feature "drop-outs"
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{80.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{81.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+Even where the cameras are identical models , there can be differences in gain and sensitivity. Note that we can change the SSD by making the image brighter or dimmer.
+For these reasons and more , it is a good to normalize the pixels in each window.
+As a result , it is common to subtract the mean of both images and normalize by variance.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{82.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{83.PNG}
+     \end{subfigure}
+\end{figure}
+
+\textbf{Algorithm}
+
+Deciding the Range : The first step in correspondence search is to compute the range of disparities to search.
+Assume a non-verged system. Therefore , we have : 
+
+d = f b / $z_max$, we calculate $d_min$ = f b / $z_max$ and $d_max$ = f b / $z_min$
+
+Thus, for each point $u_l$ in the left image , we will search points $u_l$ + $d_min + d_max$ in the right.
+
+Note we can turn this around and start at a point $u_r$  and search from $u_r - d_max$ to $u_r - d_min$
+
+For each pixel (i,j) of the left image and offset o in disparity range , we compute d(i,j,o) and the disparity at (i,j) is the value o that minimizes d.
+
+The result performing this search over every pixel is the disparity map. 
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{84.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Feature-based correspondence}
+
+Restrict search to sparse set of detected features (\textbf{keypoints})
+Rather than pixel values use feature descriptor and an associated feature distance.
+Still narrow search by epipolar lines
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{85.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{86.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsection{Measurement error}
+
+\textbf{Accuracy}
+\vspace{3mm}
+
+How close is measurement to true valued. Affected by systematic errors. Can be improved with better calibration.
+
+\textbf{Precision}
+\vspace{3mm}
+
+How closely do multiple measurements agree. Varies per type of sensor . Varies pere degree of freedom. Can be improved with filtering.
+
+\textbf{Resolution}
+\vspace{3mm}
+
+Minimum difference that can be discriminated betweeen two measurements. Cannot be reached in practice because of noise
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{87.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{How does a depth camera work?}
+
+Passive illumination ( standard RGB Camera), natural light sources and visual features and Active illumination ( RGB-D Camera) , often infrared spectrum.
+
+\subsection{Active stereo}
+
+\textbf{Structured light} : project a known pattern into the scene and Projector with regular light of laser.
+
+\textbf{Laser ranging} : Measure time of flight taken by laser pulse
+
+\subsubsection{Time of flight}
+
+Depth cameras in HoloLens use time of flight. Emit light of a known wavelength, and timme how long it takes for it to come back.
+
+\subsubsection{Active stereo with structured light}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{88.PNG}
+  \end{subfigure}
+\end{figure}
+
+The depth map is constructed by analyzing a speckle pattern of infrared light.
+Structure light general principle : project a known pattern onto the scene and infer depth from the deformation of that pattern.
+
+The objective of structured light systems is to simplify the correspondence problem through projecting effective patterns by the illuminator : to infer depth from the deformation of that pattern.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{89.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Motion Computation}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{90.PNG}
+  \end{subfigure}
+\end{figure}
+
+Visual motion can be annoying ( camera instabilities , jitter).
+Visual motion indicates dynamics in the scene and reveals spatial layout.
+
+\textbf{Optical flow} : Given two images , find the location of a world point in a second close-by image with no camera info.
+It is used the KLT algorithm ( 1.Find corners in first image , 2. Extract intensity patch around each corner , 3. Use Lucas-Kanade algorithm to estimate constant displacement of pixels in patch)
+
+
+
+\vspace{50mm}
+
+\section{Camera Calibration and Epipolar Geometry}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{91.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{92.PNG}
+     \end{subfigure}
+\end{figure}
+
+\textbf{Camera calibration} : Figuring out 
+\begin{enumerate}
+    \item Transformation from metric coordinates (camera) to pixels coordinates(image)
+    \item Transformation from world coordinate system to camera coordinate system.
+\end{enumerate}
+
+\subsection{Image coordinate system}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{93.PNG}
+  \end{subfigure}
+\end{figure}
+
+\textbf{Principal point (p)} : point where principal axis, the z-axis , intersects the image plane
+
+\textbf{Normalized coordinate system } : origin of the image is at the principal point : x and y axes of the image plane are parallel to X and Y axes of the camera reference system.
+
+\textbf{Image coordinate system} : origin is in the corner.
+
+\subsection{Pixel Coordinates}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{94.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Camera Parameters : Lens distortion Model}
+
+Non linear effects ( short focal length and cheap cameras) : Radial and Tangential distortion
+
+Radial distortion example
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{95.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Camera Rotation and Translation}
+
+In general , the camera coordinate frame will be related to the world coordinate frame by a rotation R and a Translation t
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{96.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\subsection{Camera Projection matrix}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{97.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Calibrating the Camera}
+
+Given n points with known 3D coordinates $X_i$ and known image projections $x_i$ , to estimate the camera parameters (least squares solution).
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{98.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{What is least squares doing?}
+
+Given 3D point evidence , find best M which minimizes the error between estimate (p') and known corresponding 2D points (p)
+
+Best M occurs when p' = p , or when p' - p = 0. Form these equations from all point evidence. Solve for model via closed-form regression.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{99.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Calibrating the Camera : Tsai method}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{100.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{101.PNG}
+     \end{subfigure}
+\end{figure}
+
+Homogeneous least squares : find p minimizing $||A_p||^2$
+
+If rank(A) $<$ 11, there infinite solutions. Check if data is degenerate.
+If rank(A) is 11 , solution given by SVD : eigenvector of A with smallest eighenvalue.
+
+In practice the smallest eigenvalue of A will not be exactly equal to zero but will have a small value due to noise.
+
+Rule of thumb : always check the smallest eigenvalue and the ration between the largest and smalles values to estimate noise in the data.
+
+\vspace{50mm}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{102.PNG}
+  \end{subfigure}
+\end{figure}
+
+Given n ( $>= 6$) correspondences $x_i -> X_i$ (pixels to world coordinates).
+Compute P = $K [R | t]$ such that $x_i = PX_i$
+
+But the algorithm for camera calibration has two parts : 1. Compute the matrix P from a set of point correspondences , 2. Decompose P into K , R and t.
+
+\subsubsection{Limitations of the linear approach}
+
+Using least square minimization to get q has little physical meaning.
+The method ignores constraints on the elements of P. The elements of P are not arbitrary. A more accurate approach is to use constrained non-linear optimization to find the calibration matrix.
+
+\subsection{Epipolar Geometry}
+
+We consider the basic geometry that relates images of points to their 3D position.
+We started with the simplest case of two parallel calibrated cameras.
+Then, we introduce the basic building blocks of the geometry of two views , know as Epipolar Geometry.
+
+\subsubsection{Key idea : Epipolar Constraint}
+
+It has been long known in photogrammetry that the coordinates of the projection of a point and the two camera optical centers form a triangle , a fact that can be written as an algebraic constraint involving the camera poses and image coordinates.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{103.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{104.PNG}
+     \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{105.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{What is useful for?}
+
+Find x' : if we know x , we can restrict x' to be along the line l'.
+Compute disparity for stereo.
+
+Given candidate x and x' correspondences estimate relative position and orientation between the cameras.
+
+Model fitting : see if candidate x , x' correspondences fit estimated projection models of cameras 1 and 2.
+
+Given candidate x and x' correspondences , and having calibrated cameras , estimate the 3D position of corresponding image points.
+
+
+
+\subsection{Estimating the Fundamental Matrix : The eight-point algorithm}
+
+\begin{enumerate}
+    \item Least squares solution using SVD on equations from 8 pairs of correspondences
+    \item Enforce det(F) = 0 constraint using SVD on F , since F must be singular.
+\end{enumerate}
+
+We can use the 8-point algorithm also to estimate the Essential Matrix
+
+\begin{enumerate}
+    \item Solve a system of homogeneous linear equations. We want the eigenvector with smalles eigenvalue. We can find the eigenvectors and eigenvalues of $A^T A $ by finding the Singular Value Decomposition of A.
+    
+    \item Resolve det(F) = 0 constraint by using SVD
+
+\end{enumerate}
+
+The coordinates of corresponding points can have a wide range , thus leading to numerical instabilities.
+It is better first to normalize them , so they have average 0 and stddev 1 , and then denormalize F at the end.
+
+Estimating the fundamental matrix is known as \textbf{Weak calibration}.
+If we know the calibration matrices of the two cameras , we can estimate the essential matrix
+The essential matrix gives us the relative rotation and translation between the cameras , or their \textbf{extrinsic parameters}
+
+\subsection{3D Reconstruction : Stereo reconstruction}
+
+Given point correspondences , how to compute 3D point positions using triangulation.
+Result depends on how calibrated the system is :
+\begin{enumerate}
+    \item Intrinsic and extrinsic parameters known , can compute metric 3D geometry
+    \item Only intrinsic parameters known, can compute 3D geometry up an unknown scale factor
+    \item Neither intrinsic nor extrinsic known , recover structure up to an unknown projective transformation of the scene.
+\end{enumerate}
+
+
+\subsubsection{Fully Calibrated Stereo : Calibrated Triangulation}
+
+Known intrinsics : can compute viewing rays in camera coordinate system.
+
+Know extrinsics : know how rays from both cameras are positioned in 3D space.
+
+Reconstruction : triangulation of viewing rays.
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{106.PNG}
+  \end{subfigure}
+\end{figure}
+
+Unfortunately , these rays typically don't intersect due to noise in point locations and calibration parameters.
+
+Solution : Choose P as the Pseudo intersection point. This is point that minimizes the sum of squared distance to both rays.
+
+\subsection{3D reconstruction : intrinsics known }
+
+We introduce another algorithm that uses the relative pose ( rotation and translation ) between the two cameras by considering Essential matrix.
+
+Relative pose and point correspondences can then be used to retrieve the position of the points in 3D by recovering their depths relative to each camera frame.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{107.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{108.PNG}
+     \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{109.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\section{Homography , SLAM and AR}
+
+Now we consider computer vision algorithms for the use in AR. We focus in particular on visual tracking and 3D scene reconstruction.
+
+AR necessitates real-time approaches. This requirements is reflected in the subset of computer vision algorithms we consider here.
+
+\subsection{Model-Based vs Model-Free Tracking}
+
+Using images obtained by a camera requires comparing these images to some reference model.
+If such a model is obtained prior to starting the tracking system , we refer to the approach as model-based tracking.
+The alternative is called model-free tracking , a name that is slightly misleading , because a temporary model is actually acquired on the fly during the tracking.
+
+\subsubsection{Markers vs Natural Features tracking}
+
+We classify tracking targets into those natural features and those with artificial features.
+The former type can be , for instance , corners or SIFT.
+The latter type is often called a marker or fiducial.
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{110.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Marker Tracking}
+
+Marker tracking is computationally inexpensive and can deliver useful results even with rather poor cameras.
+Detecting the four corners of a flat marker in an image from a single calibrated camera delivers just enough information to recover the pose of the relative to the marker.
+
+
+\subsection{Homography}
+
+To estimate homography H from point correspondences between planar surfaces : 
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{111.PNG}
+  \end{subfigure}
+\end{figure}
+
+A homography is a non singular , line preserving , projective mapping H : $P^n -> P^n$
+It is represented by a square (n + 1) - dim matrix with $(n+1)^2 -1$ DOF
+
+We consider a mapping between planes.
+
+
+\subsection{The marker tracking pipeline}
+
+\begin{enumerate}
+    \item Capture an image by using a calibrated camera
+    \item Marker detection by searching for quadrilateral shapes
+    \item Homography Estimation
+    \item Pose estimation from homography
+    \item Pose refinement by nonlinear reprojection error minimization
+    \item AR rendering with the recovered camera pose.
+\end{enumerate}
+
+\subsubsection{ Marker Detection}
+
+We assume a single input marker.
+
+We compute the four corners of the flat marker.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{112.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{ Homograohy Estimation}
+
+For tracking applications , one plane is the model plane , and the other plane is the image plane that contains the known points in the world , such as the marker's corners.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{113.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{114.PNG}
+     \end{subfigure}
+\end{figure}
+
+Because the four points are constrained to lie in a plane , they can be expressed with only 2DOF.
+Consequently , a 3 x 3 matrix with 8DOF is sufficient to relate them to the image plane.
+H can be estimated from 2D-2D correspondences using direct linear transformation.
+
+Because we are using homogeneous coordinates , two points are related by a homography only up to scale. When interpreted as vectors , however , they point in the same direction. Thus , the cross product is zero : p x Hq' = 0
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{115.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{116.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\subsubsection{Pose Estimation from Homography}
+
+Recall that our points lie in the z-plane and assume that K is known : we derive the 3D camera pose from H , since the third column $R_C3$ of the rotation matrix R has no effect :
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{117.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{118.PNG}
+     \end{subfigure}
+\end{figure}
+
+Problem : The vectors r1 and r2 might not yield the same lambda
+
+Solution : use the average value
+
+Problem : The estimated rotation matrix might not be orthogonal
+
+Solution : orthogonalize R'
+
+\subsubsection{Pose Refinement}
+
+Pose estimation cannot always be computed directly from imperfect point correspondences with desired accuracy
+Therefore , the pose estimation is refined by iteratively minimizing the reprojection error.
+When a first estimate of the camera pose is known , we minimize the displacemetn of the known points $q_i$ in 3D , projected using [R| t] from its known image location $p_i$
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{119.PNG}
+  \end{subfigure}
+\end{figure}
+
+We can calibrate a camera by considering several images of a known planar pattern , such as a checkerboard.
+
+We can follow the same approach used for the homography estimation , but now we have to estimate the matrix K too.
+
+Thus , first we estimate H by using th 4-point algorithm , then we can obtain two equations that the calibration matrix K has to satisfy.
+
+Since K  has 5 parameters , we need at least three different images of the checkerboard.
+
+\subsection{Stereo (or multiple) camera tracking}
+
+Tracking uses an outside-in setup with multiple infrared cameras.
+
+A minimum of two cameras in a known configuration , a calibrated stereo camera rig is required.
+
+For tracking arbitrary objects , we require general pose estimation , which addresses the probelm of determining the camera pose from 2D-3D correspondences.
+
+We describe an infrared tracking system designed also to track rigid body markers composed of four or more retro-reflective spheres.
+
+\subsection{The stereo camera tracking pipeline}
+
+\begin{enumerate}
+    \item Blob detection in all images to locate the spheres of the rigid body markers.
+    \item Establishment of point correspondences between blobs using epipolar geometry between the cameras.
+    \item Triangulation to obtain 3D candidate points from the multiple 2D points
+    \item Matching of 3D candidate points to 3D target points-
+    \item Determination of the target's pose using absolute orientation.
+\end{enumerate}
+
+Blob detection : it is simplified , since the targets are composed of spheres covered with retro-reflective foil
+
+Establishing Point Correspondences : The candidate 2D points in the two images p1 and p2 can be related using epipolar lines. Since the system is calibrated , we can use the Essential matrix.
+
+Triangulation from two cameras : We can perform , a 3D reconstruction from multiple 2D points , since the system is calibrated.
+
+Matching Targets Consisting of Spherical Markers : There may be more candidte points than target points because of ambiguous observations. The association from candidate points to target points is resolved using the known geometric structure of the target
+
+Absolute Orientation : After candidate point association , we are left with two sets of corresponding points , the observed points $q_i$ and the target points $r_i$
+
+The target points are specified in a reference coordinate system , and we would like to compute the pose of the observed target relative to the reference coordinate system.
+
+It requires at least three points.
+The centroid of the three points can be used to determine the translation from the reference coordinate system to the measurement coordinate system.
+The rotation is computed from two parts.
+First , we define a rotation from the measurement coordinate system into an intermediate coordinate system defined by the $q_i$
+Second , we di the same for $r_i$. Finally we concatenate the two rotations to obtain R
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{120.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{121.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\subsection{Natural Feature Tracking}
+
+In the previous two case studies , we have considered artificial markers.
+
+Here, we introduce the use of natural feature tracking to determine the camera pose from observations in the image without instrumenting the environment with markers.
+
+We consider monocular tracking with a single camera. We describe tracking by detection : the camera pose is determined from matching interest points in every frame anew , without relying on prior information gleaned from previous frames.
+
+\subsubsection{Pipeline for natural feature tracking}
+
+A typical pipeline for tracking by detection of sparse interest point consists of five stages :
+
+\begin{enumerate}
+    \item Interest point detection
+    \item Descriptor creation
+    \item Descriptor matching
+    \item Perspective-n-Point camera pose
+    \item Robust pose estimation ( RANSAC Algorithm) : To estimate the model parameters x from a randomly chosen subset of data points. For every one of the remaining , potentially many , point correspondences , we compute the residual error, by assuming the camera pose computed. A data point with a residual smaller than a threshold counts as in inlier. If the ratio of inliers to outliers is not sufficient , the procedure is repeated.
+\end{enumerate}
+
+\subsection{Incremental Tracking}
+Since AR requires teal-time update rates , neither the camera pose nor the projection of feature points to the image will change drastically from one frame to the next.
+Tracking by detection ignores this coherence , so that the tracking problem becomes harder to solve than necessary.
+A tracking system that uses information from  a previous step is said to use incremental tracking or recursive tracking.
+
+If the last tracking iteration was successful , there is good reason to believe that we can be successful again by searching for the inliers from the last frame and searching close to their last known positions.
+
+Incremental tracking requires two components : An interest point matching component and an incremental search component.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{122.PNG}
+  \end{subfigure}
+\end{figure}
+
+The classic approach to incremental tracking is  the Kanade-Lucas-Tomasi tracker, which extract keypoints from an initial image and then tracks them using optical flow.
+
+\textbf{Hierarchical Search} : 
+
+It is usually sufficient to employ a simple image pyramid.
+Only a small number of strong features is tracked at this resolution using the predicted camera pose from the motion model.
+
+The camera pose resulting from this coarse tracking step is not yet accurate enough , it is adequate for initialization of tracking at the full resolution by using a much smaller search window.
+
+\subsection{Simultaneous Localization and Mapping}
+
+\textbf{Localization} : means continuous 6DOF tracking of a camera pose relative to an arbitrary starting point.
+
+\textbf{Mapping}: is to create a map using consistent data association of observation to points in the scene.
+
+\subsubsection{SLAM pipeline}
+
+\begin{enumerate}
+    \item Detect interest points in a frame
+    \item Track the interest point in 2D from the previous frame
+    \item Determine the essential matrix between the current and previous frames
+    \item Recover the incremental camera pose from the essential matrix
+    \item The essential matrix determines the translation part of the pose only up to scale , but it must be consistent throughout the tracked image sequence. Thus , 3D point locations are triangulated from multiple 3D observations of the same image feature over time
+    \item Proceed to the next frame
+\end{enumerate}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{123.PNG}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{124.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsection{Outdoor Tracking}
+
+The tracking methods we have described so far are primarily intended for indoor use.
+
+Outdoor tracking is generally more difficult than indoor tracking for the following reasons :
+
+\begin{itemize}
+    \item Mobility : the user is free to go anywhere. The algorithm has to run on mobile devices
+    \item Environment : Many areas with poor or unusable textures. Variations can quickly make any tracking model outdated.
+    \item Localization database : The tracking model cna grow very large
+    \item The user : in general , we cannot expect a naive user of an AR system to understand the system's operation in depth.
+\end{itemize}
+
+\end{document}
