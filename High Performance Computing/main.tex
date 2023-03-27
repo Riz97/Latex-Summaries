@@ -1,0 +1,716 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{amsfonts}
+
+
+\title{OpenMP}
+\author{Riccardo Caprile}
+\date{November 2022}
+
+
+
+\begin{document}
+
+\maketitle
+\vspace{150mm}
+
+
+
+\section{OpenMP\_Core}
+
+OpenMP = Opem Multi-Parallelism
+
+It is an API to explicitly direct multi-threaded shared memory parallelism
+
+
+
+\subsection{Shared Memory Architectures}
+
+All processors may access the whole main memory.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{76.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Process and Thread}
+
+A process is an instance of a computer program.
+
+Some information included in a process are :
+
+\begin{itemize}
+    \item Text : Machine code
+    \item Data: Global variables
+    \item Stack: Local Variables
+    \item Program Counter (PC) : A pointer to the instruction to be executed.
+    \item Heap : Pointers
+\end{itemize}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{77.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Operating System Memory Model}
+
+A process , owns a lot of state information including the memory, file handles.
+
+OS provide a separate address space for each process.
+
+One process cannot see the memory of another process. 
+
+Memory within a process is managed separately : text and data segment (static read only areas for code and data known at compile time), the heap ( an area of memory managed by the operating system for dynamic data allocation), the stack (a piece of memory) managed by the process itself.
+
+Multiple threads launched from the same process share the same address space and memory.
+
+\subsection{Multi-Threading}
+
+The process contains several concurrent execution flows(threads).
+
+Each thread has its own program counter.
+
+Each thread has its own private stack.
+
+The instruction executed by a thread can access : the process gloval memory(data) and the thread local stack.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{78.PNG}
+  \end{subfigure}
+\end{figure}
+
+Threading exploits more parallelism to increase scaling and performance.
+
+\subsubsection{Alternatives 1 - Pthreads}
+
+Pthreads provides the ability to dynamically create threads which are launched to run a specific task.
+
+Provides mutex and condition variables for synchronisation.
+
+\subsubsection{Alternatives 2 - TBB}
+
+Intel Thread Building Block is a C++ template library that adds parallel programming for C++ programmers.
+
+\subsection{So why OpenMP?}
+
+OpenMP is ubiquitous : available with almost all compilers.
+
+Easy interface available for incremental parallelism, best fit for data-parallel codes.
+
+\subsection{How does OpenMP work?}
+
+Teams of OpenMP threads are created to perform the computation in a code :
+
+\begin{itemize}
+    \item Work is divided among the threads, which run on the different cores
+    \item The threads collaborate by sharing variables
+    \item Threads synchronize to order acesses and prevent data corruption
+    \item Structured programming is encouraged to reduce likelihood of bugs
+\end{itemize}
+
+\subsection{OpenMP Basic Syntax}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{79.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\vspace{50mm}
+
+\subsection{OpenMP Programming Model}
+
+Fork-Join Parallelism : Master thread spawns a team of threads as needed. Parallelism added incrementally until performance goals are met (the sequential program evolves into a parallel program).
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{80.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{OpenMP Memory Model}
+
+All threads have access to the same , globally shared, memory.
+
+Data can be shared or private.
+
+Shared data is accessible by all threads.
+
+Private data can only be accessed by the thread that owns it.
+
+Data transfer is transparent to the programmer.
+
+Synchronization takes place , but it is mostly implicit.
+
+\subsection{Serial vs. OpenMP}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{81.PNG}
+  \end{subfigure}
+\end{figure}
+
+OpenMP is a simple programming model. Single source code for serial and parallel codes, portable implementation.
+
+\vspace{20mm}
+
+\subsection{A Multi-Threaded "Hello World" Program}
+
+Write a multithreaded program where each threads prints "hello world".
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{82.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{A simple OpenMP program}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{83.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Thread Creation : The parallel construct}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{84.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{85.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsection{Single Worksharing Construct}
+
+The single construct denotes a block of code that is executed by only one thread. A barrier is implied at the end of the single block. (\#pragma omp parallel).
+
+\subsection{Various Methods to set \#threads}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{86.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Thread creation : How Many Threads Did you Actually Get?}
+
+You create a team threads in OpenMP with the parallel construct.
+
+You can request a number of threads with \textbf{omp\_set\_num\_threads()}. But is the number of threads requested the number you actually get? NO!, an implementation can silently decide to give you a team with fewer threads.
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{87.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Performance Tips}
+
+Experiment to find the best number of threads on your system. Put as much code as possible inside parallel region , have large parallel regions , run time routines are your friend , barriers are expensive.
+
+\subsection{Orphaned Directives}
+
+Orphaning is a situation when directives related to a parallel region are not required to occur lexically within a single program unit.
+
+Orphaned directives enable parallelism to be inserted into existing code with a minimum of code restructuring.
+
+\subsection{An interesting Pi Program - Numerical Integration}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{88.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{89.PNG}
+     \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{90.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Exercise : the Parallel Pi Program}
+
+Create a parallel version of the pi program using a parallel construct : \#pragma omp parallel
+
+Pay close attention to shared versus private variables. In addition to a parallel construct , you will need the runtime library routines : int omp\_get\_num\_threads() : number of threads in the team , int omp\_get\_thread\_nume() : thread id or rank , double omp\_get\_wtime() : time in seconds since a fixed point in the past , omp\_set\_num\_threads() : request a number of threads in the team
+
+\textbf{Hints} : use a parallel construct , pragma omp parallel.
+
+The challenge is to divide loop operations between threads and create an accumulator for each thread to hold partial sums that you can later combine to generate the global sum.
+
+\vspace{40mm}
+
+\subsubsection{Wrong Code : Has data race}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{91.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+
+
+
+\subsection{Results : Use an array for local sum}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{92.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Why such poor scaling?}
+
+
+If independent data elements happen to sit on the same cache line , each update will cause the cache lines to slosh back and forth between thread, this is called \textbf{False sharing}.
+
+
+
+If you promote scalars to an array to support creation of an SPMD program , the array elements are contiguous in memory and hence share cache lines, result in poor scalability.
+
+Solution : Pad arrays so elements you use are on distinct cache lines
+
+\subsection{Eliminate false sharing via padding and results}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{93.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{94.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsection{Synchronization}
+High level synchronization included in the common core : Critical , Barrier.
+
+Synchronization is used to impose order constraints and to protect access to shared data.
+
+
+\subsection{Synchronization : critical}
+
+\textbf{Mutual exclusion} : only one thread at a time can enter a critical region
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{95.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Synchronization : Barriers}
+
+\textbf{Barrier} : a point in a program all threads must reach before any threads are allowed to proceed.
+
+It is a stand alone pragma meaning it is not associated with user code. 
+
+Barrier makes sure all the shared variables are synchronized.
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{96.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\vspace{40mm}
+
+\subsection{Parallel loops - The worksharing-loop constructs}
+
+The worksharing-loop construct splits up loop iterations among the threads in a team.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{98.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{A motivating Example}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{99.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{The schedule clause}
+
+The schedule clause affects how loop iterations are mapped onto threads : schedule(static [,chunk]) (deal out blocks of iterations of size chunk to each thread
+
+Schedule(dynamic[,chunk]) (each thread grabs chunk iterations off a queue until all iterations have been handled
+
+\subsubsection{Loop schedules}
+
+\textbf{Default} : static scheduling of iterations. Very efficient. Good if all iterations take the same amount of time. (schedule (static))
+
+\textbf{Other possibility} : dynamic. Better if iterations do not take the same amount of time
+
+\subsubsection{Chunk size}
+
+With N iterations and t threads : 
+
+\begin{itemize}
+    \item Static : each thread gets N/t iterations. explicit chunk size : schedule(static , 123)
+    \item Dynamic : each thread gets 1 iteration at a time.
+    \item Help from OpenMP : guided schedule uses decreasing chunk size
+\end{itemize}
+
+\subsection{Combined Parallel/Worksharing Construct}
+
+OpenMP shortcut : put the "parallel" and the worksharing directive on the same line.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{100.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{The Reduction clause}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{101.PNG}
+  \end{subfigure}
+\end{figure}
+
+Common accumulation pattern , with loop dependencies in serial code. 
+
+Syntax : Reduction(operator:list)
+
+Reduces list of variables into one, using operator.
+
+Reduced variables must be shared variables.
+
+Operator : +( initial value 0 )  -  (0)  * (1) ,max (largest pos number) , min (most neg number
+
+Each threads does its local accumulation first , then a global reduction is done at the end.
+
+\vspace{30mm}
+
+\subsubsection{Exercise : Pi with loops and Reduction}
+
+The goal is to minimize the number of changes made to the serial program.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{102.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{103.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsection{The nowait Clause}
+
+Barriers are really expensive. You need to understand when they are implied and how to ski[ them when it's safe to do so.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{104.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+
+\subsection{Performance Tips}
+
+Minimize synchronization , use nowait where possible. If performance is bad , look for false sharing.
+
+\vspace{60mm}
+\subsection{OpenMP Data Environment}
+
+Most variables are shared by default. (file scope variables , static variables, dynmically allocated variabels)
+
+Some variable are private by default : certain loop indices , local variables within a statement block.
+
+\subsubsection{A data sharing example}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{105.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Data sharing : private Clause}
+
+private(var) creates a new local copy of var for each thread. The value of the private copies is uninitialized, the storage of the private copy will be on the each thread's stack memory and is unassociated with the original variable. The value of the original variable is unchanged after the region.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{106.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Data sharing : private clause , when is the original variable valid?}
+
+The original variable's value is unspecified if it is referenced outside of the construct. Implementations may reference the original variable or a copy .
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{107.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{The Firstprivate Clause}
+
+Initializes the variables in the list with the value of the shared variable when they first enter the construct.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{108.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{A data environment test}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{109.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Data Sharing : default Clause}
+
+default(none) : forces you to define the storage attributes for variables that appear inside the static extent of the construct....if you fail the compiler will complain.
+You can put the default clause on parallel and parallel + workshare constructs.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{110.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Performance and Correctness Tips}
+
+There is one version of shared data.
+
+Private data is stored locally, so use of private variables can increase efficiency (avoids false sharing, may make it easier to parallelize loops).
+It is an error if multiple threads update the same variable at the same time.
+It is a good idea to use "default none" while testing code.
+
+\subsubsection{Exercise : The Mandelbrot Area program}
+
+The supplied program computes the area of a Mandelbrot set. Find and fix the errors. 
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{111.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Irregular parallelism and tasks - What are OpenMP tasks?}
+
+Task construct : a structered block of code + a data environment.
+
+Inside a parallel region , a thread encountering a task construct will package up the code block and its data for execution.
+
+The task is executed immediately, or deferred for later execution.
+
+\subsubsection{Linked lists without tasks}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{112.PNG}
+  \end{subfigure}
+\end{figure}
+
+We are able to parallelize the linked list traversal , but it was ugly and required multiple passes over the data. To move beyond its roots it the array based world of scientific computing we needed to support more general data structures and loops beyond basic for loops. We added task in OpenMP 3.0
+
+\subsubsection{Task directive}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{113.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Exercise : Simple Tasks}
+
+Write a program using tasks that will  randomly generate one of two strings : "I think race cars are fun" , "I think car races are fun".
+
+This is called a \textbf{race condition}. It occurs when the result of a program depends on how the OS schedules the threads.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{114.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{40mm}
+
+\subsection{When are tasks guaranteed to complete + example}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{115.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{116.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsubsection{Parallel linked list traversal}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{117.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{OpenMP tasks : Data scoping defaults}
+
+The behavior you want for tasks is usually firstprivate , because the task may not be executed until later.
+
+Variables that are private when the task construct is encountered are firstprivate by default.
+
+Variables that are shared in all constructs starting from the innermost enclosing parallel construct are shared by default.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{118.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Example : Fibonacci Numbers}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{119.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{120.PNG}
+     \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{121.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Divide and Conquer}
+
+Split the problem into smaller sub-problems; continue until the sub-problems can be solve directly
+
+\subsubsection{Exercise: Pi with Tasks}
+
+Consider the program that uses a recursive algorithm in integrate the function in the pi program.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{122.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Tips}
+Don't use tasks for thing already well supported by OpenMP (do/for). The overhead of using tasks is greater.
+
+\subsection{OpenMP and Performance}
+
+Do not parallelize what does not matter. 
+
+Do not share data unless you have to.
+
+With NUMA, the data access time varies. The time depends on where the data is and there are techniques to avoid this.
+
+\subsubsection{Recap - The OpenMP Common Core}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{123.PNG}
+  \end{subfigure}
+\end{figure}
+
+Data declared outside a parallel region is shared.
+
+Data declared in the parallel region is private.
+
+The loop variable is automatically private.
+
+Private data disappears after the parallel region, what if you want data to persist? Directive \textbf{threadprivate}.
+
+Statically allocated arrays can be made private. Dynamically allocated ones can not : the pointer becomes private.
+
+The loop and sections directives do not specify an ordering, sometimes you want to force an ordering.
+
+Barriers : global synchronization
+
+Critical sections : only one process can execute a statement, this prevents race condition.
+
+Locks : protect data items from being accessed.
+
+Critical section are not cheap! Use only if minor amount of work. Do not use if a reduction suffices. Name your critical sections.
+
+Locks protect a single data item
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{124.PNG}
+  \end{subfigure}
+\end{figure}
+
+\end{document}
