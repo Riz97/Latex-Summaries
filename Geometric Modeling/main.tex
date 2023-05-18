@@ -1,0 +1,3232 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{amsfonts}
+\usepackage{wrapfig}
+
+
+\title{Geometric  Modeling}
+\author{Riccardo Caprile}
+\date{April 2023}
+
+\begin{document}
+
+\maketitle
+
+\section{Shape Representation}
+
+The shape representation is reached by acquiring real-world objects ( discrete sampling , points and meshes) , modeling by hand or procedural modeling (algorithms , grammars).
+
+
+\subsection{Points}
+
+Points = unordered set of 3-tuples.
+
+Efficient point processing and modeling requires a spatial partitioning data structure to figure out neighborhoods. 
+
+\textbf{Query} : Used to determine whether or not a given point p is inside or outside of the solid bounded by a surface S. Another typical query is the computation of point's distance to a surface.
+
+\subsection{Parametric Curves and Surfaces}
+
+\subsubsection{Parametric Representation}
+
+Range of function f : X \textrightarrow{Y} , Y , X $\subseteq$ $R^m$ ,  Y $\subseteq$ $R^n$
+
+X is a line from 0 to 1 and t is the parameter varying on this line. 
+
+Y is the physical domain on which we describe the line.
+
+\textbf{Planar curve} : m = 1 , n = 2 \textrightarrow{s(t) = x(t),y(t)}.
+
+Planar curves are curves than lay on a surface , 2D curves.
+
+\textbf{Space curve} : m = 1 , n = 3 \textrightarrow{s(t) = x(t),y(t),z(t))}
+
+Surface in 3D : m = 2 , n = 3 
+
+s(u,v) = (x(u,v),y(u,v),z(u,v)). As output we get a solution in $R^3$
+
+\vspace{30mm}
+
+\subsubsection{Parametric Curves}
+
+Explicit curve/circle in 2D.
+
+p : R \textrightarrow{$R^2$}
+
+t \textrightarrow{p(t) = (x(t),y(t))}
+
+p(t) = r(cos(t),sin(t))
+
+The equation of the circle $x^2 + y^2 = r^2$ is an implicit version.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{1.PNG}
+  \end{subfigure}
+\end{figure}
+
+\textbf{Parametric Surfaces }
+
+Sphere in 3D ,  s : $R^2$ \textrightarrow{$R^3$}
+
+s(u,v) = r(cos(u) cos(v), sin(u) cos(v),sin(v))
+
+$(u,v) \in [0,2\pi) x [-\pi / 2 , \pi/ 2]$
+
+
+
+\subsubsection{Tangents and Normal}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{2.PNG}
+  \end{subfigure}
+\end{figure}
+
+Parametric Curves and Surfaces are easy to generate points on the curve/surface. 
+
+But it is hard to tell if a point is on the curve/surface
+
+\vspace{20mm}
+
+\subsection{Implicit Curves and Surfaces}
+
+The basic concept of implicit representations for geometric models is to characterize the whole embedding space of an object by classifying each 3D point to lie either inside , outside , or exactly on the surface S that bounds a solid object.
+An implicit surface does not have any holes as long as the defining function F is continuous.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{3.PNG}
+  \end{subfigure}
+\end{figure}
+
+Kernel of a scalar function f : $R^m$\textrightarrow{R}.
+
+\begin{itemize}
+    \item Curve in 2D : S = ($x \in R^2 | f(x) = 0$)
+    \item surface in 3D : S = (${x \in R^3 | f(x) = 0}$)
+\end{itemize}
+
+Space Partitioning :
+
+\begin{itemize}
+    \item Outside : ($x \in R^m | f(x) > 0$)
+    \item Curve/Surface : ($x \in R^m | f(x) > 0$)
+    \item Inside : ($x \in R^m | f(x) > 0$)
+\end{itemize}
+
+The implicit formula for circle and sphere is : $f(x,y) = x^2 + x^2 - r^2 $ and $f(x,y,z) = x^2 + y^2 + z^2 - r^2$
+
+The normal direction to the surface (curve) is given by the gradient of the implicit function.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{4.PNG}
+  \end{subfigure}
+\end{figure}
+
+$\partial f$ / $\partial x$ , it represents the partial derivative of the function using x.
+
+\section{Geometric Meshes}
+
+\subsection{Polygonal Meshes}
+
+Polygonal meshes are boundary representations of objects.
+
+Faces can  be triangles or quadrilateral or mixed.
+
+Meshes can be used as an approximation of smooth surfaces.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{5.PNG}
+  \end{subfigure}
+\end{figure}
+
+We are  trying to approximate the surface of the red circles using , at the beginning , a triangle with three edges. Then we double the number of edges and we can see that the error decreases.
+
+Polygonal meshes are a good representation of approximation , arbitrary topology and piecewise smooth surfaces.
+
+
+\subsubsection{Polygon}
+
+Vertices : $v_0,v_1,...,v_n-1$
+
+Edges : \{ $(v_0,v_1),....(V_n-1,v_0)$\}
+
+All polygons are closed and all vertices are on a plane.
+
+\subsubsection{Polygon Mesh}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2 \linewidth}
+    \includegraphics[width=1\linewidth]{6.PNG}
+  \end{subfigure}
+\end{figure}
+
+A finite set M of closed , simple polygons $Q_i$
+
+The intersection of two polygons in M is either empty , or a vertex , or an edge .
+
+M = (V,E,F) , V stands for vertices , E for edges and F for faces.
+
+Every edge belongs to at least one polygon and each $Q_i$ defines a face of the polygonal mesh.
+
+
+Vertex \textbf{degree} = number of incident edges.
+
+\textbf{Boundary} : is the set of all edges that belong to only one polygon. If empty , then the polygonal mesh is said to be closed or watertight.
+
+\subsubsection{Triangle Meshes }
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{7.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Manifolds}
+
+A surface is a closed 2-manifold if it is everywhere locally homeomorphic (deformazione senza strappi,da un punto di vista topologico sono due oggetti uguali) to a disk.
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{8.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+In a manifold mesh , there are at most 2 faces sharing an edge ( boundary edges have one incident face , inner edges have two incident faces).
+
+A manifold vertex has 1 connected ring of faces around it, or 1 connected half-ring (boundary)
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{9.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\subsubsection{Polyhedron}
+
+If closed and not intersecting , a manifold divides the space into \textbf{interior} and \textbf{exterior}.
+
+The manifold is the boundary of the object that occupies the interior.
+
+A closed manifold polygonal mesh is called \textbf{polyhedron}.
+
+\subsubsection{Orientation}
+
+Every face of a polygonal mesh is orientable. 
+
+Clockwise vs counterclockwise order of face vertices.
+
+Defines sign/direction of the surface normal.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{10.PNG}
+  \end{subfigure}
+\end{figure}
+
+A polygonal mesh is orientable , if the incident faces to every edge can be consistently oriented, if the faces are consistently oriented for every edge , the mesh is oriented.
+
+
+\subsubsection{Global Topology of Meshes}
+
+\textbf{Genus} : 1/2 the maximal number of independent closed paths that do not disconnect the graph. Informally , the number of handles.
+
+
+\subsubsection{Euler-Poincarè Formula}
+
+\textbf{Topology} : study the properties of the figure , in general of the mathematical objects , that do not change when a deformation without "strappi" , "sovrapposizioni" happen.
+
+Theorem : the sum $\chi(M) = v - e + f$ is constant for a given surface topology , no matter which mesh we choose to cover M
+
+For orientable meshes : $v - e + f = 2(c-g) - b = \chi(M)$
+
+\textbf{c} is the number of connected components , \textbf{g} the genus and \textbf{b} the number of boundary loops.
+
+\subsubsection{Implication for Mesh Storage}
+
+Let's count the edges and faces in a closed triangle mesh : 
+
+Ratio of edges to faces = \textbf{e = 3/2 f}, each edge belongs to exactly 2 triangles, each triangle has exactly 3 edges.
+
+Ratio of vertices to faces: f $\sim 2v$ 2v , 2 = v - e + f = v - 3/2f + f , 2 + f/2 = v. The number of triangles is twice the number of vertices
+
+Ratio of edges to vertices : e $\sim $ 3v. The number of edges is three times the number of vertices.
+
+Average degree of a vertex : 6. 
+
+\subsubsection{Triangulation}
+
+Polygonal mesh where every face is a triangle.
+
+It simplifies data structures , rendering , algorithms., Any polygon can be triangulated.
+
+\subsection{Editing Operations}
+
+\begin{itemize}
+    \item Refinement operators : Producing a triangulation with more vertices/edges/faces
+    \item Simplification operators : Producing a triangulation with less vertices/edges/faces
+\end{itemize}
+
+\subsubsection{Refinement Operators}
+
+\textbf{Triangle Split}
+
+Insert a new vertex v in a triangle t and split the triangle by connecting v to the vertices of t.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{11.PNG}
+  \end{subfigure}
+\end{figure}
+
+\textbf{Edge Split}
+
+Insert a new vertex v on an edge e and split the triangles incident at e connecting v to the vertices opposite to e.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{12.PNG}
+  \end{subfigure}
+\end{figure}
+
+\textbf{Vertex Split}
+
+Take a vertex v and two of its incident edges e1 and e2.
+
+Cut along e1 and e2.
+
+Duplicate v,e1 and e2 each in two copies.
+
+Displace either one or both copies of v.
+
+Connect the two copies of v with a new edge e , generating two new faces t1 and t2.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{13.PNG}
+    \caption{Step 1}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{14.PNG}
+         \caption{Step 2}
+     \end{subfigure}
+\end{figure}
+
+\vspace{30mm}
+
+\subsubsection{Simplification Operators}
+
+\textbf{Edge collapse(inverse of vertex split)}
+
+Take an edge e and collapse it to a single point
+
+The two faces incident at e also collapse to edges.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{15.PNG}
+  \end{subfigure}
+\end{figure}
+
+\textbf{Edge merge (inverse of edge split)}
+
+Consider an internal vertex v with 4 incident triangle.
+
+Delete the 4 triangles and create 2 new triangles by a new edge e that is one of the two diagonals of the quadrilateral.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{16.PNG}
+  \end{subfigure}
+\end{figure}
+
+\textbf{Delete Vertex (inverse of triangle split)}
+
+Consider an internal vertex v with 3 incident triangles.
+
+Merge the 3 triangles into a single triangle t.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{17.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Neutral Editing Operator}
+
+\textbf{Edge Swap}
+
+Take and edge e such that its two incident faces form a convex quadrilateral Q.
+
+Replace e with the other diagonal e' of Q
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{18.PNG}
+  \end{subfigure}
+\end{figure}
+
+Edge swap cannot be applied on non-convex quadrilaterals.
+
+\vspace{20mm}
+
+\subsubsection{Boundary Cases}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{19.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{20.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsection{Data Structures}
+
+What should be stored?
+
+Geometry : 3D coordinates
+
+Connectivity : Adjacency relationships
+
+Attributes : Normal , color , texture coordinates. Per vertex , face , edge.
+
+What should be supported ? 
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{21.PNG}
+  \end{subfigure}
+\end{figure}
+
+Rendering (enumeration).
+
+Geometry queries : What are the vertices of face 2? Is vertex A adjacent to vertex H?.
+
+Modifications : Remove /add a vertex or a face etc.
+
+\subsubsection{Triangle List}
+
+The simplest way to represent a surface mesh consists of storing a set of individual polygonal faces represented by their vertex positions.
+
+4 bytes per coordinate and since due to Euler's formula , the number of faces F is about twice the number of vertices V, this data structure consumes on average 72 bytes 
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{22.PNG}
+  \end{subfigure}
+\end{figure}
+
+No connectivity information and it is redundant.
+
+\subsubsection{Indexed Face Set}
+
+Stores an array of vertices and encodes polygons as a set of indices into this array
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{23.PNG}
+  \end{subfigure}
+\end{figure}
+
+No explicit neighborhood info.
+
+\subsubsection{Neighborhood Relations}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{24.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Half-edge structure}
+
+
+Data structures for general polygon meshes are logically edge-based , since the connectivity primarily relates to the mesh edges.
+
+Half-edge data structures split each edge into two oriented \textbf{halfedges}.
+
+Halfedges are oriented consistently in counterclockwise order around each face and along each boundary.
+
+
+
+For each halfedge we store a reference to : 
+
+
+
+\begin{itemize}
+    \item The vertex it points to
+    \item Its adjacent face
+    \item The next halfedge of the face or boundary
+    \item The previous halfedge in the face
+    \item Its opposite halfedge
+\end{itemize}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{25.PNG}
+  \end{subfigure}
+\end{figure}
+
+One ring traversal : 
+
+It start at a vertex ( in this case the one in the middle). Then we move to the outgoing halfedge , then to the twin halfedge , the next halfedge , the twin etc
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{26.PNG}
+    \caption{Second step , outgoing halfedge}
+  \end{subfigure}
+\end{figure}
+
+
+The problem with this implementation is that it is heavy because requires to store and manage extra pointers.
+
+\vspace{20mm}
+
+\section{Normal Estimation}
+
+
+Assign a normal vector n at each point cloud x.
+
+\begin{itemize}
+    \item Estimate the direction by fitting a local plane (in 2D is a line , like in the case below)
+    \item Find consistent global orientation by propagation. We have to check the neighbour and if the dot product between the visited node and the unvisited one is negative , the univisited will be flipped.
+\end{itemize}
+
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{27.PNG}
+  
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{28.PNG}
+  
+\endminipage\hfill
+\minipage{0.32\textwidth}%
+  \includegraphics[width=\linewidth]{29.PNG}
+  
+\endminipage
+\end{figure}
+
+For each point x in the cloud , pick k nearest neighbors or all points in r-ball.
+
+What we need is a plane that minimizes the sum of square distances : $min \sum dist (x_i , \Pi)^2$
+
+And this can be done by using linear least squares.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{30.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{31.PNG}
+         \caption{In this case we have the orthogonal distance between the line and points}
+     \end{subfigure}
+\end{figure}
+
+\subsection{Principal Component Analysis (PCA)}
+
+PCA finds an orthogonal basis that the best represents a given dataset.
+
+PCA finds the best approximating line/plane/orientation in terms of square distance.
+
+\vspace{20mm}
+
+\subsubsection{Notations}
+
+\textbf{Input points} : $x_1,x_2,...,x_n \in R^d$
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{32.PNG}
+  \end{subfigure}
+\end{figure}
+
+Looking for a plane passing through c with normal n
+
+\textbf{Centroid}: $m = 1/n \sum_{i=1}^n x_i$
+
+\textbf{Vectors from the centroid} : $y_i = x_i - m$ , a point which is in average position between all the points considered
+
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{33.PNG}
+  \end{subfigure}
+\end{figure}
+
+To find the best fitting plane we have to :
+
+\begin{itemize}
+    \item Input points
+    \item Compute the centroid , which is the plane origin
+    \item Compute the scatter matrix S = $YY^T$ \textrightarrow{y = ($y_1 y_2 ... y_n$)} , $y_i = x_i - m$
+\end{itemize}
+
+The plane normal n is the eigenvector of S with the smallest eigenvalue.
+
+Si dice che uno scalare $\lambda_0$ é un autovalore\textbf{(eigenvalue)} della matrice quadrata A se esiste un vettore colonna non nullo v \textbf{(eigen vector)} tale che $Av = \lambda_0v$
+
+\vspace{50mm}
+
+The Scatter matrix measures the variance of our data point along the direction v.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{34.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+
+Eigenvectors of S that correspond to big eigenvalues are the directions in which the data has strong components (= large variance)
+
+If the eigenvalues are more or less the same , there is no preferable direction.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{35.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\section{Surface Reconstruction}
+
+How to get a mesh out of a cloud of points.
+
+The first step is the Scanning , which results in range images.
+
+Then Registration that bring all range images to one coordinate system 
+
+In the end , Reconstruction that is the integration of scans into a single mesh
+
+\textbf{Explicit Reconstruction}
+
+\begin{enumerate}
+    \item Each range scan is meshed independently 
+    \item Stitch the range scans together
+\end{enumerate}
+
+Connect sample points by triangles.
+
+Bad for noisy or misaligned data and can lead to holes or non manifold situations.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{36.PNG}
+    \caption{Explicit Reconstruction}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{37.PNG}
+         \caption{Implicit Reconstruction}
+     \end{subfigure}
+\end{figure}
+
+
+\textbf{Implicit Reconstruction}
+
+\begin{enumerate}
+    \item Estimate a signed distance function (SDF)
+    \item Extract 0-level set mesh
+\end{enumerate}
+
+Approximation of input points. Watertight manifold by construction.
+
+
+Implicit function approach, with a value $>$ 0 outside the shape and $<$ 0 inside. The zero set is the boundary where f(x) = 0
+
+\subsection{SDF from Points and Normals}
+
+Compute signed distance to the tangent plane of the closest point.
+
+Normals help to distinguish between inside and outside.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{38.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{30mm}
+
+Compute signed distance to the tangent plane of the closest point.
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.39\linewidth}
+    \includegraphics[width=1\linewidth]{39.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.39\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{40.PNG}
+         \caption{The function will be discontinuous}
+     \end{subfigure}
+\end{figure}
+
+
+\subsubsection{Smooth SDF}
+
+Instead find a smooth formulation for F.
+
+Scattered data interpolation : F($p_i$) = 0 , F is smooth.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.39\linewidth}
+    \includegraphics[width=1\linewidth]{41.PNG}
+    \caption{}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.39\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{42.PNG}
+         \caption{Add off-surface constraints}
+     \end{subfigure}
+\end{figure}
+
+\subsubsection{Radial Basis Function Interpolation}
+
+\textbf{RBF} : Weighted sum of shifted , smooth kernels
+
+$F(x) = \sum_{i = 0}^{N-1} \omega_i \phi(||x-c_i||)$
+
+Where $\phi$ is the basis function corresponding to the center $c_i$
+
+To find and RBF function that interpolates the displacement constraints , we use as many RBF kernels as we have constraints and place them on the constraints. 
+
+$\{c_{3i},c_{3i+1},c_{3i+2}\} = \{p_i, p_i + \epsilon n_i,p_i - \epsilon n_i\}$
+
+The weights $w_i$ are then found as the solution of the symmetric linear system.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{43.PNG}
+  \end{subfigure}
+\end{figure}
+
+Once the weight has been computed , the RBF function d has been fit to the constraints.
+
+RBF is a global definition. A global optimization of the weights , even if the basis function are local.
+
+
+\subsection{Moving Least Squares (MLS)}
+
+Do purely \textbf{local} approximation of the SDF.
+
+Weights change depending on where we are evaluating.
+
+The beauty: the stitching of all local approximations, seen as one function F(x) , is smooth everywhere! We get a globally smooth function but only do local computation.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.39\linewidth}
+    \includegraphics[width=1\linewidth]{44.PNG}
+    \caption{}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.39\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{45.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsubsection{MOVING Least-Squares Approximation}
+
+Polynomial least-squares approximation
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{46.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{30mm}
+
+\subsubsection{Dependence on Weight Function}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{47.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\subsection{Tessellation}
+
+We want to approximate an implicit surface with a mesh.
+
+Can't explicitly compute all the roots.
+
+Solution: find an approximate roots by trapping the implicit surface in a grid.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{48.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Marching Squares}
+
+The marching squares algorithm aims at drawing lines between interpolated values along the edges of a square.
+
+In order to display figure we want , we can consider individually each square of the grid using 16 different configuration which allows the representation of all kinds of lines in 2D space.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{49.PNG}
+    \caption{4 equivalence classes}
+  \end{subfigure}
+\end{figure}
+
+Case 4 is ambiguous , always pick consistently to avoid problems with the resulting mesh.
+
+\vspace{30mm}
+
+\subsection{Marching Cubes}
+
+Following the marching squares algorithm we can adapt our approach to the 3D case. In a 3D space we enumerate 256 different situations for the marching cubes representation
+
+\begin{enumerate}
+    \item Load 4 layers of the grid into memory
+    \item Create a cube whose vertices lie on the two middle layers
+    \item Classify the vertices of the cube according to the implicit function (outside,inside or on the surface)
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{50.PNG}
+  \end{subfigure}
+\end{figure}
+
+\item Compute case index. We have $2^8 = 256 $ cases (0/1 for each of the eight vertices). If the vertices is inside the bit relative to the vertex is set to 1 , 0 otherwise. When all the vertices are checked we got the configuration wanted expressed as a 8 bit number
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{51.PNG}
+  \end{subfigure}
+\end{figure}
+
+\item Using the case index , retrieve the connectivity in the look up table. In this case cut edges $e_1,e_4,e_5,e_6,e_9 and e_10$
+
+\item Then we have to compute the position of the cut vertices by linear interpolation
+\item Move to the next cube
+
+\end{enumerate}
+
+As before we have to make consistent choices for neighboring cubes , otherwise we get holes.
+
+We have problems with short triangle edges.
+
+Triangles with short edges waste resources but do not contribute to the surface mesh representation.
+
+\subsubsection{Grid Snapping}
+
+Solution : threshold the distances between the created vertices and the cube corners.
+
+When the distance is smaller than $d_snap$ we snap the vertex to the cube corner.
+
+If more than one vertex of a triangle is snapped to the same point , we discard that triangle altogether.
+
+\section{Curves}
+
+\subsection{Differential Geometry Basics}
+
+Geometry of manifolds.
+
+Things can be discovered by local observations : point + neighborhood.
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{52.PNG}
+  \end{subfigure}
+\end{figure}
+
+If it is a sufficiently smooth mapping can be constructed , we can look at its first and second derivatives to find : tangent , normals , curvatures etc.
+
+
+\vspace{50mm}
+
+\subsection{Curves}
+
+We need mathematical concepts to characterize the desired curve properties.
+
+Notions from curve geometry help with designing user interfaces for curve creation and editing.
+
+\subsubsection{2D Parametric Curve}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{53.PNG}
+    \caption{A curve is defined as \textbf{the image function of a function x}}
+  \end{subfigure}
+\end{figure}
+
+The coordinates x and y are assumed to be differentiable functions (continuous, gradient exists) of t.
+
+The same curve can be obtained with a different parametrization. For example $P_1(t) = (u,u)^T and P_2 = (u^2,u^2)^T$ describe the same curve for $t \in [0,1]$, but their parametrization is different. This illustrates that we can change the parametrization without changing the shape of the curve.
+
+The tangent vector to the curve is at point p(t) is defined as the first derivative of the coordinate function.
+
+The \textbf{tangent vector} corresponds to the velocity vector a time t, norm of the derivatives.
+
+
+\subsubsection{Arc Length}
+
+How long is the curve between $t_0$ and $t$? 
+
+This can be computed as the integral of the tangent vector.
+
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{54.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{30mm}
+
+\subsection{Tangent : Geometric Construction}
+
+\textbf{Secant} : a line through two points on the curve
+
+\textbf{Tangent}: the limiting secant as two points come together
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{55.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Curvature}
+
+How much does the curve turn per unit S?
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{56.PNG}
+  \end{subfigure}
+\end{figure}
+
+k(s) , in the book , is $||x''(s)||$ , this formula define the curvature at a point x(s).
+
+Curvature measures how strongly a curve deviates from a straight line.
+
+\subsubsection{Curvature: Geometric Construction}
+
+We need to find the "best fitting circle".
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{57.PNG}
+  \end{subfigure}
+\end{figure}
+
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{58.PNG}
+  \caption{Consider the circle passing through three points on the curve}
+  
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{59.PNG}
+  \caption{The limiting circles as Q and R move to P : \textbf{Osculating Circle}}
+  
+\endminipage\hfill
+\minipage{0.32\textwidth}%
+  \includegraphics[width=\linewidth]{60.PNG}
+  \caption{Take the radius of the osculating circle}
+  
+\endminipage
+\end{figure}
+
+\vspace{30mm}
+
+\subsubsection{Curvature of a circle}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{61.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Curvature Normal}
+
+The curve normal vector can be defined using the relation x'' = k(s)n(s). 
+
+\vspace{50mm}
+
+\section{Discrete Differential Geometry of Curves}
+
+\subsection{Discrete Planar Curves}
+
+Piecewise linear curves , not smooth at vertices and can't take derivatives.
+
+Generalize notions from the smooth world for the discrete case.
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{62.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Tangents , Normals}
+
+
+For any point on the edge , the tangent is simply the unit vector along the edge and the normal is the perpendicular vector.
+
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{63.PNG}
+  \caption{In gray Normal , in blue the Tangent}
+  
+\endminipage\hfill
+\minipage{0.22\textwidth}
+  \includegraphics[width=\linewidth]{64.PNG}
+  \caption{For vertices , we have many options}
+  
+\endminipage\hfill
+\minipage{0.42\textwidth}%
+  \includegraphics[width=\linewidth]{65.PNG}
+  \caption{Can choose to average the adjacent edge normals for obtaining the normal of the vertex v}
+  
+\endminipage
+\end{figure}
+
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{66.PNG}
+    \caption{Or we can weight by edge lengths}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Inscribed Polygon , p}
+
+Connection between discrete and smooth.
+
+Finite number of vertices each lying on the curve, connected by straight edges.
+
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{67.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{The length of a Discrete Curve}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{68.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{The Length of a Continuous Curve}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{69.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{50mm}
+
+\subsubsection{Curvature of a Discrete Curve}
+
+Curvature is the change in normal direction as we travel along the curve.
+
+
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{70.PNG}
+  \caption{No change along each edge, curvature is zero along edges}
+  
+\endminipage\hfill
+\minipage{0.22\textwidth}
+  \includegraphics[width=\linewidth]{71.PNG}
+  \caption{Normal changes at vertices , record the turning angle!}
+  
+\endminipage\hfill
+\minipage{0.42\textwidth}%
+  \includegraphics[width=\linewidth]{72.PNG}
+  \caption{Same as the turning angle between the edges}
+  
+\endminipage
+\end{figure}
+
+Zero along the edges.
+
+Turning angle at the vertices = the change in normal direction
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{73.PNG}
+  \end{subfigure}
+\end{figure}
+
+$tsc(p) = \sum_{i=1}^n a_i$ , sum of turning angles
+
+\subsubsection{Discrete Gauss Map}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.39\linewidth}
+    \includegraphics[width=1\linewidth]{74.PNG}
+    \caption{Edges map to points , vertices map to arcs}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.39\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{75.PNG}
+         \caption{Turning number well-defined for discrete curves}
+     \end{subfigure}
+\end{figure}
+
+\vspace{35mm}
+
+\section{Surfaces}
+
+\subsection{Parametric Representation of surfaces}
+
+\begin{itemize}
+    \item Surface : S $\subset R^3$
+    \item Parameter Domain : $\Omega \subset R^2$
+    \item Mapping: $f: \Omega$ \textrightarrow{S}
+\end{itemize}
+
+f is a bi-variate vector function mapping points of the 2D plane to points in 3D space
+
+We can define an injective parametrization iff surface S is homeomorphic to a (punctured) disk.
+
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{76.PNG}
+  \end{subfigure}
+\end{figure}
+
+For a surface S that is no homeomorphic to a punctured disk , parametrization needs to cut S at the image of borders of $\Omega$
+
+We need to find a way to unfold the surface of the world, in order to obtain a flat 2D surface.
+
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{77.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\vspace{60mm}
+
+\subsection{Tangent Plane}
+
+f(u,v) = $(x(u,v),y(u,v),z(u,v))^T$
+
+\begin{itemize}
+    \item Jacobian of f : $J_f = [f_u.f_v]$, derivate parziali di u e v
+    \item Tangent plane at p : $T_p = \{p + af_u + bf_v : a,b \in R\}$
+    \item Taylor expansion of f : $f(y) = f(x) + J_f(y-x) + ...$
+\end{itemize}
+
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{78.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\subsection{Surface Normal}
+
+Surface normal at a point p is the unit-length normal vector n of tangent plane $T_p$ pointing outwards from S.
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{79.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{30mm}
+
+\subsection{Directional derivatives}
+
+Given a direction vector $\bar w$ = $(u_w,v_w)^T$
+
+Straight line in parameter space (u,v) = $(u_x,v_x) + t\bar w$
+
+Corresponds to a curve on S : $C_w(t) = f(u_x + tu_w, v_x + tv_w)$
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{80.PNG}
+  \end{subfigure}
+\end{figure}
+
+Directional derivative w of f at $(u_x,v_x)$ wrt $\bar w$ is the tangent to $C_w (t)$ computed at t=0
+
+By the chian rule w = $J_f\bar w$
+
+
+\subsection{First Fundamental Form}
+
+Basically the Jacobian matrix correspond to the linear map that transforms a vector $\bar w$ in parameter space into a tangent vector w on the surface
+
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{81.PNG}
+  \end{subfigure}
+\end{figure}
+
+The first fundamental form I defines an inner product on the tangent space of S.
+
+Beside measuring angles , we can use this inner product to determine the squared length of a tangent vector w as $||w||^2 = \bar w^TI\bar w$
+
+\subsection{Measuring Areas}
+
+The first fundamental form can be used to measure areas on the surface : Area of a region f(U) where U is a region in $\Omega$:
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{82.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Gauss Map}
+
+The Gauss map sends a point on the surface to the outward pointing unit normal vector :
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{83.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Normal Curvature}
+
+To extend the notion of curvature from curves to surfaces, we look at the curvature of curves embedded in the surface.
+
+Let $t = u_tx_u + v_tx_v$ be a tangent vector at a surface point p represented as $\bar t$ = $(u_t,v_t)$ in parameter space.
+
+The normal curvature $k_n(\bar t) $ at p is the curvature of the planar curve created by intersecting the surface at p with the plane spanned by t and the surface normal n
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{84.PNG}
+    \caption{t is the tangent vector}
+  \end{subfigure}
+\end{figure}
+
+
+We can choose a specific curve c that has the normal aligned to n.
+
+The curvature of c curve at p is the normal curvature wrt t.
+
+We can express normal curvature in direction $\bar t$ as :
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{85.PNG}
+    \caption{t is the tangent vector}
+  \end{subfigure}
+\end{figure}
+
+Where II denotes the \textbf{second fundamental form} defined as :
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{86.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Principal Curvatures}
+
+Consider all possible directions t on the tangent plane at p.
+
+There are exactly two directions :
+
+\begin{itemize}
+    \item $t_1$ such that $k_1 = k(t_1)$ is maximum
+     \item $t_1$ such that $k_2 = k(t_2)$ is maximum
+
+\end{itemize}
+
+k1 and k2 are called the principal curvatures and t1,t2 are called the principal directions of curvature.
+
+
+
+\subsection{Euler Theorem}
+
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.\linewidth}
+    \includegraphics[width=1\linewidth]{87.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Intrinsic Geometry}
+
+In differential geometry , properties that only depend on the first fundamental form are called intrinsic.
+
+\subsection{Darboux Frame}
+
+Principal directions have arbitrary orientations.
+
+Orientations can be selected such that $(t_1,t_2,n)$ form a right-handed 3D frame with origin at p and n points outward.
+
+The surface in a sufficiently small neighborhood of p can be expressed in explicit form wrt to the Darboux frame.
+
+\subsection{Shape Operator}
+
+It is a linear operator that , when applied to a tangent vector t tells how the surface normal varies when moving along t on S.
+
+In local coordinates given by frame $(f_u,f_v)$ it is represented as a 2x2 matrix defined at each point p through the coefficients of the first and second fundamental form.
+
+The principal directions of curvature are the eigenvector of Sh , the principal curvatures are the eigenvalues of Sh.
+
+The shape operator is described by a diagonal matrix of principal curvatures in the frame $(t_1,t_2)$
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{88.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{89.PNG}
+     \end{subfigure}
+\end{figure}
+
+\section{Discrete Differential Geometry of Surfaces Part 1}
+
+\subsection{Differential Geometry on Meshes}
+
+Assumption : Meshes are piecewise linear approximations of smooth surfaces.
+
+Meshes have straight line edges and flat faces.
+
+Differential properties of the approximated surface are estimated on the mesh
+
+\subsection{Discrete Integration}
+
+Vertex neighborhood that partition the mesh into disjoint regions are often preferred :
+
+\begin{itemize}
+    \item Barycentric Cells , connects the triangle barycenters  with the edge midpoints
+    \item Voronoi Cells, replace the triangle barycenters with triangle circumcenter (il centro di una circonferenza circoscritta ad un triangolo)
+    \item Mixed Voronoi Cells
+\end{itemize}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{91.png}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Surface Normal via Discrete Integration}
+
+Many operations require normal vectors.
+
+Normal vectors for individual triangles t = $(v_i,v_j,v_j)$ is the normal of the plane containing t :
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{90.png}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Area and Volume via Discrete Integration}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{92.png}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Discrete Curvature}
+
+\subsubsection{Shape Operator via Surface Fitting}
+
+The radius r of the neighborhood of each point p is used as a scale parameter.
+
+\begin{enumerate}
+    \item Gather all vertices in a local neighborhood of radius r
+    \item  set a local frame at p: $(u,v,n_p)$ where $n_p$ is the surface normal at p and u,v are any two orthogonal unit vectors spanning the tangent plane.
+    \item Discard all vertices $v_i$ such that $n_i \cdot w < 0$
+    \item Express all vertices of the neighborhood the local frame
+    \item Fit to these points a polynomial of degree two through p, $f(u,v) = au^2 + bv^2 + cuv + du + ev$
+    \item Shape operator at p is computed analytically via first and second fundamental forms of f at the origin.
+\end{enumerate}
+
+Since f is a polynomial , coefficients E,F,G,L,M,N of the fundamental forms can be computed easily in closed form.
+
+SVD decomposition of the shape operator provides principal curvatures directions.
+
+\subsubsection{Shape Operator via normal Curvature}
+
+\begin{enumerate}
+    \item Project all edges $(v_i,v_j)$ incident at $v_i$ on the tangent plane to obtain tangent directions $w_{ij}$.
+    \item For each direction $w_{ij}$ evaluate normal curvature $k_{ij}$ by local curve fitting
+    \item Average results from normal curvatures to compute the shape operator
+\end{enumerate}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{93.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{94.PNG}
+     \end{subfigure}
+\end{figure}
+
+\section{Discrete Differential Geometry of Surfaces - Functions on Surfaces}
+
+\subsection{Gradient}
+
+The gradient of f is defined as: $\bigtriangledown$f = $(f_u,f_v)^T$
+
+The gradient $\bigtriangledown$f(p) of a function at a point p is a vector on the plane pointing to the direction of maximal ascent of f and having a size proportional to the rate of ascent.
+
+f: M \textrightarrow{R} defined on a manifold , the gradient $\bigtriangledown f_M$ at a point p is a vector in the tangent plane at p pointing to the direction of maximal ascent of f and having a size proportional to the rate of ascent.
+
+\vspace{30mm}
+
+\subsection{Laplace Operator}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.9\linewidth}
+    \includegraphics[width=1\linewidth]{95.png}
+  \end{subfigure}
+\end{figure}
+
+
+\subsection{Laplace-Beltrami Operator}
+
+Extends the concept explained before to functions defined on surface
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{96.png}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Harmonic Functions and Surfaces}
+
+A function is said to be \textbf{harmonic} if its Laplacian is null.
+
+A \textbf{minimal surface} has null mean curvature.
+
+Harmonic functions and minimal surfaces are especially smooth.
+
+\vspace{30mm}
+
+\subsection{Discrete Setting}
+
+\subsubsection{Barycentric Coordinates}
+
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{97.png}
+  \end{subfigure}
+\end{figure}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{98.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{99.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsubsection{Piecewise Linear Functions on Meshes}
+
+We assume a piecewise linear function f that is given at each mesh vertex and interpolated linearly within each triangle.
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{100.png}
+  \end{subfigure}
+\end{figure}
+
+\vspace{20mm}
+
+\subsubsection{The Hat Function}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{101.png}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Gradient of the Hat Function}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{102.png}
+  \end{subfigure}
+\end{figure}
+
+$\bot$ denotes a counterclockwise rotation by 90 degrees in the triangle plane and A is the Area of the triangle.
+
+\subsection{Discrete Laplace-Beltrami uniform}
+
+Directly measures the difference between function at a vertex wrt the average of its neighbors.
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{103.png}
+  \end{subfigure}
+\end{figure}
+
+Simple and efficient.
+
+One assumption is that all triangles are equilateral.
+
+The resulting vector can be a non zero even for a planar configuration of vertices. However, in such a setting we would expect a zero Laplacian since the mean curvature over the entire mesh is zero.
+
+This indicates that the uniform Laplacian is not an appropriate discretization for non-uniform meshes.
+
+
+\subsection{Discrete Laplace-Beltrami cotangent}
+
+We integrate the value of the Laplacian over the averaging region A(v) about a vertex v.
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{104.png}
+  \end{subfigure}
+\end{figure}
+
+To simplify the integrate we make use of the divergence theorem for a vector-valued function F
+
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{105.png}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Laplacian Matrix}
+
+$w_i$ : vertex weight
+
+$w_{ij}$ : edge weights
+
+Mass matrix: M = diag($w_1,....,w_n)$ \textbf{diagonal matrix of vertex weights}
+
+Stifness matrix : $L_w$ defined as 
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{106.png}
+  \end{subfigure}
+\end{figure}
+
+is the symmetric matrix of edge weights.
+
+\textbf{L = $M^{-1} L_w$}
+
+Then we have :
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{107.png}
+  \end{subfigure}
+\end{figure}
+
+both L and $L_w$ are sparse and M is diagonal
+
+\subsubsection{Linear system involving the Laplacian}
+
+Suppose we have a linear system : Lx = b using the asymmetric cotangent Laplacian
+
+The right hand side vector b represents a scalar field , storing the desired Laplacian value at each vertex.
+
+Solving symmetric sparse linear systems matrices is much more efficient so we prefer to solve : $L_wx = Mb$
+
+\subsection{Discrete Laplace-Beltrami Geometric meaning}
+
+
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{108.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{109.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{110.png}
+  \end{subfigure}
+\end{figure}
+
+
+\vspace{20mm}
+
+\section{Smoothing and Fairing}
+
+\subsection{Surface Smoothing - Motivation}
+
+Scanned surfaces can be noisy.
+
+Noise produces artefacts at high frequency.
+
+Removing noise makes the surface smoother.
+
+Marching Cubes meshes can be ugly.
+
+\subsection{How to measure smoothness?}
+
+ C
+
+\subsubsection{Which Curvature}
+
+\begin{itemize}
+    \item Prinicipal curvature : Nonlinear and discountinuous operator in the definition
+    \item Gauss curvature K : Intrinsic only , insensitive to embedding in 3D space
+    \item Mean curvature H : Relatively simple to extract on meshes via Laplace-Beltrami
+\end{itemize}
+
+\vspace{35mm}
+
+\subsection{Smoothing by Diffusion Flow}
+
+\subsubsection{Example of Smoothing Curves}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{112.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{113.PNG}
+     \end{subfigure}
+\end{figure}
+
+Going on with more iterations we are going to smooth the mesh
+
+\subsection{Diffusion Flow - General Scheme}
+
+Model for the time-dependent process of smoothing a given signal.
+
+Diffusion flow is modeled by the \textbf{diffusion equation} , describing a signal over time :
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{114.png}
+  \end{subfigure}
+\end{figure}
+
+A function f obeying to to the above equation becomes smoother and smoother for increasing values of t.
+
+f(x,0) is the function at its initial state.
+
+Parameter $\lambda$ sets the speed at which the function is smoothed.
+
+This technique is used to blur images and smooth terrain surfaces 
+
+The diffusion equation is a Partial Differential Equation.
+
+We discretize it both in space and in time.
+
+For the spatial discretization we replace the function f by its sample values at the mesh vertices f(t) = $f(v_1,t),...,f(v_n,t))^T$
+
+For the temporal discretization we divide the time axis into regular intervals of size h, yielding time steps $\{t,t+h,t+2h..\}$, approximating the time derivative by finite differences : 
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{115.png}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{On meshes : smoothing as mean curvature flow}
+
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{116.png}
+  \end{subfigure}
+\end{figure}
+
+\vspace{30mm}
+
+
+\subsubsection{Taubin Smoothing : Explicit Steps}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{117.png}
+  \end{subfigure}
+\end{figure}
+
+$\lambda > 0$ to smooth and $\mu < 0 $ to inflate
+
+\subsection{Smoothing as Optimization}
+
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{118.png}
+  \end{subfigure}
+\end{figure}
+
+\vspace{50mm}
+
+\subsection{Smoothing as filtering}
+
+\subsubsection{Fourier Analysis}
+
+Represent a function as weighted sum of sines and cosines
+
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{119.PNG}
+  \caption{f(x) = $a_0 + a_1cos(x)$}
+  
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{120.PNG}
+\caption{f(x) = $a_0 + a_1cos(x) + a_2cos(3x)$}  
+  
+\endminipage\hfill
+\minipage{0.32\textwidth}%
+  \includegraphics[width=\linewidth]{121.PNG}
+ \caption{f(x) = $a_0 + a_1cos(x) + a_2cos(3x) + a_3cos(5x) + a_4cos(7x) + ...$}  
+  
+\endminipage
+\end{figure}
+
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{122.png}
+  \end{subfigure}
+\end{figure}
+
+The Fourier transform maps a function from its representation f(x) in the spatial domain to its representation $F(\omega)$ in the frequency domain.
+
+\subsection{Extend Fourier to meshes?}
+
+Fourier basis functions are eigenfunctions of the Laplace operator.
+
+On meshes : take the eigenvectors of the Laplace-Beltrami matrix
+
+Take you L-B matrix L , compute the eigenvectors with k smallest eigenvalues, and reconstruct the mesh geometry from these eigenvectors.
+
+\subsection{Fairing}
+
+Fairing has the purpose to compute surfaces that are as smooth as possible.
+
+Principle of simplest shape : the surface should be free of any unnecessary details or oscillations.
+
+\vspace{10mm}
+
+\section{Mesh Parametrization}
+
+\subsection{Parametrization - Definition}
+
+The notion of parametrization attaches a geometric coordinate system to the object
+
+Mapping P between a 2D domain $\Omega$ and the mesh S embedded in 3D.
+
+Each mesh vertex has a corresponding 2D position : $U(v_i) = (u_i,v_i)$
+
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{123.png}
+  \end{subfigure}
+\end{figure}
+
+Parametrization allows us to do many things in 2D and then map those actions onto the 3D surface.
+
+One goal of parametrization is Texture Mapping : put the sruface into a one-to-one correspondence with an image.
+
+Another goal is Remeshing : the coordinate system defined by the parametrization facilitates converting from a mesh representation into an alternative one.
+
+To summarize , a parametrization of a 3D surface is a function putting this surface in one-to-one correspondence with a 2D domain.
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{124.png}
+  \end{subfigure}
+\end{figure}
+
+\subsection{How to Measure Distortion?}
+
+\subsubsection{Measures of Local Distortio}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{125.png}
+  \end{subfigure}
+\end{figure}
+
+$p_u = \partial p(u,v) / \partial u$ , $p_v = \partial p(u,v) / \partial v$ 
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{126.png}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Distortion on Triangle Meshes?}
+
+Triangle in 3D is mapped to triangle in 2D.
+
+Unique affine mapping.
+
+SVD of the Jacobian reveals directions of extreme stretching
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{127.png}
+  \end{subfigure}
+\end{figure}
+
+The possible distortion measures are : $E(T) = \sqrt{\sigma_1^2 + \sigma_2^2}$ or $E(T) = max\{\sigma_1 , 1/\sigma_2\}$
+
+\subsection{How to Compute (Good) Parametrizations? and Quickly?}
+
+\subsubsection{Harmonic-Mapping - Idea}
+
+Want to flatten the mesh - no curvature \textrightarrow{ Laplace operator gives zero}
+
+Because the Laplacian measures the regularity of a function. For instance , for a linear function the Laplacian is equal to zero. Minimizing the Laplacian of u and v results in smooth parametric coordinates, in other words , this also minimizes the distortion of the parametrization.
+
+\subsubsection{Tutte's barycentric mapping Theorem}
+
+Given a triangulated surface homeomorphic to a disk :
+
+\begin{enumerate}
+    \item If the (u,v) coordinates at the boundary vertices lie on a convex polygon
+    \item If the coordinates of the internal vertices are convex combination of their neighbors
+    \item Then the (u,v) coordinates form a valid parametrization
+\end{enumerate}
+
+\subsubsection{Convex Mapping}
+
+
+Boundary vertices are fixed.
+
+Convex weights in the Laplacian matrix.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{128.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{129.PNG}
+     \end{subfigure}
+\end{figure}
+
+Solve the linear system Lu = 0 , the values of the boundary vertices are known and thus substituted
+
+\subsection{Harmonic Mapping}
+
+Inner mesh edges as springs.
+
+Find minimum-energy state where all vertices lie in the 2D plane.
+
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{130.PNG}
+  
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{131.PNG}
+  
+\endminipage\hfill
+\minipage{0.32\textwidth}%
+  \includegraphics[width=\linewidth]{132.PNG}
+
+  
+\endminipage
+\end{figure}
+
+\subsection{Boundary-Free Parametrization}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{133.png}
+  \end{subfigure}
+\end{figure}
+
+Conformality can be imposed as a constraint on the Jacobian: the two partial derivatives are orthogonal , and they have the same length.
+
+We define the parametrization P by defining its inverse U.
+
+We define U as a per vertex(u,v) assignment: our variables are the (u,v) positions of the vertices in $\Omega$.
+
+The vectors $\partial P/\partial u$ and  $\partial P/\partial v$ are linear with the variables constant inside triangles.
+
+Such vectors can be derived triangle by triangle by inverting the derivatives of U
+
+Conformality : $\partial P/\partial u$ x n = $\partial P/\partial v$, n normal of triangle on surface is known ,  $\partial P/\partial u$ x n - $\partial P/\partial v$ = 0
+
+\subsection{Global Parametrization}
+
+All the algorithms that we studied until now are able to parametrize a part of a mesh homeomorphic to a disk.
+
+To be able to parametrize arbitrary shapes we cut a mesh into parts , and we parametrize every part independently.
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{134.png}
+  \end{subfigure}
+\end{figure}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{135.png}
+  \end{subfigure}
+  \caption{We have to cut the shape , in this way we can parametrixe it}
+\end{figure}
+
+\subsubsection{How to handle cuts?}
+
+\begin{itemize}
+    \item We can ignore them and parametrize every chart separately. The collection of the separate chart can be grouped in a square with a packing algorithm. Segmentation.
+    \item We want to impose continuity of the derivatives of the parametization across cuts. Packing.
+\end{itemize}
+
+\section{Mesh Deformation}
+
+Shape deformation is used for animation , editing and simulation.
+
+The deformation of a given surface S into the desired surface S' is described by a displacement function d that associates to each point p $\in$ S a displacement vector d(p). By this map the given surface S to its deformed version S' : $S' = \{ p + d(p) | p \in S \}$
+
+For a discrete triangle mesh the displacement function d is piecewise linear, such that it is fully defined by the displacement vectors $d_i = d(p_i)$ of the original mesh vertices.
+
+The user controls the deformation by prescribing displacements $\bar d_i$ for a set of so-called handle points $p_i$ and by constraining parts which stay fixed during the deformation.
+
+\subsection{Surface-Based Deformations}
+
+A simple popular approach works by propagating the user-defined handle transformation within the deformation region. After specifying the support region R of the deformation and a handle H within it , the handle is transformed using some modelling interface.
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{136.png}
+  \end{subfigure}
+\end{figure}
+
+\textbf{Example of Surface-Based Deformations}
+
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{137.png}
+  \end{subfigure}
+\end{figure}
+
+Consists of three main operators : 1) the decomposition operator which separates low and high frequencies, 2)Editing operator , which deforms the low frequency components, 3)Reconstruction operator , which adds the details the details back onto the modified base surface.
+
+Basically we need to find a mesh that optimizes some objective functional and satisfies modeling constraints : $x_def = argmin E(x')$
+
+\subsection{Space Deformations}
+
+Global and local deformation of solids. F : $R^3$ \textrightarrow{$R^3$}
+
+Design a set of coordinates for all points in R with respect to the "cage" vertices.
+
+Each point x can be represented as a weighted sum of cage points $p_i$ : x = $\sum_{i=1}^k w_i (x)p_i$, when the cage changes , the coordinate stay the same but we have to substitute the new cage geometry : x' = $\sum_{i=1}^k w_i (x)p_i$x = $\sum_{i=1}^k w_i (x)p_i'$
+
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{138.png}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Surface-Based Differential Deformations}
+
+\subsubsection{ROI-Handle Editing Metaphor}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{139.png}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Recap: Differential Coordinates}
+
+Detail = smooth(surface) - surface
+
+Smoothing = averaging.
+
+\subsubsection{Simple Laplacian Editing}
+
+Preserve mean curvature normal at every point in the ROI (part of surface we are interestd in deforming )
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{140.png}
+  \end{subfigure}
+\end{figure}
+
+
+\subsubsection{Simplifying the Laplacian Energy}
+
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{141.png}
+  \end{subfigure}
+\end{figure}
+
+
+\subsection{Fundamental Problem : Invariance to Transformations}
+
+The basic Laplacian operator is translation-invariant , but not rotation-invariant.
+
+E(x') attempts to preserve the original globe orientation of the details (the normal directions).
+
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{142.png}
+  \end{subfigure}
+\end{figure}
+
+We need a rigid-invariant energy : E(x') = $\sum_{i=1}^n A_i ||\bigtriangleup (x_i') - \delta_i ||^2$
+
+
+\subsection{Fixing Local Rotations : Multiresolution Approach}
+
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{143.png}
+  
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{144.png}
+  
+\endminipage\hfill
+\minipage{0.32\textwidth}%
+  \includegraphics[width=\linewidth]{145.png}
+
+  
+\endminipage
+\end{figure}
+
+
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{146.png}
+  
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{147.png}
+  
+\endminipage\hfill
+\minipage{0.32\textwidth}%
+  \includegraphics[width=\linewidth]{148.png}
+
+  
+\endminipage
+\end{figure}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{149.png}
+  \end{subfigure}
+\end{figure}
+
+\vspace{30mm}
+
+\section{Splines}
+
+General idea : smooth curve/surface in parametric form.
+
+Defined by combining two ingredients : 
+
+\begin{itemize}
+    \item Control polygon/grid built upon a small set of \textbf{control points}
+    \item \textbf{Basis functions} to compute affine averages of point positions.
+\end{itemize}
+
+The curve/surface can be edited by moving the control points or reshaping the basis functions
+
+\vspace{100mm}
+
+\subsection{Curves}
+
+\subsubsection{Spline Curves}
+
+Informal idea : control points determine the shape of the curve. \textbf{Anchor points are on the curve} , \textbf{Handle points pull the curve}.
+
+\textbf{Control polygon} joining the control points approximates the curve.
+
+A spline may consist of several segments of curve.
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{150.png}
+  \end{subfigure}
+\end{figure}
+
+In math terms : s(t) = $\sum_i p_i B_i (t)$
+
+The affine sum blends the contributions of the various control points. The enumeration of indices define the control polygon.
+
+$p_i$ are the control points , $B_i$ is the base functions that weigh the influence of control points at each parameter value.
+
+Basis functions characterize the type of spline.
+
+\subsubsection{Bezier Curves}
+
+Bases are polynomials of given degree n.
+
+A Bezier segment of degree n has n+1 control points :
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{151.png}
+  \end{subfigure}
+\end{figure}
+
+\begin{itemize}
+    \item n = 1 : straight line segment
+    \item n = 2 : parabolic arc
+    \item n = 3 : cubic arc
+\end{itemize}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{152.png}
+  \end{subfigure}
+\end{figure}
+
+For all n the curve : interpolates the endpoints of control polygon and is tangent to first and last segment of the control polygon at the end points
+
+
+\textbf{Properties}
+
+\begin{itemize}
+    \item The $B_{i,n}$ are non-negative in [0,1]
+    \item Partition of unity: $\sum_{i=0}^n B_{i,n} (t) = 1$
+    \item Interpolation at endpoints: $B_{0,n} (0) = B_{n,n}(1) = 1$
+    \item Symmetry : $B_{i,n} (t) = B_{n-1,n}(1-t)$
+\end{itemize}
+
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{153.png}
+  \end{subfigure}
+\end{figure}
+
+   \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{154.png}
+  \end{subfigure}
+\end{figure}
+
+   \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{155.png}
+  \end{subfigure}
+\end{figure}
+
+
+\textbf{Convex hull property} : The curve is contained in the convex hull of its control points
+
+\textbf{Variation diminishing property} : no straight line can have more intersection with the curve than with the control polygon.
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{156.png}
+  \end{subfigure}
+\end{figure}
+
+Disadvantages : 
+
+\begin{itemize}
+    \item Global support: moving each single control point modifies the whole curve and the change is not intuitive
+    \item Numerical instability at high degree / large number of control points
+    \item Low expressive power : conics such as circles cannot be represented
+\end{itemize}
+
+\subsection{de Casteljau Algorithm}
+
+Bezier curves admit recursive definition : $b_i^0 = p_i$ , $b_i^r = (1-t)b_i^{r-1}(t) + tb_{i+1}^{r-1}(t)$
+
+$s(t) = b_0^n(t)$
+
+This definition immediately provides a geometric construction to evaluate the curve by means of repeated affine averages.
+
+The de Casteljau algorithm computed at any value t splits the curve into two Bezier segments, providing their control polygons $b_0^0$, $b_0^1$, $b_0^2$, $b_0^3$ and  $b_0^3$, $b_1^2$, $b_2^1$, $b_0^3$
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{157.png}
+  \end{subfigure}
+\end{figure}
+
+Recursive evaluation at t = 1/2 provides a sequence of control polygons that collapses onto the curve.
+
+\subsection{Bezier splines}
+
+Bezier curves can be joined easily with $C^0$ and $C$
+
+$C^0$: the last control point of a curve and the first control point of the next curve coincide
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{158.png}
+  \end{subfigure}
+\end{figure}
+
+$G^1$ : the last edge of a control polygon and the first edge of the next control polygon are collinear
+
+$C^1$ : the last edge of a control polygon and the first
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{159.png}
+  \end{subfigure}
+\end{figure}
+
+$C^2$ continuity involves the mutual positions of the last three control points of a curve and the first three of the next.  This may cause a loss of local control.
+
+\subsubsection{Can we do better than Bezier?}
+
+Wish list :
+
+\begin{itemize}
+    \item Local support : each control point should influence only one small portion of curve
+    \item Smooth splines : it should be easy to join curve segments smoothly
+    \item Expressive power : use a more flexible set of bases
+\end{itemize}
+
+\subsection{B-splines}
+
+Basis functions with compact support and flexible.
+
+Defined upon a set of knots that subdivide an interval on R.
+
+Knots control the amplitude and the shape of each basis function.
+
+Basis function determine the influence of each control point.
+
+Each segment of spline is determined by a subset of control points.
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{160.png}
+  \end{subfigure}
+\end{figure}
+
+\textbf{Example}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{161.png}
+  \end{subfigure}
+\end{figure}
+
+\textbf{Properties}
+
+\begin{itemize}
+    \item There are n = m-p bases of degree p on m intervals
+    \item All non-negative
+    \item Each basis spans p+1 intervals
+    \item Consecutive bases overlap
+    \item Partition of unity in $[u_p,u_{m-p}]0$ : $\sum_{i=0}^{n-1} N_{i,p} (t) = 1$
+\end{itemize}
+
+B-spline curve :
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{162.png}
+  \end{subfigure}
+\end{figure}
+
+\textbf{Uniform B-splines :}
+
+Completely defined by the n control points and the choice of p.
+
+Have smoothness $C^{p-1}$, closed curves can be defined by using the knot interval in a periodic way.
+
+\textbf{Non-uniform B-splines :} Knots can be moved to create non-uniform intervals. Non uniform intervals modify the shape of the basis function.
+
+Different knots can be dragged to the same location to change smoothness of the curve
+
+Each time we increase the multiplicity of a knot, we decrease smoothness by one.
+
+A knot with multiplicity p forces the curve to interpolate one control point.
+
+\textbf{Open-uniform B-splines} :
+
+Set multiplicity p at the endpoints of the interval and uniform intervals inside.
+
+We obtain a curve interpolating the endpoints while keeping the smoothness and control of B-splines.
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{163.png}
+  \end{subfigure}
+\end{figure}
+
+\subsection{de Boor Algorithm}
+
+Generalization of de Casteljau algorithm for B-splines.
+
+Exploits the recursive definition of B-spline bases:
+
+
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{164.png}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Knot Insertion}
+
+Purpose : represent the same curve with more knots to support more flexible editing.
+
+Problem: Given a B-spline with m knots, find another B-spline with m+1 knots that describes the same curve.
+
+Boehm algorithm provides a simple formula to compute the positions of the control points upon insertion of new node.
+
+Oslo algorithms generalize to the simultaneous insertion of more nodes.
+
+
+\subsection{Surfaces}
+
+Idea : sweep a curve in space by dragging its control points along other curves.
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{165.png}
+  \end{subfigure}
+\end{figure}
+
+In math terms :
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{166.png}
+  \end{subfigure}
+\end{figure}
+
+This scheme can be applied to obtain surfaces from all piecewise polynomial schemes of curves
+
+\subsubsection{Bezier surfaces}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{167.png}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{B-spline surfaces}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.9\linewidth}
+    \includegraphics[width=1\linewidth]{168.png}
+  \end{subfigure}
+\end{figure}
+
+
+\vspace{60mm}
+
+\section{Geodesics on Surfaces}
+
+\subsection{Curve on a surface}
+
+M surface.
+
+p,q points on M.
+
+$\gamma$ curve on M joining p to q:
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{169.png}
+  \end{subfigure}
+\end{figure}
+
+
+\begin{itemize}
+    \item $\gamma [0,l_\gamma$ \textrightarrow{ M}
+    \item $\gamma[0] = p$ , $\gamma[l_\gamma$]
+    \item $l_\gamma $ of $\gamma$
+\end{itemize}
+
+\subsection{Geodesic distance on a surface}
+
+Distance between A and B : length of the shortest curve joining A to B : d(A,B) = min $l_\gamma$
+
+If d(A,B) = $l_{\bar \gamma}$ then $\bar \gamma$ is called a \textbf{shortest geodesic (path) between A and B}
+
+The geodesic distance is unique but the shortest geodesic path is not always unique.
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{170.png}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Cut Locus}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{173.png}
+  \end{subfigure}
+\end{figure}
+
+
+\subsection{Geodesic Lines}
+
+A curve $\gamma$ is a geodesic line if it bends with M but it does not bend on M.
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.9\linewidth}
+    \includegraphics[width=1\linewidth]{171.png}
+  \end{subfigure}
+\end{figure}
+
+In some sense , a geodesic line is straight on M.
+
+Shortest paths are geodesic lines.
+
+Not all geodesic lines are shortest paths.
+
+Geodesic lines are locally shortest.
+
+
+A geodesic line is fully characterized with : its starting point p , its tangent direction at p and its length.
+
+Exponential map: $exp_p : T_p M -> M$
+
+It maps vectors from the tangent plane at a given point p into points on M.
+
+The exp map of a vector t is the endpoint of a geodesic cast from p in the direction and for the length of t.
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{172.png}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Normal and Convex sets}
+
+A submanifold B contained in M is a \textbf{Normal neighborhood} of point x if for each t $\in$ B there exists a unique shortest ath on M from x to y.
+
+A \textbf{totally normally set} if it is an open set that is a normal neighborhood of all its points.
+
+\textbf{Strongly convex} if for each pair x and y of its points there exists a unique shortest path on M connecting x to y and it is contained in B
+
+\subsection{Polyhedral setting}
+
+On a polygonal mesh , geodesic lines are polylines.
+
+One straight-line segment per face crossed.
+
+The geodesic line is a straight line once the crossed strip of faces is unfolded to the plane.
+
+   \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{174.png}
+  \end{subfigure}
+\end{figure}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{175.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{176.PNG}
+     \end{subfigure}
+\end{figure}
+
+   \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{177.png}
+  \end{subfigure}
+\end{figure}
+
+\vspace{20mm}
+
+
+\section{Computational Geodesics}
+
+\subsection{Geodesic Tracing}
+
+We assume that the starting point is a vertex $v_i$ (points on edges or inside triangles are easier to handle).
+
+Tangent direction t is given on the tangent plane $T_i$M at $v_i$
+
+Basic steps :
+
+\begin{enumerate}
+    \item Project t on M and find the triangle f crossed by such projection
+    \item Propagate the triangle adjacent to f by crossed edge
+    \item Repeat step 2 until reaching distance $|t| $
+\end{enumerate}
+
+Mapping the 1-ring to the tangent plane : 
+
+\begin{itemize}
+    \item Compute the total angle $\Theta_i$ about vertex $v_i$
+    \item Rescale all incident angles by $2\pi/\Theta_i$
+    \item Map one edge to the x axis and distribute the others by rescaled angles.
+\end{itemize}
+
+   \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{178.png}
+  \end{subfigure}
+\end{figure}
+
+
+\vspace{80mm}
+
+Mapping the tangent direction to the mesh:
+
+
+
+\begin{itemize}
+    \item Find the triangle in tangent plane containing direction $\bar t$
+    \item Rescale  angle by $\Theta_i/2pi$
+    \item Map angle to the corresponding triangle of M
+\end{itemize}
+
+   \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{179.png}
+  \end{subfigure}
+\end{figure}
+
+
+
+Propagating the direction :
+
+\begin{itemize}
+    \item Find the outgoing edge of the direction in the current triangle
+    \item Unfold the neighboring triangle on the same plane and propagate a straight line through it.
+    \item Repeated unfolding gives a triangle strip
+\end{itemize}
+
+   \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{180.png}
+  \end{subfigure}
+\end{figure}
+
+What to do if the geodesic crosses a vertex?
+
+\textbf{Straightest geodesic} : Extend with line that halves the total angle
+
+\subsubsection{Single source Geodesic Distance}
+
+Three classes of algorithms:
+
+\begin{itemize}
+    \item \textbf{Graph-based}: restrict possible routes to paths in a graph; compute distance function on the graph
+    \item \textbf{PDE-based}: resolve a global PDE whose result approximates the distance function
+    \item \textbf{Polyhedral wavefront propagation}: propagate a front through the mesh while building a data structure that supports computing the exact polyhedral distance from any point.
+\end{itemize}
+
+\vspace{20mm}
+
+\subsection{Graph-Based Techniques}
+
+\subsubsection{Shortest path on graphs}
+
+   \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.9\linewidth}
+    \includegraphics[width=1\linewidth]{181.png}
+  \end{subfigure}
+\end{figure}
+
+Assume all weights are non-negative. Let s $\in$ V , it is well defined the tree of shortest paths rooted at s , $G_s = (V_s,E_s)$ where $V_s$ is the set of vertices that can be reached from s and for each v in $V_s$ the simple path from s to v in $G_s$ is a shortest path in G.
+
+\subsubsection{Optimal substructure of shortest paths}
+
+   \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.9\linewidth}
+    \includegraphics[width=1\linewidth]{182.png}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Graph Relaxation}
+
+For each node v let us define :
+
+\begin{itemize}
+    \item d[v] candidate length of shortest path , initialized at inf
+    \item $\pi$[v] node preceding v in a candidate path , initialized empty
+    \item Relaxation of an arc(u,v) : if d[v] $>$ d[u] + w(u,v) then d[v] = d[u] + w(w,v) , $\pi$(v) = ($\pi$(u), (u,v))
+\end{itemize}
+
+If we repeatedly relax all arcs of E the value of d[v] is always greater or equal than $\delta(s,v)$ and if d[v] reaches the value $\delta(s,v)$ then it becomes stable.
+
+If $<s,...,u,v>$ is the shortest path between s and v and we have d[u] = $\delta(s,u)$ then after relaxing edge (u,v) we have d[v] = $\delta(x,v)$
+
+
+\subsubsection{Dijkstra Expansion}
+
+Input : graph G = (V,E) weight w , source s.
+
+Output : graph G = (V,E) where for each v we have d[v] = $\delta(s,v)$ and $\pi$(v) points to his predecessor on the shortest path from s. 
+
+Shortest paths can be extracted next in optimal time by backtracking from destination to source following $\pi(v)$
+
+   \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{183.png}
+    \caption{Example of dijkstra}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{SLF-LLL Heuristics}
+
+The priority queue of Dijkstra warrants optimal worst-case time , but it is expensive to maintain in practice.
+
+For planar graphs and graphs used in geodesic algorithms , an algorithm using a double ended queue achieves better practical performances, while being not optimal in the worst case :
+
+\begin{itemize}
+    \item \textbf{Small Label First (SLF)} : a new node is added either to the front or to the back of the queue , depending on its relative cost with respect to the first node of the queue.
+    \item \textbf{Large Label Last (LLL)}: nodes from the front of the queue that have a cost higher than the average are moved to the back of the queue.
+\end{itemize}
+
+\subsubsection{Which graph to use?}
+
+The graph restricts the possible sources to its nodes , and the possible paths to graph paths.
+
+Trade-off : find a graph that achieves a good accuracy with a small number of nodes/arcs
+
+In most cases , defining the distance field just at the vertices of a mesh is sufficient.
+
+
+\subsubsection{Which graph to use?}
+
+\textbf{Graph of edges}: V vertices of the mesh , E edges of the mesh. Easy and cheap but inaccurate.
+
+   \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{184.png}
+  \end{subfigure}
+\end{figure}
+
+\textbf{Graph of adjancencies}: V centroids of triangles of the mesh, E dual edges = adjacencies between triangles of the mesh. Easy and cheep but inaccurate
+
+   \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{185.png}
+  \end{subfigure}
+\end{figure}
+
+\vspace{40mm}
+
+\textbf{Graph of primal and dual edges}: V vertices of the mesh , E edges of the mesh and dual edges. Each vertex is connected with its neighbors and with the vertices opposite to it in the triangles adjacent to its 1-ring
+
+   \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{187.png}
+  \end{subfigure}
+\end{figure}
+
+
+\textbf{Graph with Steiner points on edges} : edges of the mesh are split by distributing Steiner points along them , within each triangle , arcs joining mutually visible points on its boundary are added. Easy but add extra nodes.
+
+   \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{186.png}
+  \end{subfigure}
+\end{figure}
+
+\textbf{Discrete Geodesic Graph}: V vertices of the mesh, E subset of arcs of the total graph. Each arc is an exact shortest path between its endpoints and any exact path can be approximated with a path in the graph within a given tolerance $\epsilon$
+
+   \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{188.png}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Exact Polyhedral Methods}
+
+Input : Mesh M and source s
+
+Output : An explicit representation of the geodesic distance function $d_s$ : M \textrightarrow{ R} computable at any point p on M . An explicit representation of geodesics shortest paths $\delta(s,p)$
+
+\subsubsection{Polygonal Wavefront Expansion}
+
+Algorithm MPP and many subsequent improvements.
+
+Basic Idea : expand a front of edges starting at the neighborhood of source s until covering the whole surface. Encode distance function $d_s$ for points on each edge e as a set of windows splitting e
+
+\subsubsection{Geodesics through a triangle strip}
+
+Assume s is a vertex.
+
+Consider a triangle strip starting at s and flatten it to the plane.
+
+Assume there exists at least one straight line from s contained inside the strip and crossing all its triangles (if not we are not interested in that strip).
+
+The folding of such line to M is a shortest geodesic connecting s to its other endpoint.
+
+  \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{189.png}
+  \end{subfigure}
+\end{figure}
+
+The set of all lines from s through the strip , and piercing the same edge e on the opposite end of it , form a wedge , encoded as window w on e :
+
+\begin{itemize}
+    \item parametric coordinates $b_0$ and $b_1$ of endpoints of w on e
+    \item Distances $d_0$ and $d_1$ of endpoints of w from s
+    \item Binary direction $\tau$ specifying the side of e on which s lies
+\end{itemize}
+
+  \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{190.png}
+  \end{subfigure}
+\end{figure}
+
+\vspace{20mm}
+
+\subsubsection{Distance function in a window}
+
+  \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{191.png}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{General Case}
+
+Not all points can be reached from straight lines through strips.
+
+What happen at saddle vertices? The unfolding of the 1-ring overlaps , points in the red wedge cannot be reached by straight lines from s , so we need to turn about p to reach the red window w. Line l is a mandatory route to all points of w.
+
+  \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{192.png}
+  \end{subfigure}
+\end{figure}
+
+Then we decompose the paths to a generic window w into a \textbf{funnel} consisting of two parts : a polygonal path of length $\sigma$ from source s to pseude-source p and a wedge from p to w.
+
+\vspace{30mm}
+
+The distance function for all x in w is encoded as : $(b_0,b_1,d_0,d_1,\sigma,\tau)$
+
+  \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{193.png}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Window Propagation}
+
+Given a window w on an edge $e_1$ propagate its distance field across an adjacent triangle t to define new potential windows on the opposing edges $e_2,e_3$.
+
+  \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{194.png}
+  \end{subfigure}
+\end{figure}
+
+To define the distance field over w' : extend the rays from the pseudo-source s through the endpoints of w and intersect them wit the new edge , to obtain the new interval $[b'_0,b'_1]$. Compute the new distances $d'_0,d'_1$ from pseudo-source s. Pseudo-source distace $\sigma' = \sigma$ is unchanged. Direction $\tau$ is assigned to point inside triangle (refers to the image above).
+
+Special case : if one of the endpoints of w is a saddle vertex $p_0$ : Consider the other edge $\bar e$ of face t incident at $p_0$. If $\bar e$ outside the funnel , the generate the two new red windows in the figure, having $p_0$ as pseudo-source. Distance $\sigma$ must be updated $\sigma = \sigma + d_0$
+
+\subsubsection{Continuous Dijkstra propagation}
+
+Maintain a priority queue Q of windows. Prioriry is minimum distance from source.
+
+Initialization of Q : 
+
+\begin{itemize}
+    \item If is inside triangle t, then compute one window per edge of t and insert them in the queue.
+    \item If s is on an edge e , then compute one window per edge of the two faces incident at e and insert them in the queue. Also compute two windows on e.
+    \item If s is a vertex , then every triangle t in the star of s compute one window per edge of t opposite to s and insert them in the queue. Also compute one window for each edge e incident at s.
+\end{itemize}
+
+Loop while Q becomes empty :
+
+\begin{itemize}
+    \item Pop a window w from Q
+    \item Propagate window w
+    \item Insert each non-empty window generated by propagation into Q
+\end{itemize}
+
+Propagation may:
+
+\begin{itemize}
+    \item Add a new window
+    \item Modify existing windows
+    \item Delete existing windows
+\end{itemize}
+
+\subsubsection{Geodesic path Construction}
+
+Once all edges are covered by windows representing distance, it is easy to trace a shortest path from any surface point p back to the source.
+
+For a point p inside a face r: minimize $|p-p'| + d_s(p') $ for all p' on the edges of t. Jump to the window containing the point that minimizes that distance.
+
+For a point p on a window: Find the adjacent triangle t according to direction $\tau$. Reconstruct the position of the pseudo-source s in the plane of t and intersect the line to s with the other two edges of t. Jump to the intersection point , which is on new window , and repeat.
+When reaching a pseudo-source s : explore the windows incident at s until a window with a pseudo-source different from s is found.
+
+Repeat until reaching the source.
+
+\subsection{PDE-Based Methods}
+
+\subsubsection{The Eikonal Equation}
+
+The SSGDD problem can be formalized as a PDE:
+
+$|\bigtriangledown \phi|^2 = 1$ , $\phi(s) = 0$
+
+The change in distance per unit distance along the direction of greatest increase should be 1.
+
+Geodesic lines are integral curves of the gradient of the distance field.
+
+\subsubsection{The Fast Marching Method}
+
+Following a Dijkstra-like traversal of the mesh, starting at the source.
+
+Distances are not updated according to paths along edges, but by solving for the linear function that satisfies the eikonal equation.
+
+If the values $\phi_i,\phi_j$ at two corners are known , find a value $\phi_k$ so that the slope $|\bigtriangledown \phi|$ of a triangle passing through all three values equals +1.
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{195.png}
+  \end{subfigure}
+\end{figure}
+
+\vspace{20mm}
+
+\subsubsection{The Varadhan Formula}
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{196.png}
+  \end{subfigure}
+\end{figure}
+
+The heat equation is linear and can be resolved easily.
+
+Heat decays exponentially with distance, hence the norm of the result becomes soon unreliable : the smaller t the faster the decay , the bigger t the worse approximation of Varadhan formula
+
+\subsubsection{The Heat Method}
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{197.png}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Local Methods for PPGP}
+
+\subsubsection{Point to Point Geodesic Path}
+
+\begin{enumerate}
+    \item Start with a triangle strip joining p to q, usually found with a graph-based method
+    \item Unfold strip to the plane, one triangle at a time by using intersecting circles
+    \item Find shortest path within the strip , Funnel algorithm
+    \item Straighten the strip to remove turns, Straightening the strip
+    \item Repeat 3 and 4 until convergence
+\end{enumerate}
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{198.png}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Shortest path in a triangle strip}
+
+Input: triangle strip in the plane, containing p and q in its end triangles , respectively.
+
+Output: Shortest polyline connecting p to q inside the triangle strip.
+
+The path can turn only at reflex vertices
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{199.png}
+  \end{subfigure}
+\end{figure}
+
+Initialize funnel : connect p to the endpoints of first transversal edge of the strip; the mouth of the funnel spans all points that can be reached from p
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{200.png}
+  \end{subfigure}
+\end{figure}
+
+\vspace{30mm}
+
+Expand funnel : move one side of the funnel to the next transversal edge; the sides of the funnel may become concave chains when they overcome reflex edges.
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{201.png}
+  \end{subfigure}
+\end{figure}
+
+While advancing , the sides of funnel they may partially collapse to form the beak.
+
+Collapses happen when updating one side overcomes the other side.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.29\linewidth}
+    \includegraphics[width=1\linewidth]{202.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.39\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{203.PNG}
+         \caption{The funnel stops advancing when it reaches the last triangle}
+     \end{subfigure}
+\end{figure}
+
+\subsubsection{Straightening the strip}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{204.png}
+  \end{subfigure}
+\end{figure}
+
+\vspace{40mm}
+
+\section{Vector Graphics}
+
+\subsection{Vector Graphics}
+
+Specify graphics drawings as composed of \textbf{vector primitives}.
+
+A vector primitive is defined with:
+
+\begin{itemize}
+    \item A set of control points in a reference system
+    \item Possible additional parameters
+    \item Math to uniquely identify the primitive from the control points and the parameters.
+\end{itemize}
+
+Examples
+
+A straight line segment is defined by two control points p and q and parametric equation p+$\alpha$(p-q).
+
+A circle is defined by point c radius r and equation $|p-c|^2 = r^2$
+
+
+\subsubsection{Vector Graphics on a mesh}
+
+Can we extend vector graphics to a manifold domain, like a surface mesh?
+
+We should redefine everything under the geodesic metric: straight line can be replaced with geodesic lines. What about angles? Ellipses? 
+
+
+\subsubsection{Referencing points on a mesh}
+
+We can assign mesh coordinates to all points of a mesh M.
+
+Point p has coordinates ($t_p,a_p,b_p$) where :
+
+\begin{itemize}
+    \item $t_p$ is the triangle of M containing p
+    \item $a_p.b_p$, are the barycentric coordinates of p in t. A tuple of coordinates uniquely identifies a point of M
+\end{itemize}
+
+\vspace{60mm}
+
+\subsection{Simple Vector Primitives}
+\subsubsection{Geodesic line segment}
+
+Defined by a pair of points p,q.
+
+We assume this is the shortest geodesic joining them and it is unique. 
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{205.png}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Geodesic Circle}
+
+Defined by center c and radius r : SSGD from c gives distance field $d_c$ at all vertices of M.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{206.png}
+  \end{subfigure}
+\end{figure}
+
+It is defined by three points $p_1,p_2,p_3$  : we need to compute the distance fields from these points with SSGD , find the point c where the three distance fields have the same value and the corresponding value r and find the circle centered at c of radius r with previous method.
+
+\subsubsection{Triangle}
+
+Defined by its vertices $p_1,p_2,p_3$ :
+
+\begin{enumerate}
+    \item Connect the vertices with shortest geodesics with PPGP
+    \item Find the interior of triangle by flooding the surface from such geodesics.
+\end{enumerate}
+
+\subsubsection{Isosceles triangle}
+
+Defined by basis and height or defined by basis and angle at basis or defined by basis and length of diagonal edges
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{207.png}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Equilateral triangle}
+
+Defined by its basis. Different constructions are possible , but only one of the following properties can be guaranteed : all edges have equal length or all angles are equal.
+
+\subsubsection{Rectangle}
+
+Several possible definitions.
+
+If edges are geodesics , the basic properties of Euclidean triangles cannot be guaranteed
+
+\subsection{Bezier Curves}
+
+Directly translating the Bernstein or De Casteljau formulas does not work in general case.
+
+A recursive application of the De Casteljau construction defines a subdivision scheme that converges to a $C^1$ curve
+
+\textbf{Example for a cubic curve}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{208.png}
+  \end{subfigure}
+\end{figure}
+
+Given the initial control polygon (blue):
+
+\begin{enumerate}
+    \item Build the De Casteljau construction for evaluating the midpoint of the curve ( the control polygon is substituted with a chain of two control polygons joining at the midpoint
+    \item Apply Step 1 recursively to each sub-polygon
+    \item Stop when the control chain is straight enough
+\end{enumerate}
+
+
+Each recursion step requires:
+
+\begin{enumerate}
+    \item finding the midpoint of three existing geodesics $b_0^1,b_2^1,b_1^1$
+    \item Computing geodesics $b_0^1,b_1^1$ and $b_2^1,b_1^1$ and their midpoints $b_0^1,b_2^1$
+    \item Computing geodesics $b_0^2,b_1^2$ and its midpoint b
+    \item Halving five existing geodesics
+\end{enumerate}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{209.png}
+  \end{subfigure}
+\end{figure}
+
+\end{document}
