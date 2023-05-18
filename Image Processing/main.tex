@@ -1,0 +1,972 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{mathtools}
+\usepackage{derivative}
+\title{Image Processing}
+\author{Riccardo Caprile}
+\date{March 2022}
+
+\begin{document}
+
+\maketitle
+
+\section{Images}
+\subsection{Image Acquisition}
+Images cannot exist without light. To produce an image , the scene must be illuminated with one or more light sources.
+
+Certain modalities such as fluorescent microscopy, astronomy , MRI , and X-ray tomography do not fit this model and the image formation is more complex. 
+
+\vspace{2mm}
+
+\textbf{Image observed using different bands}
+\vspace{2mm}
+
+The same scene can be observed acquiring only a specific band of the light. 
+For instance the same area( Washington D.C) produces the following images if observed using different wavelength bands.
+
+\vspace{2mm}
+
+\textbf{Image Formation}
+\vspace{2mm}
+
+\begin{itemize}
+    \item \textbf{Geometric parameters} \textrightarrow{ type of projections, position and orientation of the camera , perspective distortion}
+    \item \textbf{Optical parameters} \textrightarrow{ lens type , focal length, field of view, aperture}
+    \item \textbf{Photometric parameters} \textrightarrow{ lens type , intensity , direction of illumination; reflectance properties of surfaces , sensors structure.}
+\end{itemize}
+
+A monochrome image is an array of values . There are two types of discretization involved :
+    \begin{itemize}
+        \item Spatial sampling ( pixels )
+        \item Intensity quantization (grey level value)
+    \end{itemize}
+
+\vspace{50mm}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{1.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\subsection{Digitalization}
+
+The digitalization process is formed by two steps : 
+\begin{itemize}
+    \item \textbf{Measurement}
+    \item \textbf{Conversion from analog to digital}
+\end{itemize}
+
+In the first step the physical quantity to be represented is measured by an appropriate device that converts it into an electrical continuous signal . In the second step the electrical signal is converted into a digital signal.
+
+\vspace{2mm}
+\textbf{CCD/CMOS}
+
+\vspace{2mm}
+Light falling on an imaging sensor is usually picked up by an active sensing area , integrated for the duration of the exposure - usually expressed as the shutter speed in a fraction of second and then passed to a set of sense amplifiers. The two main kinds of sensor used in digital still and video cameras today are charge-coupled device (CCD) and complementary metal oxide on silicon (CMOS).
+
+In a \textbf{CCD}, photons are accumulated in each active cell during the exposure time. Then , in a transfer phase , the charges are transferred from cell to cell in a kind of "bucket brigade" until they are deposited at the sense amplifiers, which amplify the signal and pass it to an analog-to-digital converter.
+
+Whereas , a \textbf{CMOS } imaging chip is a type of image sensor that has an amplifier for each pixel instead of the few amplifiers of a CCD , this results in less area of the capture of photons than a CCD, but this problem has been overcome with microlens in front of the photodiode that direct the light into the photodiode.
+
+\vspace{50mm}
+\subsection{Quantization}
+
+    
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{2.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{3.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\subsection{Representation}
+
+
+\textbf{Pixel Representation}
+\vspace{2mm}
+
+Let us imagine an image to be digitalized is overlaid with a regular grid : This grid is referred to as sampling grid , each element of the grid will contain a portion (region) of the image . The whole portion will be approximated by a unique average value. A coarse sampling grid produces an image with fewer details. 
+ \vspace{2mm}
+ 
+ \textbf{The size of an image}
+ \vspace{2mm}
+ 
+ The size of the image is given by the number of pixels composing it. The size is conventionally expressed by the number of rows times the number of columns of the image matrix , e.g 640x480
+ \vspace{2mm}
+ 
+ \textbf{Resolution}
+ \vspace{2mm}
+ 
+ Given an image with a fixed size in pixels , it can be visualized at different sizes(in mm) on various supports (paper , monitor). The visualization is controlled by the resolution.
+ The resolution depends on the size of the image and the size of the support.
+ It is measured in dots/cm or , more frequently , dots/inches(dpi).
+ The resolution is related on how dense are the elements on the support.
+ \vspace{2mm}
+ 
+ \textbf{Greyscale}
+ \vspace{2mm}
+ 
+ In photography and computing , a \textbf{grayscale image} is an image in which the value of each pixel is a single sample , that is , it carries only intensity information. Images of this sort , are composed exclusively of shades of gray, varying from black at the weakest intensity to white at the strongest.
+ \textbf{Grayscale images} are distinct from one-bit bi-tonal black and white images , which in the context of computer imaging are images with only two colors, black and white. Grayscale images have many shades of gray between.
+ \vspace{2mm}
+ 
+ \textbf{Color Spaces} 
+ \vspace{2mm}
+ \begin{itemize}
+     \item \textbf{RGB} \textrightarrow{ is short for Red, Green , Blue. It is the color of the light emitted from your computer monitor; when RGB light is combined, the image gets brighter. RGB is an additive color space and is light-based. You add Red,Blue and Green to get white.}
+     \item \textbf{CMYK} \textrightarrow{ is short for Cyan, Magenta , Yellow , Black. These arethe inks used in 4-color printing; when the inks are layered on top of each other the image gets darker. CMYK is subtractive , you mix together the colors to get black}
+ \end{itemize}
+
+     
+
+\subsection{Image Processing}
+ \vspace{2mm}
+ 
+ \textbf{Image Histogram}
+ \vspace{2mm}
+
+The histogram of a digital image with intensity levels in the range [0,L-1] is a discrete function :
+
+\begin{center}
+    h(r$_k$) = r$_k$
+\end{center}
+
+where: \begin{itemize}
+    \item \textbf{r$_k$} is the kth intensity value of the range
+    \item \textbf{n$_k$} is the number of pixels in the image with intensity r$_k$
+\end{itemize}
+It is common practice to group similar values while computing the histogram. The range of possible values [0,L-1] can be quantized in bins each of which will group pixels of the image with similar values.
+
+A \textbf{histogram} is a graphical representation of the distribution of data. The total area of the histogram is equal to the number of data .  The correspondence between histogram and image is not unique:; different images may have the same histogram.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{71.PNG}
+\caption{Images with the same histogram}
+  \end{subfigure}
+\end{figure}
+
+\vspace{40mm}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{4.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{5.PNG}
+     \end{subfigure}
+\end{figure}
+
+\begin{center}
+    p(r$_k$) = n$_k$/N M (N x M is the image size)
+\end{center}
+It can be seen as an estimate of the intensity probability distribution; the area of the normalized histogram is equals to 1.
+\textbf{Histogram processing algorithms} produce transformations on images through their histograms.
+\begin{center}
+    s = T(r) 0 $<$= r $<$= L-1
+\end{center}
+ \vspace{2mm}
+ 
+ \textbf{Histogram equalization} 
+ \vspace{2mm}
+ Equalization usually increases the global contrast an image. Through this adjustment, the intensities can be better distributed on the histogram. This allows for areas of lower local contrast to gain a higher contrast.
+ 
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{6.PNG}
+  \end{subfigure}
+\end{figure}
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{7.PNG}
+  \end{subfigure}
+\end{figure}
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{8.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{30mm}
+\textbf{Point Operators}
+\vspace{2mm}
+
+The simplest kind of image processing transforms are point operators , where each output pixel value depends on only the corresponding input pixel value. Examples of such operators include brightness and contrast adjustments as well as color correction and transformations.
+
+Intensity transformation are described by a function that define, for each level of the pixel , the new level. In the following two examples for (a) Contrast stretching and (b) Thresholding
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{9.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{10.PNG}
+     \end{subfigure}
+\end{figure}
+
+\vspace{2mm}
+\textbf{Neighbourhood operators}
+\vspace{2mm}
+
+In this class of operators an output pixel is obtained starting from a set of neighbouring pixels in the input image. The neighbourhood is usually squared ( W x W pixels) and its size may vary W = 3,5,11 ...
+These operators are often referred as filters.
+
+\subsection{Geometric Transformations}
+Such transformations modify the position of pixels instead than their value : \textbf{transformation of coordinates}.
+Given a pixel of image I at coordinates p = (p$_1$ , p$_2$) the effect of a transformation H is to move I(p) to q = (q$_1$ , q$_2$) that is : 
+\begin{center}
+    q = H(p)
+\end{center}
+and the corresponding image transformation from the input image I to the output image J is 
+\begin{center}
+    J(q) = J(H(p) = I(p)
+\end{center}
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{11.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{12.PNG}
+     \end{subfigure}
+\end{figure}
+
+Translation t = (t$_1$,t$_2$)
+\begin{center}
+q$_1$ = p$_1$ + t$_1$
+\end{center}
+\begin{center}
+ q$_2$ = p$_2$ + t$_2$  
+\end{center}
+Rotation of an angle $\theta$ (around the origin)
+\begin{center}
+q$_1$ = p$_1$ cos $\theta$ + p$_2$ sin $\theta$   
+\end{center}
+\begin{center}
+q$_2$ = -p$_1$ sin $\theta$ + p$_2$  cos $\theta$   
+\end{center}
+
+Scaling :
+\begin{center}
+q$_1$ = c $\cdot$ p$_1$    
+\end{center}
+\begin{center}
+q$_2$ = d $\cdot$ p$_2$   
+\end{center}
+
+In digital image processing they consist of two steps : 1) A spatial transformation of coordinates according to T , 2) An intensity interpolation to assign intensity values to the spatially transformed pixels on the discrete grid.
+
+\vspace{30mm}
+
+\section{2D Fourier Transform for Images}
+
+\subsection{2D Fourier Transform}
+\vspace{2mm}
+The 2D Fourier Transform can be easily derived from the 1D 
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{13.PNG}
+  \end{subfigure}
+\end{figure}
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{14.PNG}
+  \end{subfigure}
+\end{figure}
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{15.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{16.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{17.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{18.PNG}
+     \end{subfigure}
+\end{figure}
+
+Fourier Transform pair examples :
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{19.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{20.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{21.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{22.PNG}
+     \end{subfigure}
+\end{figure}
+
+\vspace{20mm}
+
+\textbf{Translation and Rotation}
+\vspace{2mm}
+
+The spectrum is insensitive to image translation , but it rotates by the same angle of a rotated image. It is possible to see the differences in the spectrum between the original image and the rotated one.
+
+\subsection{Discrete Fourier Transform}
+\textbf{DFT of Images}
+In the discrete world , let consider an image as a matrix of size M x N where any element represents the value of the pixel f[m,n] and m = 0, ... , M - 1 and n = 0, ... , N - 1. In order to apply DFT , we must consider the image as a part of its periodic expansion.
+\begin{center}
+    f[m +- M,n] = f[m,n+- N] = f[m +- M, n +- N] = f[m,n]
+\end{center}
+Then, the Discrete Fourier Transform and its inverse are : 
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{23.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{10mm}
+\subsection{DFT of an image : useful properties}
+\textbf{Complex Conjugate symmetry}
+\vspace{2mm}
+
+An image is usually a 2D real-valued signal. If [m,n] is real , f[m,n] = f*[m,n], then F*[k,l] = F[-k,-l].
+
+It follows that |F(k,l)| = |F(-k,-l)|, which says that the spectrum of the Fourier transform is symmetric. In other words, there exist negative frequencies which are mirror images of the corresponding positive frequencies. 
+
+\vspace{2mm}
+\textbf{Periodicity}
+\vspace{2mm}
+
+The spectrum repeats itself endlessly in both directions with period N and M : F [k,l] = F[k + M , l] = F[k,l + N ] = F[k + M , I + N ]. The N x M block of the Fourier coefficients F[k,l] computed from an N x M image is a single period from this infinite sequence.
+
+
+\subsection{Properties of DFT-2D : shift in frequency}
+
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.89\linewidth}
+    \includegraphics[width=1\linewidth]{24.PNG}
+  \end{subfigure}
+\end{figure}
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{26.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.79\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{27.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+
+\subsection{Visualizing the DFT}
+
+An appropriate frequency shift of (M/2,N/2) will take the DC component F[0,0] at the center of the map (F(0,0) = $\sum\limits_{m=0}^{N-1} p_i$
+$\displaystyle\sum_{n=0}^{N-1}$ f(m,n) is the image average intensity level).
+
+Because the lower frequency amplitudes mostly dominate over the mid-range and high-frequency ones , the fine structure of the amplitude spectrum can be perceived only after a non-linear mapping to the greyscale range [0,255]
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{28.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Fourier Filtering}
+To filter an image in the frequency : 
+\begin{itemize}
+    \item Compute the DFT of the image F(u,v)
+    \item Select and appropriate filter H ( or filter transfer function)
+    \item Multiply F(u,v) by a filter function H(u,v) : G(u,v) = H(u,v) F(u,v)
+    \item Compute the inverse DFT of G(u,v)
+\end{itemize}
+
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{29.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\subsection{Image filtering and convolution theorem}
+ 
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{30.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Filters in space and frequencies}
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{31.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Image smoothing}
+
+Smoothing is achieved in the frequency domain by dropping out the high frequency components. This effect is obtained by applying a low-pass filter.
+We can take into account different low-pass filters , for instance : Ideal low-pass, Butterworth , Gaussian
+
+\subsubsection{Ideal low-pass filter}
+
+Simply cuts off all high frequency components that are a specified D0 from the origin transform.
+
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.69\linewidth}
+    \includegraphics[width=1\linewidth]{32.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{33.PNG}
+     \end{subfigure}
+\end{figure}
+
+Above we show an image , its Fourier spectrum and a series of ideal low pass filters of radius 5 , 15 , 30 , 80 and 230 superimposed on top of it.
+
+
+The original image and the five different filtered images D0 = 5,15,30,80,230.
+
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{34.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{50cm}
+
+\subsubsection{Butterworth low-pass filter}
+
+The transfer function of a Butterworth lowpass filter of order n with cutoff frequency at distance D0 from the origin is defined as : 
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{35.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.15\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{36.PNG}
+     \end{subfigure}
+\end{figure}
+
+The original image and the five different images filtered by a Butterworth filter of order and D0 = 5,15,30,80,230
+
+
+\subsubsection{Gaussian low-pass filter}
+
+The transfer function of a Gaussian lowpass filter with cutoff frequency at distance D0 from the origin is defined as : 
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{37.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.15\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{38.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsubsection{Low-pass filtering comparison}
+The test image filtered by : (left) ideal low-pass filter D0 = 15 , (center) butterworth low-pass filter D0 = 15 , (right) Gaussian low-pass filter D0 = 15
+
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{39.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{40mm}
+
+\subsection{Image enhancement}
+
+Fine details in images are associated with high frequency components.
+High pass filters only pass the high frequencies , dropping the low ones.
+High pass filters are the reverse of low pass filters , so : $H_hp$(u,v) = 1 - $H_lp$ (u,v)
+
+\subsection{Ideal High-pass filter}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.69\linewidth}
+    \includegraphics[width=1\linewidth]{40.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{41.PNG}
+     \end{subfigure}
+\end{figure}
+
+The original image and three different images filtered by an ideal high-pass filter with D0 = 15,30,80
+
+\subsubsection{Gaussian high-pass filter}
+
+The Gaussian high-pass filter with cutoff frequency at distance D0 from the origin is defined as  : 
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.69\linewidth}
+    \includegraphics[width=1\linewidth]{42.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{43.PNG}
+     \end{subfigure}
+\end{figure}
+
+The original image and three different images filtered by a Gauss  filter with D0 = 15,30,80
+
+
+\section{Spatial Filters}
+
+\subsection{Preliminaries : the mathematics of spatial filtering}
+\subsubsection{Convolution}
+
+Convolution is defined as the integral of the product of the two functions after one is reversed and shifted : 
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{44.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Convolution theorem}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.50 \linewidth}
+    \includegraphics[width=1\linewidth]{45.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Discrete convolution}
+
+If f and h are defined on integer values : (f * h)[n] = $\displaystyle\sum_{m = - inf }^{+inf} f[m]h[n-m]$
+with a finite support 
+(f*h)[n] = $\displaystyle\sum_{m=0}^{M} f[m]h[n-m]$
+
+
+\subsubsection{2D Discrete convolution and filtering}
+
+We consider an image f and a filter or kernel k. We obtain g , the filtered version of f.
+
+g[x,y] = (f * k )[x,y] = $\displaystyle\sum_{m,l} f[x-m,y-l]k[m,l]$
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.9\linewidth}
+    \includegraphics[width=1\linewidth]{46.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{30mm}
+
+\subsubsection{Filtering Examples}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{47.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{48.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsection{Smoothing filters}
+\subsubsection{Noise}
+We only briefly mention the fact real images are affected by different sources of noise. An empirical evidence :
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.55\linewidth}
+    \includegraphics[width=1\linewidth]{49.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Noise models}
+
+Different models of noise can be found in the literature.
+Pictorial images are often assumed to be affected by some amount of additive noise .
+
+$f_r$(x,y) = $f_i$(x,y) + $\eta$(x,y)
+where :
+\begin{itemize}
+    \item $f_i$ is the ideal (unknown) image
+    \item $f_r$ is the real (observed) image
+    \item $\eta.$ is the noise term
+\end{itemize}
+
+A rather common and effective model for noise is the \textbf{Gaussian distribution}
+
+\subsubsection{Noise reduction : average filters}
+
+With an average filter we replace each pixel by the average of its neighbors  and itself.
+This has the effect of eliminating pixel values which are unrepresentative of their surroundings.
+This assumes that neighboring pixels are similar and the noise to be independent from pixel to pixel.
+Average can be represented by an appropriate kernel
+
+\vspace{50cm}
+
+\subsubsection{Noise reduction : Gaussian filter}
+
+The Gaussian smoothing operator is a 2D convolution operator to "blur" images and remove detail and noise.
+In this sense it is similar to the mean filter , but it uses a different kernel that represents the shape of a Gaussian hump.
+The Gaussian distribution in 1D has the form : 
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{50.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.69\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{51.PNG}
+     \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.45\linewidth}
+    \includegraphics[width=1\linewidth]{52.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\subsection{A parenthesis on efficiency : separable kernels}
+
+A single 2D convolution costs O($k^2$) is K x K is the size of the kernel mask.
+Two consecutive 1D filtering operations may be more efficient O(2K)
+Separable filter k = v$v^T$ are more efficient.
+If the filter is separable , instead than one 2D convolution we obtain the same effect with 2 consecutive 1D convolutions ( $f_r$ = f * v  , g = $f_r$ * h)
+The Gaussian filter and the average filters are separable.
+
+\subsection{Enhancement filters}
+\subsubsection{Computing image derivatives}
+
+Enhancement filters highlight transitions in intensity.
+We will use them to estimate finite differences.
+We will need to cope the fact differentiation enhances interesting discontinuities but also noise.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.80\linewidth}
+    \includegraphics[width=1\linewidth]{53.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{40mm}
+
+\textbf{1st derivative} : Zero in constant areas , not zero on ramps.
+
+\textbf{2nd derivative} : Zero in constant areas , Zero on ramps with constant slope, not zero at the beginning and the end of the ramps.
+
+$\pdv{f}{x}$ = f(x+1) - f(x)
+
+
+$\frac{\partial^2 f}{\partial x^2}$ = f(x+1) +f(x-1) - 2f(x)
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{54.PNG}
+  \end{subfigure}
+\end{figure}
+
+ \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{55.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{30mm}
+
+\subsubsection{What do we do with derivatives}
+
+As we will see later in the course derivatives allow us to highlight signal discontinuities.
+\textbf{Gradient} : edge detection , corners , image sharpening
+\textbf{Laplacian} : edge detection , blob-=like features , image sharpening.
+
+\subsubsection{Derivatives and noise }
+
+So far, we discussed the ideal noise-free case. In the presence of noise , enhancement filters also enhance noise.
+General scheme : 1. Smoothing the image with a low pass filter , 2. Computing the derivative
+
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.25\linewidth}
+    \includegraphics[width=1\linewidth]{56.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+From the properties of convolution : 
+
+$\frac{\partial^n }{\partial u}(k * f)$ = $\frac{\partial^n k}{\partial u}* f$
+
+Therefore the previous scheme is equivalent to : 1. Computing the derivative filter, 2. Smooth the image with the derivative of the filter.
+This alternative has some advantage : Since the kernels are smaller than the image , we will have fewer computations and often the derivative of kernels can be pre-calculated and this would give us only once convolution
+
+\subsubsection{Derivative of the Gaussian}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{57.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\subsubsection{Example : the Sobel operator}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{58.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.39\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{59.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\subsubsection{Non linear filter}
+In contrast to frequency filtering , in the space domain we could design non linear filters.
+A well-known example is the median filter , used to contrast the salt-and-pepper noise.
+Another interesting non linear filter is the bilateral filter.
+
+
+\vspace{40mm}
+
+\section{Feature Detection}
+
+\subsection{Edge Detection}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{60.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{61.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsubsection{Edges: definition}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{62.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Criteria for optimal edge detection}
+
+\textbf{Good detection} : The optimal detector must minimise the probability of false positives as well as that of missing real edges?
+
+\textbf{Good Localization}. The edges must be as close as possible to the true edges?
+
+\textbf{Single response constraint} : The detector must return one point only for each true edge point
+
+\vspace{30mm}
+
+\subsubsection{Edge detection by thresholding : Sobel Algorithm}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.45\linewidth}
+    \includegraphics[width=1\linewidth]{63.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Edge detection by zero crossing}
+
+The simplest way is to compute the gradient magnitude and then threshold it.
+A more accurate way to compute the gradient maxima is to look for \textbf{zero-crossing} of the second derivative.
+This is the \textbf{Laplacian of Gaussian (LoG}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.45\linewidth}
+    \includegraphics[width=1\linewidth]{64.PNG}
+  \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.45\linewidth}
+    \includegraphics[width=1\linewidth]{65.PNG}
+  \end{subfigure}
+\end{figure}
+
+\begin{itemize}
+    \item Filter the image with a LoG mask
+    \item Locate edge elements then the sign between adjacent elements changes.
+    \item This approach produces edge chains in closed loops.
+    \item It is quite common to use a threshold.
+\end{itemize}
+
+\subsubsection{Approximating the LoG}
+It is common practice to approximate a LoG filter with a Difference of Gaussians (DoG) of different amplitude.
+This is particularly useful in multi-scale models.
+
+
+\subsubsection{Edge detection : Canny Algorithm}
+
+The Canny edge detector is still one of the most largely used algorithms. It implements an approximation of the optimal step edge detector.
+The algorithm :
+\begin{enumerate}
+    \item Edge enhancement 
+    \item Non-maxima suppression
+    \item Hysteresis thresholding
+\end{enumerate}
+
+
+We compute the image gradient J taking into account the presence of noise.
+
+We compute the edge intensity :  $E_s$(i,j) = $\sqrt{J{^2}_x(i,j) + J{^2}_y(i,j)}$
+
+and estimate the edge normal : $E_0 (i,j)$ = arctan $\frac{J_y}{J_x}$
+
+For each pixel (i,j) given a sampling of directions ( D = {0,45,90,135}).
+
+Look for direction d in D that best approximates $E_o$(i,j).
+If $E_s$(i,j) is smaller than its neighbours in the direction d then set $E_s$(i,j) to zero.
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.45\linewidth}
+    \includegraphics[width=1\linewidth]{66.PNG}
+  \end{subfigure}
+\end{figure}
+
+Given two thresholds t1 > t2.
+For each pixel (i,j) if $E_s$(i,j) > t1 : starting from $E_s$ (i,j) follow the chains of connected local maxima in both directions perpendicular to the edge normal as long as $E_s$ (k,h) > t2.
+Mark all visited points and save a list of the locations of all points in the connected contour found.
+
+The output is a set of edge chains.
+
+\subsubsection{Canny Algorithm : the role of $\sigma$}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.45\linewidth}
+    \includegraphics[width=1\linewidth]{67.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Corner detection}
+
+\subsubsection{Good features}
+
+Patches with large contrast changes are easier to localize.
+Straight line segments with a single orientation suffer the \textbf{aperture problem}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.45\linewidth}
+    \includegraphics[width=1\linewidth]{68.PNG}
+  \end{subfigure}
+\end{figure}
+
+We observe how patches with gradients in at least two (significantly) different orientations are the easier to localize.
+
+This can be formalized by analysing a simple matching criterium.
+
+In particular we use it to check how stable the patch is wrt small variations in position u (SSD autocorrelation function):
+
+$E_AC$(u) = $\displaystyle\sum_{i} [I(x_i + u) - I(x_i)]^2$
+
+\subsubsection{Corner detection : algorithm sketch}
+
+Given an image point q we consider a neighborhood Nq and compute its auto-correlation matrix
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{69.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{70.PNG}
+     \end{subfigure}
+\end{figure}
+
+\end{document}
