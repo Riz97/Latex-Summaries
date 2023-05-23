@@ -1,0 +1,2015 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{amsfonts}
+
+
+
+\title{Mobile Development}
+\author{Riccardo Caprile}
+\date{March 2023}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction to Android}
+
+\subsection{What is an Android app?}
+
+App that uses one or more interactive screens , written using Java and Kotlin (logic) and XML (UI). Uses the Android Software Development Kit and Android libraries and Android Application Framework.
+
+\subsection{Challenges of Android Development}
+
+\subsubsection{Multiple screen sizes and resolutions}
+
+Challenge , as a developer , is to design UI elements that work on all devices.
+
+\textbf{Screen Property : Density}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{1.PNG}
+  \end{subfigure}
+\end{figure}
+
+If you use fixed measures in your app , you can obtain the result on the right on the device you are working. But you can have the situation on the left on a device with an higher pixel density.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{2.PNG}
+  \end{subfigure}
+\end{figure}
+
+Example of two screens of the same size may have a different number of pixels.
+
+To preserve the visible size of your UI on screens with different densities , you must design your UI using \textbf{density-independent pixels (dp)} as your unit of measurement.
+
+dp is a virtual pixel unit that is roughly equal to one pixel on a medium-density screen.
+
+\subsubsection{Performance}
+
+Make your apps responsive and smooth. Main aspects :
+
+\begin{itemize}
+    \item How fast it runs
+    \item How easily it connects to the network
+    \item How well it manages battery and memory usage
+\end{itemize}
+
+Performances are affected by various factors : 
+
+\begin{itemize}
+    \item Battery level ( low battery , low performance)
+    \item Multimedia content (HD content reduce overall performances)
+    \item Internet access
+\end{itemize}
+
+\subsubsection{Security}
+
+Keep source code and user data safe.
+
+Protect critical user information such as login and passwords, secure your communication channel to protect data in transit across the internet , optimize the code , remove unused resources , classes , fields and methods.
+
+\subsubsection{Compatibility}
+
+Run well on older platform versions. Not focus only on the most recent Android version. Not all users may have upgraded their devices.
+
+\subsection{App Building Blocks}
+
+\begin{itemize}
+    \item \textbf{Resources} : layouts , images , strings and colors (XML) 
+    \item \textbf{Components} : activities , services and helper classes as Java and Kotlin
+    \item \textbf{Manifest} : information about the app for the runtime
+    \item \textbf{Build configuration} : Gradle config files
+\end{itemize}
+
+\section{Android Platform Architecture}
+
+\subsection{Android Stack}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{3.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{System and user apps}
+
+System apps have \textbf{no special status}
+
+System app \textbf{provide key capabilities} to app developers (email , SMS , calendars , internet browsing).
+
+For example , your app can use a system app to deliver a SMS message.
+
+\subsubsection{JAVA Api Framework}
+
+The entire feature-set of the Android OS is available to you through APIs written in the Jave language.
+
+\begin{itemize}
+    \item View System : to create UI screens
+    \item Notification Manager : to display custom alerts in the status bar
+    \item Activity Manager : for app life cycles and navigation
+\end{itemize}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{4.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Android runtime}
+
+When we build our app and generate APK , part of that APK are .dex files.
+
+When a user runs our app the bytecode written in .dex files is translated by Android Runtime into the machine code.
+
+Each app runs in its own process with its own instance of the Android Runtime(ART).
+
+For devices running Android version 5.0 or higher.
+
+Android also includes a set of core runtime libraries that provide most of the functionality of the Java programming language. 
+
+\subsection{C/C++ libraries}
+
+Core C/C++ libraries give access to core native Android system components and services.
+
+\subsection{Hardware Abstraction Layer}
+
+Standard interfaces that expose device hardware capabilities as libraries ( Camera , Bluetooth module , sensors).
+
+When a framework API makes a call to access device hardware , the Android system loads the library module for that hardware component.
+
+\subsection{Linux Kernel}
+
+The foundation of the Android platform is the Linux Kernel. Features include :
+
+\begin{itemize}
+    \item Threading and low-level memory management : ART relies on the Linux kernel for underlying functionalities such as threading and low level memory management
+    \item Security : Using a Linux kernel allows Android to take advantage of key security features
+    \item Drivers : Using a Linux kernel allows device manufacturers to develop hardware drivers for a well-known kernel
+\end{itemize}
+
+\section{Logging in Android}
+\subsection{LogCat pane}
+
+Run pane reports some messages but cannot be configured...
+
+Instead, with the configurable \textbf{Logcat pane} it is possible to create custom view of :
+
+
+\textbf{System messages} : such as when a garbage collection occurs
+
+\textbf{messages}: added to the app with the \textbf{Log class}
+
+It displays messages in real time and keeps a history so you can view older messages.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{5.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Write log messages}
+
+The Log class allows to create log messages that appear in logcat.
+
+Use the following log methods , listed in order from the highest to lowest priority:
+
+\begin{itemize}
+    \item  Log.e(String,String) (error)
+    \item  Log.w(String,String) (warning)
+    \item  Log.i(String,String) (information)
+    \item  Log.d(String,String) (debug)
+    \item  Log.v(String,String) (verbose)
+    
+\end{itemize}
+
+private const val TAG = "MyActivity";
+
+Log.i(Tag,"Message");
+
+TAG: the first parameter should be a unique tag , a short string indicating the system component from which the message originates
+
+\subsubsection{Set the log level}
+
+It is possible to control how many messages appear in the logcat by setting the log level. In the Log level menu , select one of the following values:
+
+\begin{itemize}
+    \item  \textbf{Verbose} : Show all log messages
+    \item  \textbf{Debug}: Show debug log messages that are useful during development only
+    \item  \textbf{Info} : Show expected log messages for regular usage
+    \item  \textbf{Warn}: Show possible issues that are not yet errors
+    \item  \textbf{Error}: Show issues that have caused errors
+    \item  \textbf{Assert}: Show issues that the developer expects should never happen.
+
+\end{itemize}
+
+\section{Views,View Groups and View Hierarchy}
+
+\subsection{View}
+
+If you look at your mobile device, evey user interface element that you see is a \textbf{View}.
+
+UI consists of a hierarchy of objects called views
+
+View subclasses are basic user interface building blocks (Display text , Edit text, Buttons , menus , Scrollable, Group views).
+
+\subsection{Example of view subclasses}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{6.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{View Group and View Hierarchy}
+
+\subsubsection{ViewGroup contains child views}
+
+View elements for a screen are organized in a hierarchy.
+
+At the root of this hierarchy there is a ViewGroup(1)
+
+ViewGroup can contain child View elements(2) or other ViewGroup
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{7.PNG}
+  \end{subfigure}
+\end{figure}
+
+The following are commoonly used ViewGroups:
+
+\begin{itemize}
+    \item ConstraintLayout : Positions UI elements using constraint connections to other elements and to the layout edges
+    \item ScrollView: Contains one element and enebles scrolling
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{8.PNG}
+  \end{subfigure}
+\end{figure}
+
+\end{itemize}
+
+\subsection{ViewGroups for layouts}
+
+Some ViewGroup groups are designated as layouts.
+
+Organize child View elements in a specific way, they are typically used as the root ViewGroup
+
+\subsubsection{Common Layout Classes}
+
+A group of child View elements using constraints , edges and guidelines to control how the elements are positioned relative to other elements in the layout.
+
+ConstraintLayout was designed also to make it easy to click and drag View elements in the layout editor.
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{9.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  Linear Layout : A group of child View elements positioned and aligned horizontally or vertically
+
+  Grid Layout : A group that places its child View elements in a rectangular grid that can be scrolled
+  
+
+      \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.2\linewidth}
+    \includegraphics[width=1\linewidth]{10.PNG}
+  \end{subfigure}
+  \end{figure}
+
+
+
+  View Class hierarchy is standard object-oriented class inheritance
+
+  Layout Hierarchy is how views are visually arranged.
+
+\subsubsection{View Hierarchy and Screen Layout}
+
+      \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{11.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\section{Layouts and Event Handling}
+
+\subsection{Layout editor main toolbar}
+
+      \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{12.PNG}
+  \end{subfigure}
+  \end{figure}
+
+The figure above shows the top toolbar of the layout editor:
+
+\begin{enumerate}
+    \item Select Design Surface : Select Design to display a color preview of the UI elements
+in your layout, or Blueprint to show only outlines of the elements. To see both
+panes side by side, select Design + Blueprint
+    \item Orientation in Editor : Select Portrait or Landscape to show the preview in a
+vertical or horizontal orientation. The orientation setting lets you preview the
+layout orientations without running the app on an emulator or device.
+    \item Device in Editor : Select the device type (phone/tablet, Android TV, or Android
+    \item API Version in Editor : Select the version of Android to use to show the preview
+    \item Theme in Editor : Select a theme (such as AppTheme ) to apply to the preview
+    \item Locale in Editor : Select the language and locale for the preview. This list displays only the
+languages available in the string resources (see the documentation on localization for details
+on how to add languages).
+    
+\end{enumerate}
+
+\subsection{Preview layouts}
+
+It is possible to preview an app's layout with a horizontal orientatin , without having to run the app on an emulator or device.
+
+Click Orientation in Editor button , choose Switch to Landscape or Switch to Portrait.
+
+Preview layout with different devices : click device in Editor button , choose device.
+
+\subsection{ConstraintLayout toolbar in layout editor}
+
+  \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{13.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \begin{enumerate}
+      \item Show : Select Show Constraints and Show Margins to show them in the preview, or
+to stop showing them.
+        \item Autoconnect : Enable or disable Autoconnect . With Autoconnect enabled, you can drag
+any element (such as a Button ) to any part of a layout to generate constraints against
+the parent layout.
+\item Pack : Clear All Constraints : Clear all constraints in the entire layout.
+\item Infer Constraints : Create constraints by inference.
+\item Default Margins : Set the default margins.
+\item Pack : Pack or expand the selected elements.
+\item Align : Align the selected elements.
+\item Guidelines : Add vertical or horizontal guidelines.
+\item Zoom controls: Zoom in or out.
+  \end{enumerate}
+
+\vspace{30mm}
+
+  \subsection{ConstraintLayout handles}
+
+  A constraint is a connection or alignment to : another UI element, the parent layout , an invisible guideline.
+
+  Each constraint appears as a line extending from a circular handle.
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{14.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \begin{enumerate}
+      \item Resizing square handle
+      \item Constraint line and handle . In the
+figure, the constraint aligns the left side of
+the Toast Button to the left side of the
+layout.
+      \item Constraint handle without a constraint
+line.
+      \item Baseline handle . The baseline handle
+aligns the text baseline of an element to
+the text baseline of another element.
+  \end{enumerate}
+
+  To create a constraint : click a constraint handle (shown as a circle on each side of an element) , drag the circle to another constraint handle or to a parent boundary. A zigzag line represents the constraint.
+
+  \subsection{Event Handling}
+
+\subsubsection{Events}
+
+Something that happens.
+
+In UI: click,tap,drag
+
+Device: DetectedActivity such as walking,driving,tilting.
+
+\subsubsection{Event Handlers}
+
+Methods that do something in response to an event (click or tap).
+
+\begin{itemize}
+    \item An \textbf{event handler} is a method triggered by a specific event and that does something in response to such event.
+    \item An \textbf{event listener} is an interface in the View class that contains a single callback method. This method will; be called by the Android framework when the View to which the listener has been registered is triggered by user interaction with the item in the UI.
+\end{itemize}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{15.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \subsubsection{Updating a View}
+
+  To update a View the code must first instatiate an object from the View. The code can then update the object, which updates the screen.
+  
+To refer to the View in the code , use the \textbf{findViewById()} method of the View class, which looks for a View based on the resource id.
+
+\section{Activities and Intents}
+
+\subsection{Activities (High-Level view)}
+
+\subsubsection{What is an Activity?}
+
+An activity is an application component.
+
+Represents one window and typically fills the screen.
+
+A Java class is typically one Activity in one file
+
+\textbf{An activity represents a single screen in the app with an interface the user can interact with}, for example an email app might have 3 activities : one to shows a list of received emals , one to compose an email and one to read individual messages
+
+\subsubsection{What does an activity do?}
+
+Apps are often collections of activities that you create yourself or that you reuse from other apps.
+
+Handles user interactions, such as button clicks, text entry and login verification.
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{16.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \vspace{40mm}
+
+  \subsubsection{Apps and activities}
+
+  First Activity user sees is typically called \textbf{main activity}
+
+  Activities are loosely tied together to make uo an app.
+
+  Activities can be organized in parent-child relationships in the Android manifest to aid navigation.
+
+  An activity has a life cycle : Created , Started , Runs , Paused , Resumed , Stopped and Destroyed.
+
+\subsubsection{Layouts and Activities}
+
+An Activity typically has a UI layout..
+
+Layout is usually defined in one or more XML files.
+
+Activity inflates layout as part of being created.
+
+\subsection{Implementing Activities}
+
+\subsubsection{Implement new activities}
+
+When creating a new project the wizard automatically performs the following steps ( 1. Define layout in XML, 2. Define Activity Java class , 3. Connect Activity with Layout , 4. Declare Activitu in the Android manifest).
+
+
+\textbf{Define Layout in XML}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{17.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \textbf{Define Activity Java class}
+
+When creating a new project the MainActivity is , by default , a subclass of the AppCompatActivity class.
+
+This allows to use up-to-date Android app features such as the app bar and Material Design while still enabling the app to be compatible with devices running older versions of Android
+
+The first task in the implementation of an Activity subclass is to implement the standard Activity lifecycle callback methods (such as OnCreate()) to handle the state changes for your Activity.
+
+The one required callback that an app must implement is the onCreate() method.
+
+The system calls this method when it creates the Activity , and all essential components of your Activity should be initialized here.
+
+\vspace{10mm}
+
+\textbf{Connect activity with layout}
+
+The onCreate() method setContentView() with the path to a layout file.
+
+The system creates all the initial views from the specified layout and adds them to your Activity. This is often referred to as inflating the layout.
+
+\vspace{10mm}
+
+\textbf{Declare activity in Android manifest}
+
+Each Activity in an app must be declared in the AndroidManfest.xml file with the activity element , inside the application section.
+
+MainActivity needs to include intent-filter to start from launcher. The action element specifies that this is the main entry point to app and only the MainACtivity should include the main action
+
+\subsection{Intents}
+
+\subsubsection{What is an intent?}
+
+An Intent is a \textbf{description of an operation to be performed}.
+
+An Intent is an object used to request an action from another app component via the Android system.
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{18.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\vspace{50mm}
+
+  \subsubsection{Starting the main activity}
+
+  \begin{enumerate}
+      \item When the app is first started from the device home screen
+      \item The Android runtime sends an Intent to the app to start the app's main activity.
+  \end{enumerate}
+
+      \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{19.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \subsection{What can intents do?}
+
+  \begin{itemize}
+      \item Start an Activity : A button click starts a new Activity for text entry , pass data between one activity and another. Clicking Share opens an app that allows you to post a photo.
+      \item Start a Service : Initiate downloading a file in the background
+      \item Deliver Broadcast : The system infroms everybody that the phone is now charging
+  \end{itemize}
+
+  \subsubsection{Explicit and Implicit intents}
+
+  \textbf{Explicit Intent} : Starts a specific Activity , for example : Request tea with milk delivered by a specific Cage. Main activity starts with ViewShoppingCart Activity
+
+  \textbf{Impliciti Intent} : Asks system to find an Activity that can handle this request, Find an open store that sells green tea. Clicking Share opens a chooser with a list of apps.
+
+  \subsection{Starting Activities}
+
+  \subsubsection{Start an Activity with an explicit intent}
+
+  To start a specific Activity , use an explicit Intent.
+
+  \begin{enumerate}
+      \item Create an Intent : Intent intent = new Intent(this, ActivityName,class)
+      \item Use the Intent to start the Activity : startActivity(intent)
+  \end{enumerate}
+
+\subsubsection{Start an Activity with implicit intent}
+
+To ask Android to find an Activity to handle your request , use an implicit Intent.
+
+\begin{enumerate}
+    \item Create an Intent : Intent intent = new Intent(action,uri)
+    \item Use the Intent to start the Activity : startActivity(intent);
+\end{enumerate}
+
+      \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{20.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \subsubsection{How Activities run}
+
+  All Activity instances are managed by the Android runtime.
+
+  Started by an Intent , a message to the Android runtime to run an activity
+
+  \subsection{Sending and Receiving Data}
+
+  In addition to open a new activity , with an intent it is possible to pass data from one Activity to another.
+
+  In particular , it is possible to use \textbf{Intent data} or \textbf{Intent extras}.
+
+  \begin{itemize}
+      \item Data : One piece of information whose data location can be represented by an URI
+      \item Extras : one or more pieces of information as a collection of key-value pairs.
+      
+  \end{itemize}
+
+\subsubsection{Intent Data}
+
+The Intent data can hold only one piece of information : a URI representing the location of the data you want to operate on :
+
+A Uniform Resource Identifier (URI) is a compact string of characters for identifying an abstract or physical resource
+
+The URI could be:
+
+\begin{itemize}
+    \item a web page URL(http://)
+    \item a telephone number(tel://)
+    \item a geographic location(geo://) 
+\end{itemize}
+
+Use the Intent data field when you only have one piece of information that you need to send to the started Activity , that information is a data location that can be represented by a URI.
+
+\subsubsection{Extras Data}
+
+Intent extras are for any other arbitrary data you want to pass to the started Activity,
+
+Intent extras are stored in a Bundle objects as key and value pairs.
+
+A \textbf{Bundle} is a map , in which a key is a string and a value can be any primitive or object type.
+
+To put data into the Intent extras you can use any of the Intent class putExtra() methods or create your own Bundle and put the Bundle into the Intent with putExtras()
+
+Use the Intent extras if you want to pass more than one piece of information to the started Activity and if any of the information you want to pass is not expressible by a URI.
+
+\subsubsection{Passing data from one Activity ti another}
+
+For \textbf{sending data} to an Activity : 
+
+\begin{enumerate}
+    \item Create the Intent object
+    \item Put data or extras into that Intent
+    \item Start the new Activity
+\end{enumerate}
+
+For \textbf{receiving data} from an Activity:
+
+    \begin{enumerate}
+        \item Get the Intent object, the Activity was started with
+        \item Retrieve the data or extras from the Intent object
+    \end{enumerate}
+
+\subsubsection{Step 1 : Crete the Intent object}
+
+Intent messageIntent = new Intent(this,ShowMessageActivity.class);
+
+\subsubsection{Step 2 : Put data into that Intent}
+
+Use the setData() method with a URI object to add it to the Intent.
+
+      \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{21.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \subsubsection{Step 3 : Start activity}
+
+  Keep in mind that the data field can only contain a single URI , if you call setData() multiple times only the last value is used and you should use Intent extrax to include additional information.
+
+  After you have added the data , you can start the new Activity with the Intent : startActivity(messageIntent);
+
+
+  \subsubsection{Sending Extras ( with multiple putExtra)}
+
+  \begin{enumerate}
+      \item Create the Intent object (as seen for data)
+      \item Put extras into that Intent
+      \item startActivity(messageIntent)
+  \end{enumerate}
+
+  Use a putExtra() method with a key to put data into the Intent extras. The Intent class defines many putExtra() methods for different kinds of data : for example
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{21.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{23.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsubsection{Sending Extras(with a Bundle)}
+
+Step 2 (alternative) : if lots of data.
+
+First create a bundle and pass the bundle.
+
+      \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{24.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\vspace{50mm}
+
+\subsubsection{Get data from intents}
+
+When you start an Activity with an Intent , the started Activity has access to the Intent and the data it contains.
+
+To retrieve the Intent the Activity (or other component) was started with m use the getIntent() method : Intent intent = getIntent();
+
+      \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{25.PNG}
+  \end{subfigure}
+  \end{figure}
+
+
+\section{Activity Lifecycle and State}
+
+\subsection{What is the Activity Lifecycle?}
+
+The Activity Lifecycle is the set of states an Activity can assume in during its lifetime , from the time it is created , to when it is destroyed.
+
+More formally , a directed graph where , \textbf{Nodes} : are all the states an Activity assumes and \textbf{Edges} are the callbacks associated with transitioning from each state to the next one.
+
+As the user interacts with the app or other apps on the device , activities move into different states.
+
+
+      \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{26.PNG}
+  \end{subfigure}
+  \end{figure}
+
+When the app starts , the app's main activity is started , comes to foreground , and receives the user focus.
+
+When a second activity starts , the new activity is created and started , and the main activity is stopped.
+
+When the user finishes to interact with the Activity 2 and navigate back , Activity 1 resumes. Activity 2 stops and is no longer needed.
+
+\subsection{Activity lifecycle callbacks}
+
+\subsubsection{Callbacks and when they are called}
+
+When an Activity transitions into and out of the different lifecycle states as it runs , the Android system calls several lifecycle callback methods at each stage.
+
+
+
+      \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{27.PNG}
+  \end{subfigure}
+  \end{figure}
+
+The activity can be visible or not depending on the current state : Created (not visible yet) , Started (visible), Resume(visible) , Paused (Partially invisible), Stopped (hidden) , Destroyed (gone from memory).
+
+State changes are triggered by user actions , configuration changes and system actions.
+
+\subsubsection{Activity states and lifecycle callback methods}
+
+All of the callback methods are hooks that can be overridden in each Activity class to define how that Activity behaves when the user leaves and re-enters the Activity.
+
+Keep in mind that the lifecycle states are per Activity , not per app , and you may implement different behaviours at different points in the lifecycle of each Activity.
+
+The figures below shows each of the ACtivity states and the callback methods that occur as the Activity transitions between different states.
+
+
+      \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{28.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\subsubsection{Implementing and overriding callbacks}
+
+In general it is not needed to implement all the lifecycle callback methods.
+
+Only onCreate() is required.
+
+Override the other callbacks to change default behavior.
+
+However , it is important to understand each one and implement those that ensure your app behaves the way users expect.
+
+Managing the lifecycle of an Activity by implementing callback methods is crucial to developing a strong and flexible app.
+
+Examples : avoiding crashes , consuming system resources not required in specific states, save user progress in the app usage , saving the app state when the screen rotates.
+
+\subsection{ (1) OnCreate() : Created}
+
+Called when the Activity is first created. For example when user taps launcher icon.
+
+Similar to the main() method in other programs.
+
+Does all static setup , perform basic app startup logic such as :
+
+\begin{itemize}
+    \item Setting up the user interface
+    \item Assigning class-scope variables
+    \item Setting up background tasks
+\end{itemize}
+
+Only called once during an activity's lifetime.
+
+Takes a Bundle with Activity's previously frozen state , if there was one.
+
+Created stated is always followed by onStart().
+
+
+      \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{29.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\subsection{(2) onStart() : Started}
+
+Called when the Activity is becoming visible to user.
+
+Can be called more than once during lifecycle.
+
+While onCreate() is called only once when the Activity is created, the onStart() method may be called many times during the lifecycle of the Activity as the user navigates around the app.
+
+Started . like created , is a transient state. After starting , the Activity moves into the resumed (running) state.
+
+Typically you implement onStart() in an Activity as counterpart to the onStop() method.
+
+For example : if you release hardware resources (such as GPS or sensors) when the Activity is stopped. You can re-register those resources in the onStart() method.
+
+
+
+
+      \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{30.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \subsection{(3) onRestart() : Started}
+
+  Called after Activity has been stopped, immediately before it is started again.
+
+  Always followed by onStart()
+
+        \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{31.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \subsection{(4) onResume() : Resumed/Running}
+
+An Activity is in the resumed state when it is initialized , visible on screen and ready to use.
+
+The resumed state is often called in the running state , because it is in the state the user is actually interacting with the app.
+
+\begin{itemize}
+    \item Called when Activity will start interacting with user
+    \item Activity has moved on top of the Activity stack
+    \item Starts accepting user input   
+    \item Running state
+    \item Always followed by onPause()
+\end{itemize}
+
+        \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{32.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\subsection{(5) onPause: Paused}
+
+Called when system is about leaving the Activity.
+
+Typically used to : commit unsaved changes to persistend data , stop animations and anything that consumes resources.
+
+Implementations must be fast because the next Activity is not resumed until this method returns.
+
+Followed by either onResume() if the Activity returns back to the front , or onStop() if it becomes invisible to the user.
+
+        \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{33.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \subsection{(6) onStop() : Stopped}
+
+  Called when the Activity is no longer visible to the user.
+
+  New Activity is being started and an existing one is brought in front of this one. This one is being destroyed.
+
+  Operations that were too heacy-weight for onPause().
+
+  Followed by either onRestart() if Activity is coming back to interact with user , or onDestroy() if Activity is going away
+
+
+        \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{34.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\subsection{(7) onDestroy : Destroyed}
+
+  Final call before Activity is destroyed.
+
+  User navigates back to previous Activity or configuration changes.
+
+  Activity is finishing or system is destroying it to save space.
+
+  System may destroy Activity without calling this , so use onPause() or onStop() to save data or state.
+
+          \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{35.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \section{Activity Instance State}
+
+  Configuration changes invalidate the current layout or other resources in your activity when the user : 
+
+  \begin{itemize}
+      \item Rotates the device
+      \item Chooses different system language , so local cahnges
+      \item Enters multi-window mode
+  \end{itemize}
+
+  \subsection{What happens on config change?}
+
+  On confifuration change , Android : 1. shuts down Activity by calling OnPause , OnStop , OnDestroy.
+
+  2.  Starts Activity over again by calling : onCreate,onStart,onResume.
+
+  \subsection{Activity instance state}
+
+  State information is created while the Activity is running such as :  a counter , user text , animation progression.
+  
+State is lost when device is rotated, language changes , back-button is pressed , or the system clears memory.
+
+\subsubsection{What the system saves}
+
+System saves only : Staet of views with unique ID (android:id) such as text entered into EditText. Intent that started activity and data in its extras.
+
+You are responsible for saving other activity and user progress data
+
+\subsubsection{Saving instance state}
+
+Implement onSavenInstaceState() in your Activity , called by Android runtime when there is a possibility the Activity may be destroyed. Saves data only for this instance of the Activity during current session.
+
+\subsubsection{onSaveInstanceState(Bundle outState)}
+
+          \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{36.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \subsubsection{Restore instance state}
+
+  Two ways to retrieve the saved Bundle : 
+
+  \begin{itemize}
+      \item in onCreate(Bundle mySavedState) : Preferred , to ensure that your user interface , including any saved state, is back up and running as quickly as possible
+      \item Implement callback (called after onStart()) : onRestoreInstanceState(Bundle mySavedState)
+  \end{itemize}
+
+
+  \subsubsection{Restoring in onCreate()}
+
+            \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{37.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \subsubsection{onRestoreInstanceState(Bundle state)}
+
+              \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{38.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\subsubsection{Instance state and app restart}
+
+When you stop and restart a new app session , the Activity instance states are lost and your activities will revert to their default appearance.
+
+If you need to save user data between app sessions, use shared preferences or a database. 
+
+
+\section{Activities and Intents Part 2}
+
+How to get data back from an Activity
+
+\subsection{Returning data to the starting activity}
+
+When starting an Activity with an Intent : the originating Activity is paused and the new Activity remains on the screen until the user clicks the back button or the finish() method is called.
+
+Sometimes when starting an Activity with an Intent , you would like to also get data back from that Intent.
+
+Eg. Start an activity that lets the user pick a prefix, the original Activity needs to receive information about the prefix the user chose back from the launched/new Activity
+
+To launch a new Activity and get a result back , do the following steps : 
+
+\begin{enumerate}
+    \item Use startActivityForResult() to start the second Activity
+    \item To return data from the second Activity : Create a new Intent , put the response data in the Intent using putExtra()
+, set the resutl to Activity.RESULT\_OK or RESULT\_CANCELED , if the user cancelled out and call finish() to close the Activity
+    \item Impement onActivityResult() in first Activity
+\end{enumerate}
+
+\subsubsection{ (1) startActivityForResult()}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{39.PNG}
+  \end{subfigure}
+  \end{figure}
+
+EXAMPLE :
+
+In the activity that starts the new one :
+
+public static final int CHOOSE\_FOOD\_REQUEST = 1;
+
+Intent intent = new Intent(this,ChooseFoodItemsActivity.class);
+
+startActivityForResult(inten,CHOOSE\_FOO\_REQUEST);
+
+\subsubsection{(2) Return data and finish second activity}
+
+In the new activity to return info : 
+
+Intent replyIntent = new Intent(); // No target Activity , Android system directs the response back to the originating Activity automatically.
+
+replyIntent.putExtra(EXTRA\_REPLY,reply); // public final static String EXTRA\_REPLY = "com.example.myapp.RETURN\_MESSAGE";
+
+setResult(RESULT\_OK, replyIntent);
+
+finish();
+
+
+\subsubsection{(3) Implement onActivityResult()}
+
+In the original activity receive the data :
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{40.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\section{Navigation and Implicit Intents}
+
+\subsection{Navigation}
+
+The majority of the apps will include more than one Activity.
+
+Consistent navigation is an essential component of the overall user experience.
+
+\subsubsection{Two forms of navigation}
+
+Android system supports two different forms of navigation strategies for your app.
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{41.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \vspace{50mm}
+
+  \textbf{Back Navigation}
+
+Allows to return the previous Activity by tapping the device back button controlled by the Android system's back stack and preserves history of recently viewed screens.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{42.PNG}
+  \end{subfigure}
+  \end{figure}
+
+
+\textbf{Up Navigation}
+
+It is used to navigate within an app based on the explicit hierarchical relationships between screens.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{43.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \textbf{Back vs. Up Navigation}
+
+  \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{44.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  When the previously viewed screen is also the hierarchical parent of the current screen , pressing the Back button has the same result as pressing an Up button (this is a common occurrence).
+
+  Up button ensures the user remains within the app.
+
+  Back button can return the user to the Home screen or even to a different app.
+
+  \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{45.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{46.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsubsection{Back Button}
+
+Back button also supports different-behaviors :
+
+\begin{itemize}
+    \item Dismisses floating windows
+    \item Dismisses contextual action bars , and removes the highlight from the selected items
+    \item Hides the onscreen keyboard
+\end{itemize}
+
+\subsection{Implicit Intents}
+
+\subsubsection{What is an Intent?}
+
+An Intent is a description of an operation to be performed , Messaging object used to request an action from another app component via the Android system.
+
+\textbf{Explicit Intent} : Starts an Activity of a specific class
+
+\textbf{Implicit Intent} : Asks system to find an Activity class with a registered handler that can handle this request.
+
+
+\subsubsection{Implicit Intent}
+
+Start an Activity in another app by describing an action you intend to perform.
+
+Specify an action and optionally provide data with which to perform the action.
+
+Android runtime matches the implicit intent request with registered intent handlers.
+
+If there are multiple matches , an App Chooser will open the let the user decide.
+
+When the Android runtime finds multiple registered activities that can handle an implicit intent , it displays an App Chooser to allow the user to select the handler.
+
+
+\subsubsection{How does implicit Intent work?}
+
+The Android Runtime keeps a list of registered Apps.
+
+Apps have to register via AndroidManifest.xml
+
+Runtime receives the request and looks for matches , uses Intent filters for matching from AndroidManifest.xml
+
+If more than one match , shows a list of possible matches and lets the user choose one.
+
+Android runtime starts the request activity.
+
+  \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{47.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \subsection{Receiving an Implicit Intent}
+
+  \subsubsection{Register your app to receive an Intent}
+
+  If an Activity in your app have to respond to an implicit Intent (from your own app or other apps) , declare one or more Intent filters in the AndroidManifest.xml file
+
+  Each Intent filter specifies the type of Intent it accepts based on the action , data and category for the Intent.
+
+  The system will deliver an implicit Intent to your app component only if that Intent can pass through one of your Intent filters.
+
+  \subsubsection{Intent action,data and category}
+
+  \begin{itemize}
+      \item \textbf{Action} : is the generic action the receiving Activity should perform. The available Intent actions are defined as constants in the Intent class and begin with the word ACTION\_
+      \item \textbf{Category} : provides additional information about the category of component that should handle the Intent. Intent categories are also defined as constants in the Intent class and begin with the word CATEGORY\_
+      \item \textbf{Data type} : indicates the MIME type of data the Activity should operate on. Usually , the data type is inferred from th.e URI in the Intent data field, but you can also explicitly define the data type with the setType() method
+  \end{itemize}
+
+Intent actions , categories and data types are used both by the Intent object you create in your sending Activity. As well as , in the Intent filters you define in the AndroidManifest.xml file for the receiving Activity.
+
+The Android system uses this information to match an implicit Intent request with an Activity or other component that can handle that Intent.
+
+  \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{48.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{49.PNG}
+  \end{subfigure}
+  \end{figure}
+
+   \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{50.PNG}
+  \end{subfigure}
+  \end{figure}
+
+     \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{51.PNG}
+  \end{subfigure}
+  \end{figure}
+
+   \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{52.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\vspace{50mm}
+
+  \subsubsection{Receiving an implicit Intent}
+
+  Once the Activity is successfully launched with an implicit Intent, from that activity it is possible to handle the Intent and its data in the same way you did for an explicit Intent , by :
+
+  \begin{enumerate}
+      \item Getting the Intent object with getIntent()
+      \item Getting Intent data or extras out of that Intent
+      \item Performing the task the Intent requested
+      \item Returning data to the calling Activity with another Intent , if needed.
+  \end{enumerate}
+
+\section{User Interaction , Buttons and Clickable Images}
+
+In Android app , user interaction typically involves tapping , typing , using gestures but also talking.
+
+The Android framework provides corresponding user interface UI elements such as : buttons , clickable images , menus , keyboards , text entry fields and a microphone.
+
+Android users expects UI elements to act in certain ways , so it is important that your app is consistent with other Android apps.
+
+To satisfy the users , it is important to create a UI that provides predictable choices / behaviors.
+
+\subsubsection{User Interaction Design}
+
+Important to be obvious , easy and consistent : 
+
+\begin{itemize}
+    \item Think about how users will use your app
+    \item Minimize steps
+    \item Use UI elements that are easy to access , understand , use
+    \item Follow Android best practices 
+    \item Meet user's expectations
+\end{itemize}
+
+\subsection{Buttons}
+
+Button are Views that respond to tapping or pressing.
+
+Usually text or visuals indicate what will happen when tapped/pressed.
+
+Buttons can have the following design : 
+
+\begin{itemize}
+    \item Text only
+    \item Icon only
+    \item Both text and icon
+\end{itemize}
+
+\subsubsection{Button Image}
+
+To add an icon to a button : search for the attribute of interest in the attributes list , click "pick a resource" and select the icon.
+
+The following attributes manage how an icon is visualize in a button.
+
+  \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{53.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \subsubsection{Raised and Flat Buttons}
+
+  Android offers several types of Button elements , including raised buttons and flat buttons.
+
+  Each button has three states : Normal , Disabled and Pressed.
+  
+  \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+  \includegraphics[width=1\linewidth]{54.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  A \textbf{raised button} is an outline rectangle or rounded rectangle that appears lifted from the screen - the shading around it indicates that it is possible to tap or click it. The raised button can show a text , an icon , or both )default style)
+
+  A \textbf{flat button} , also known as a text button or borderless button , is a text-only that looks flat and doesn't have a shadow. The major benefit of flat buttons is simplicity : a flat button does not distract the user from the main content as much as a raised button does.
+
+  Flat buttons are useful for dialogs that require user interaction. In this case , the button uses the same font and style as the surrounding text to keep the look and feel consistent across all the elements in the dialog.
+
+  To create a flat button add the following attribute to your button : style="?
+android:attr borderlessButtonStyle
+
+\subsubsection{Responding to button taps}
+
+In XML : Android Studio provides a shortcut for setting up an OnClickListener for the clickable object in your Activity code , and for assigning a callback method: use the android:OnClick attribute within the clickable object's element in the XML layout.
+
+  \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+  \includegraphics[width=1\linewidth]{55.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \subsubsection{Setting listener with onClick callback}
+
+  \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+  \includegraphics[width=1\linewidth]{56.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\vspace{50mm}
+
+  \subsubsection{How and Where to define Listeners}
+
+\textbf{Case 1}
+  
+  \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+  \includegraphics[width=1\linewidth]{57.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  
+  \textbf{Case 2}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+  \includegraphics[width=1\linewidth]{58.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\subsubsection{Responding to button LONG taps}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+  \includegraphics[width=1\linewidth]{59.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \subsubsection{Responding to ImageView taps}
+
+      \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+  \includegraphics[width=1\linewidth]{60.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \section{Data Storage}
+
+  \subsection{Storing Data}
+
+  Android provides several options for saving persistent app data.
+
+  Possible solutions include : 
+
+  \begin{itemize}
+      \item Internal Storage : Private data on device memory
+      \item External Storage : App-specific files or Public data on device or external storage
+      \item Shared Preferences : Private primitive data in key-value pairs
+      \item SQLite Databases : Structured data in a private database
+  \end{itemize}
+
+  The best solution depends on the app specific needs.
+
+  Data should be private to the app OR accessible to other apps/user?
+
+  How much space the data requires?  Complex structure needed?
+
+  \subsubsection{Storing data beyond Android}
+
+  \begin{itemize}
+      \item Network Connection : On the web with your own server
+      \item Cloud Backup : Back up app and user data in the cloud
+      \item Firebase Realtime Database : Store and sync data with NoSQL cloud database across clients in realtime
+  \end{itemize}
+
+  \subsection{Files - Internal and External Storage}
+
+\subsubsection{Android File System}
+
+Android uses a file system that is similar to disk-based file systems on other platforms such as Linux
+
+All Android devices have two file storage areas :
+
+\begin{itemize}
+    \item Internal Storage : Private directories for just your app
+    \item External Storage : Public directories
+\end{itemize}
+
+App can browse the directory structure.
+
+\subsubsection{Internal Storage}
+
+Always available to the app , uses device's file system.
+Only your app can access files.
+On app uninstall , system removes all app's files from internal storage.
+
+\subsubsection{External Storage}
+
+Uses device's file system or physically external storage like SD card.
+
+Not always available , because the SD card can be removed.
+
+World-readable , so any app can read.
+
+On uninstall , system does not remove files.
+
+\subsubsection{When to use internal/external storage}
+
+Internal is best when you want to be sure that neither the user nor other apps can access your files.
+
+External is best for files that do not require access restrictions , you want to share with other apps and you allow the user to access with a computer.
+
+\subsection{Internal Storage}
+
+Your app always has permission to read and write files in its internal storage directory.
+
+\begin{itemize}
+    \item Permanent storage directory : getFilesDir()
+    \item Temporary storage directory : getCacheDir() , recommended for small and temporary files totaling less than 1 MB
+\end{itemize}
+
+These locations are encrypted , these characteristics make these locations a good place to store sensitive data that only your app itself can access.
+
+\subsubsection{Creating a file}
+
+To create a new file in one of these directories , use the \textbf{File()} constructor , passing the File provided by one of the methods (getFilesDir() , getCacheDir()), that specifies your internal storage directory. For example : File file = new File(context.getFilesDir() , filename).
+
+Then use standard java.io file operators or streams to interact with files.
+
+\subsubsection{Write Text in an Internal File}
+
+      \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+  \includegraphics[width=1\linewidth]{61.PNG}
+  \end{subfigure}
+  \end{figure}
+
+
+\subsubsection{Read Text in an Internal File}
+
+      \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+  \includegraphics[width=1\linewidth]{62.PNG}
+  \end{subfigure}
+  \end{figure}
+
+
+\section{Shared Preferences}
+
+\subsection{What are Shared Preferences?}
+
+Read and write small amounts of primitive data as a key/value pairs to a file on the device storage.
+
+The preference file is accessible to all the components of your app , but it is not accessible to other apps.
+
+SharedPreference provides APIs for reading , writing and managing this data.
+
+Save data in onPause() and restore in onCreate()
+
+
+\subsection{Shared Preferences AND Saved Instance State}
+
+For both : Data represented by a small number of key/value pairs .
+
+Data is private to the application.
+
+\textbf{Shared Preferences}
+
+Persist data across user sessions , even if app is killed and restarted , or device is rebooted.
+
+Data should be remembered across sessions , such as a user's preferred settings or their game score.
+
+Common use is to store user preferences.
+
+\textbf{Saved Instance State}
+
+Preserve state data across activity instances in same user session.
+
+Data that should not be remembered across sessions , such as the currently selected tab or current state of activity,
+
+Common use is to recreate state after the device has been rotated.
+
+\subsection{Creating Shared Preferences}
+
+Need only one Shared Preferences file per app. Name it with package name of your app (unique and easy to associate with app).
+
+\subsection{getSharedPreferences()}
+
+private String sharedPrefile = "com.example.android.hellosharedprefs";
+
+mPreferences = getSharedPreferences(sharedPrefile,MODE\_PRIVATE);
+
+MODE argument for getSharedPreferences() is for backwards compatibility.
+
+\subsection{Saving Shared Preferences}
+
+SharedPreferences.Editor interface , it takes care of all file operations.
+
+Put methods overwrite if key exists.
+
+apply() saves asynchronously and safely.
+
+\subsubsection{Saving Shared Preferences (details 1)}
+
+Save preferences in the onPause() state of the activity lifecycle using the SharedPreferences.Editor interface
+
+Get a SharedPreferences.Editor , the editor takes care of all the file operations for you.
+
+Add key/value pairs to the editor using the put method appropriate for the data type.
+
+For example putInt() or putString(). These methods will overwrite previously existing values of an existing key.
+
+\subsubsection{Saving Shared Preferences (details 2)}
+
+Call apply() to write out your changes.
+
+The apply() method saves the preferences asynchronously , off the UI thread.
+
+You do not need to worry about Android component lifecycles and their interaction with apply() writing to disk.
+
+The framework makes sure in-flight disk writes from apply() complete before switching states.
+
+
+\subsection{SharedPreferences.Editor}
+
+
+      \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+  \includegraphics[width=1\linewidth]{63.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\subsection{Restore Shared Preferences}
+
+Restore in onCreate() in Activity
+
+Get methods take two arguments : the key , the default value (if the key cannot be found).
+
+Use default argument so you do not have to test whether the preference exists in the file.
+
+\subsubsection{Getting data in onCreate()}
+
+      \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+  \includegraphics[width=1\linewidth]{64.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \subsection{Clearing}
+
+  Call clear() on the SharedPreferences.Editor and apply changes.
+
+  You can combine calls to put and clear. However , when you apply() , clear() is always done first, regardless of order!
+
+  \subsubsection{clear()}
+
+  SharedPreferences.Editor preferencesEditor = mPreferences.edit();
+
+  preferencesEditor.clear();
+  preferencesEditor.apply();
+
+
+  \section{Data Storage Part 2}
+
+  \subsection{Android Storage Recap}
+
+        \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{1\linewidth}
+  \includegraphics[width=1\linewidth]{65.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \subsection{App-specific files Storage}
+
+  Both Internal and External storage include a dedicated location for storing persistent files and storing cache data.
+
+  Files stored in these directories are meant for use only by your app , otherwise use Shared storage (Photo , Video , Docs , etc).
+
+
+  When storing sensitive data ( data that should not be accessible from any other app), use :
+
+  \begin{itemize}
+      \item Internal Storage
+    \item Preferences
+    \item Database
+  \end{itemize}
+
+  Internal storage \textrightarrow{ data being hidden from users}
+
+  When the user uninstalls your app , the files saved in app-specific storage are removed.
+
+  \subsection{External Storage for App-specific files}
+
+  If internal storage does not provide enough space to store app-specific files \textrightarrow{ use external storage}.
+  
+  The system provides directories within external storage where an app can organize files that provide value to the user only within your app.
+
+  The files in these directories are not guaranteed to be accessible, such as when a removable SD is taken out of the device, If your app's functionality depends on these files \textrightarrow{ internal storage}
+
+\subsubsection{Always check availability of storage}
+
+Because the external storage may be unavailable , such as when the user has mounted the storage to a PC or has removed the SD card that provides the external storage.
+
+You should always verify that the volume is available before accessing it.
+
+  \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{.7\linewidth}
+  \includegraphics[width=1\linewidth]{66.PNG}
+  \end{subfigure}
+  \end{figure}
+
+
+  
+  \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{.7\linewidth}
+  \includegraphics[width=1\linewidth]{67.PNG}
+  \end{subfigure}
+  \end{figure}
+
+
+\subsubsection{Accessing External storage directories}
+
+\begin{enumerate}
+    \item Get a path using getExternalFilesDir()
+    \item Create file
+\end{enumerate}
+
+Example :
+
+File path = getExternalFilesDir(Environment.DIRECTORY\_PICTURES);
+
+File file = new File(path,"DemoPicture.jpg");
+
+
+\subsection{Select a physical storage location}
+
+A device that allocates a partition of its internal memory as external storage can also provide an SD card slot.
+
+This means that the device has multiple physical volumes that could contain external storage, so you need to select which one to use for your app-specific storage.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{1\linewidth}
+  \includegraphics[width=1\linewidth]{68.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\subsubsection{How much storage left?}
+
+If there is not enough space , throus IOException.
+
+If you know the size of the file , check against space : getFreeSpace() , getTotalSpace().
+
+If you do not know how much space is needed , try/catch IOException.
+
+\subsubsection{Delete files no longer needed}
+
+External storage : myFile.delete();
+
+Internal storage : myContext.deleteFile(fileName);
+
+\subsubsection{Do not delete the user's files!}
+
+When the user uninstalls your app , your app's private storage directory and all its contents are deleted.
+
+Do not use private storage for content that belongs to the user!
+
+For example : photos captured or edited with you app , music the user has purchased with your app.
+
+
+\vspace{20mm}
+
+\section{AsyncTask}
+
+\subsection{Threads}
+
+\subsubsection{The Main thread}
+
+When an Android app starts , it creates the main thread, which is often called \textbf{UI thread}.
+
+The UI thread needs to give its attention to drawing the UI and keeping the app responsive to user input.
+
+If the UI waits too long for an operation to finish , it becomes unresponsive and so the user is not happy.
+
+The main thread must be fast , otherwise the app will be blocked.
+
+\subsubsection{What is a long running task?}
+
+Examples of possible long running task :
+
+\begin{itemize}
+    \item Network operations
+    \item Long calculations
+    \item Loading data
+    \item Interacting with Databases
+\end{itemize}
+
+\subsubsection{Two rules for Android threads}
+
+Do not block the UI thread. Compete each task in less than 16 ms for each screen.
+
+Do not access the Android UI toolkit from outside the UI thread.
+
+\subsection{AsyncTask}
+
+AsyncTask allows to perform background operations on a worker thread and publish the result on the UI thread , without needing to directly manipulate threads or handlers.
+
+A worker thread is any thread which is not the main or UI thread.
+
+\subsubsection{AsyncTask Execution Steps}
+
+
+
+When AsyncTask is executed , it goes through several steps :
+
+  \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{.7\linewidth}
+  \includegraphics[width=1\linewidth]{69.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\begin{itemize}
+    \item \textbf{onPreExecuted()} : is invoked on the UI thread before the task is executed (normally used to set up the task)
+     \item \textbf{doInBackground()} : is invoked on the background thread immediately after onPreExecute() finishes. Performs a backgreound computation , returns a result , and passes the result ot onPostExecute(). This method can also call \textbf{publishProgress(Progress...)} to publish one or more units of progress
+      \item \textbf{onProgressUpdate()}: Runs on the main thread , receives calls from publishProgress() from background thread.
+    \item \textbf{onPostExecute()}: runs on the UI thread after the background computation has finished.
+
+\end{itemize}
+
+\subsubsection{Creating an AsyncTask}
+
+Subclass AsyncTask : private class MyAsyncTask extends AsyncTask $<$ type1,type2,type3 $>$ \{...\}
+
+\begin{enumerate}
+    \item Params - Provide data type (type1) sent to doInBackground()
+    \item Progress - Provide data type (type2) of progress units for onProgressUpdate()
+    \item Result - Provide data type (type3) of result for onPostExecute()
+\end{enumerate}
+
+  \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{.7\linewidth}
+  \includegraphics[width=1\linewidth]{70.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\vspace{50mm}
+
+  \subsubsection{AsyncTask Example}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{1\linewidth}
+  \includegraphics[width=1\linewidth]{71.PNG}
+  \end{subfigure}
+  \end{figure}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{1\linewidth}
+  \includegraphics[width=1\linewidth]{72.PNG}
+  \end{subfigure}
+  \end{figure}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{1\linewidth}
+  \includegraphics[width=1\linewidth]{73.PNG}
+  \end{subfigure}
+  \end{figure}
+
+   \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{74.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{75.png}
+     \end{subfigure}
+\end{figure}
+
+\vspace{40mm}
+
+  \section{Sensors and Charts}
+
+  \subsection{Sensors in Android}
+
+  Most Android-powered devices have built-in sensors that measures : motion , orientation , and various environmental conditions.
+
+  These sensors are capable of providing raw data with high precision and accuracy.
+
+  The Android platform supports three broad categories of sensors:
+
+  \begin{itemize}
+      \item Motions sensors : measures acceleration forces and rotational forces along three axis. (accelerometers , gravity sensors , gyroscopes and rotational vectors)
+      \item Environmental sensors : measures various environmental parameters , such as ambient air temperature and pressure , illumination and humidity
+      \item Position sensors: measures the physical condition of the device. Orientation sensors.
+  \end{itemize}
+
+\subsection{Android Sensor Framework}
+
+Android sensor framework allows  to access sensors available on the device and acquire raw sensor data.
+
+For example , you can use the sensor framework to do the following:
+
+\begin{itemize}
+    \item Determine which sensors are available on a device
+    \item Determine individual sensor's capabilities , such as its maximum range, power requirements and resolution
+    \item Acquire raw sensor data and define the minimum rate at which you acquire sensor data-
+    \item Register and unregister sensor event listeners that monitor sensors changes.
+\end{itemize}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{1\linewidth}
+  \includegraphics[width=1\linewidth]{76.png}
+  \end{subfigure}
+  \end{figure}
+
+  \subsection{Steps for using sensors}
+
+  A typical application based on sensor APIs requires to perform two basic tasks:
+
+  \begin{itemize}
+      \item Identifying sensors and sensor capabilities : useful if the application has features that rely on specific sensor types or capabilities. For example , you may want to identify all the sensors that are present on a device and disable any application features that rely on sensors that are not present
+
+      \item Monitor sensor events: to acquire raw sensor data. \textbf{A sensor event occurs every time a sensor detects a change} in the parameters it is measuring. A sensor event provides you with four pieces of information : Name of the sensor that triggered the event, timestamp for the event , accuracy of the event , raw sensor data that triggered the event.
+  \end{itemize}
+
+  \vspace{50mm}
+
+\subsection{Identifying the Available Sensors}
+
+    \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{1\linewidth}
+  \includegraphics[width=1\linewidth]{77.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \vspace{50mm}
+
+  \subsection{Finding a specific sensor}
+
+      \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{1\linewidth}
+  \includegraphics[width=1\linewidth]{78.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \subsection{Capabilities and attributes of sensors}
+
+  getResolution() : Returns the resolution of the sensor in the sensor's unit.
+
+  getMaximumRange(): maximum range of the sensor in the sensor's unit
+
+  \subsection{Monitoring Sensor Events}
+
+  To monitor raw sensor data you need to impplement two callback methods that are exposed through the SensorEventListener interface: onSensorChanged() and onAccuracyChanged(). The Android system calls these methods whenever the following events occur:
+
+  \begin{itemize}
+      \item A sensor reports a new value: in this case the system invokes the onSensorChanged() method , providing you with a SensorsEvent object. A SensorsEventObject contains information about the new sensor data, including: the accuracy of the data, the sensor that generated the data , the timestamp at which data was generated, and the new data that the sensor recorded.
+
+      \item A sensor's accuracy changes. In this case the system invokes the onAccuracyChanged() method, providing you with a reference to the sensor object that changed and the new accuracy of the sensor.
+  \end{itemize}
+
+  \vspace{30mm}
+
+\textbf{onSensorChanged() Example}
+
+      \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{1\linewidth}
+  \includegraphics[width=1\linewidth]{79.PNG}
+  \end{subfigure}
+  \end{figure}
+
+        \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{1\linewidth}
+  \includegraphics[width=1\linewidth]{80.PNG}
+  \end{subfigure}
+  \end{figure}
+
+
+\vspace{20mm}
+
+  \section{Databases for Mobile Apps}
+
+  In an Android app it is possible to use two different kinds of DBs
+
+\textbf{Local} : if you want your data to be advice specific (stay local) , then you should go with a local DB. A local DB might be preferable choice over remote DB when you have to simply save data locally and avoid the server request.
+
+
+\textbf{Remote} : If the app needs to synchronize data across all its users or involve live data being fed to a user's request then you need to use remote database
+
+\subsection{Databases for Android (Remote)}
+
+An android application should not directly access to a database deployed on a remote server.
+
+Best practices require to implement a web service between the database and the Android application.
+
+Having a web service layer reduces the complexity of the Android application and reduce the dependency on database specific operations.
+
+The problem of accessing a client/server database like MySQL from Android application can be defined as the problem of consuming a web service hosted somewhere
+
+Do not need to care about what is behind the web service and what you need is the API endpoints exposed in the web service.
+
+        \begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{.5\linewidth}
+  \includegraphics[width=1\linewidth]{81.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\subsection{Databases for Android (Local)}
+
+On the other hand , if all the information should be stored on a mobile device, there are only some different options including SQLite ( stores data to a text file on a device) and Realm
+
+\subsubsection{SQLite}
+
+The inbuilt SQLite core library is within the Android OS. It will handle CRUD (Create , Read , Update , Delete) operations required for a database.
+
+Java classes and interfaces for SQLite are provided by the android.database.
+
+But this conventional method has its own disadvantages. You have to write long repetitive code , which will be consuming as well as prone to mistakes. It is very difficult to manage SQL queries for a complex relational database
+
+\subsubsection{Room Persistence Library}
+
+To overcomae this , Google has introced RPL.
+
+This acts as an abstraction layer for the existing SQLite APIs.
+
+All the required packages, parameters , methods , and variables are imported into an Android project by using simple annotations.
+
+It helps to assist developers implementing local SQLite database transactions. It helps to avoid the boilerplate code that was previously associated with interacting with the SQLite database. 
+
+Essentially the room persistence library allows developers to easily convert SQLite table data into java objects.
+
+\end{document}
+
