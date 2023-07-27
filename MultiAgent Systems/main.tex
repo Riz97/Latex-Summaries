@@ -1,0 +1,1188 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{amsfonts}
+\title{MultiAgents Systems}
+\author{Riccardo Caprile}
+\date{October 2022}
+
+\begin{document}
+
+\maketitle
+
+
+\section{Introduction}
+
+An \textbf{agent} is an hardware or software system :
+
+\begin{itemize}
+    \item Situated
+    \item Autonomous (Act without a continuous input)
+    \item Flexible ( reactive , proactive , social)
+\end{itemize}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{1.PNG}
+  \end{subfigure}
+\end{figure}
+
+Each agent has incomplete information , or capabilities for solving the problem , thus each agent has a limited viewpoint.
+
+There is no global system control. Data is decentralized and computation is asynchronous.
+
+Agents are employed as the technology for implementing the software application itself.
+
+Among the oldest areas of research , the activity most closely connected with that of autonomous agents was AI "planning". 
+
+A computer system either conceptualized or implemented
+using concepts that are more usually applied to humans, this is a stronger definition than the one above.
+
+\vspace{30mm}
+
+\section{Agent Oriented Software Engineering}
+
+The features of agent-based systems are well suited to tackle the complexity of developing software in modern scenarios :
+
+\begin{enumerate}
+    \item The autonomy of application components reflects the intrinsically decentralised nature of modern distributed systems and can be considered as the natural extension to the notions of modularity and encapsulation for systems that are owned by different stakeholders 
+    \item The flexible way in which agents operate and interact  is suited to the dynamic and unpredictable scenarios where software is expected to operate.
+    \item The concept of agency provides for a unified view of AI results and achievements , by making agents and MASs act as sound and manageable repositories of intelligent behaviours.
+\end{enumerate}
+
+\subsection{Autonomy}
+
+As far as autonomy is concerned , almost all of today's software systems already integrate autonomous components.
+
+At its weakest, autonomy reduces to the ability of a component to react to and handle events, as in the case of graphical interfaces.
+
+However,in many cases, autonomy implies that a component integrates an autonomous thread of execution, and can execute in a proactive way
+
+\subsection{Situatedness}
+
+Today's computing systems are also typically situated.
+
+For example, control systems for physical domains and sensor networks, are built to explicitly manage data from the surrounding physical environment and take into account the unpredictable dynamics of the environment.
+
+\subsection{Sociality}
+
+Sociality in modern distributed systems comes in different flavors :
+
+\begin{enumerate}
+    \item The capability of components of supporting dynamic interactions
+    \item The somewhat higher interaction level , overcoming the traditional client-server scheme
+    \item The enforcement of some sorts of societal rules governing interactions
+\end{enumerate}
+
+\vspace{50mm}
+
+\section{Some Applications of AI and MASs}
+
+The first application can be autonomous driving , but it has some technological issues. Among the many technologies which make autonomous vechicles possible is a combination of sensors and actuators , sophistaced algorithms and powerful processors to execute software.
+
+Three categories of sensors : 1) Navigation and guidance (where you are , how to get there) , 2) Driving and safety (directing the vehicle with rules of the road) , 3) performance.
+
+\subsection{Goal 1 : Know where you are going}
+
+
+The navigation and guidance subsystem must always be
+active and checking how the vehicle is doing versus the
+goal.
+
+GPS (Global Positioning System) computes present
+position based on the analysis of signals received from at
+least four of the constellation of over 60 low-orbit satellites.
+
+GPS is not sufficient alone because of the interferences.
+
+
+To supplement the GPS, the autonomous vehicle uses inertial guidance
+which requires no external signal of any type.
+
+\subsection{Goal 2 : See where you are going}
+
+The autonomous car must be able to see and interpret what's in front
+when going forward.
+
+But using cameras alone presents problems. First, there are
+mechanical issues of setting up multiple cameras correctly and keeping
+them clean; second, heavy graphic processing is needed to make
+sense of images; third, there is a need for depth perception as well as
+basic imaging; and finally, conditions of lighting, shadows, and other
+factors make it very challenging to accurately decide what the camera
+is seeing.
+
+To overcome camera limitations , in most self driving cars the primary vision unit is LIDAR system.
+
+A surveying method that measures distance to a target by
+illuminating that target with a pulsed laser light, and
+measuring the reflected pulses with a sensor.
+
+The LIDAR output is used to calculate the vehicles position , speed , and direction relative to these external objects to determine the probability of collision , and instruct appropriate action, if needed.
+
+
+\subsection{Goal 3: Get where you are going}
+
+While components and subsystems used for navigation
+and guidance or for image-capture and sensing get the
+most attention due to their glamour aspects, a large
+portion of the design of an autonomous vehicle involves
+mundane issues such as power management.
+
+Other application for MAS for example is FYPA (Find your path , Agent!) which computes paths of trains inside stations. Graph based. 
+
+UNMAS has the purpose to rapidly find a sub-optimal scenario able to maintain the whole electricity network configuration in a consistent state wrt an event such as a maintenance operation or a mulfunctioning
+
+
+
+
+
+\section{Agent Architectures}
+
+"An agent is anything that can be viewed as perceiving its environment through sensors and acting upon that environment through effectors"
+
+\textbf{Basic abstract view of an agent}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{2.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\subsection{Reactivity}
+
+An agent has to be able to react in an appropriate way to the dynamic changes in its environment.
+This is one of several properties that an intelligent agent should have.
+
+\subsubsection{Kinds of environments}
+
+An \textbf{accessible} environment is one in which the agent can obtain complete, accurate , up-to-date information about environment's state.
+
+Most moderately complex environments are inacessible.
+
+The more accessible an environment is , the simpler it is to build agents to operate in it.
+
+A \textbf{deterministic} environment is one in which any action has a single guaranteed effect, there is no uncertainty about the state that will result from performing an action.
+
+The physical world can to all intents and purposes be regarded as \textbf{non-deterministic.}
+
+Non-deterministic environments present greater problems for the agent designer.
+
+In an \textbf{episodic} environments, the performance of an agent is dependent on a number of discrete episodes, with no link between the performance of an agent in different scenarios.
+
+Episodic environments are simpler from the agent developer's perspective because the agent can decide what action to perform based only on the current episode , it need not reason about the interactions between this and future episodes.
+
+
+A \textbf{static} environment is one that can be assumed to remain unchanged except by the performance of actions by the agent.
+
+A \textbf{dynamic} environment is one that has other processes operating on it , and which hence changes in ways beyond the agent's control.
+
+The physical world is a highly dynamic environment.
+
+An environment is \textbf{discrete} if there are a fixed , finite number of actions and percepts in it.
+
+The real world is a \textbf{continuous} environment.
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Agent architectures}
+
+An architecture proposes a particular methodology for building autonomous agent.
+
+How the construction of the agent can be decomposed into the construction of a set of component modules.
+How these modules should be made to interact.
+These two aspects define how the sensor data and the current internal state of the agent determine the actions and future internal state of the agent.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{3.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Main kinds of agent architectures}
+
+\begin{itemize}
+    \item \textbf{Reactive architectures} : Focused on fast reactions/response to changes detected in the environment
+    \item \textbf{Deliberative architectures} : Focused on long-term planning of actions , centred on a set of basic goals.
+    \item \textbf{Hybrid architectures} : Combining a reactive side and a deliberative side
+\end{itemize}
+
+\subsubsection{Classic example : ant colony}
+
+A single ant has very little intelligence, computing power or reasoning abilities.
+
+The union of a set of ants and the interaction between them allows the formation of a highly complex , structured and efficient system.
+
+\vspace{30mm}
+
+\subsection{BDI-Architecture}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{4.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\vspace{80mm}
+
+\section{BDI Architecture}
+
+The BDI architecture is one of the best known and most studied architectures for cognitive agents.
+
+AgentSpeack(L) is an elegant , logic-based programming language inspired by the BDI architecture.
+
+\subsection{AgentSpeak(L) syntax}
+
+An AgentSpeak(L) is an agent created by the specification of a set of base beliefs and a set of plans. A belief atom is a simply first order predicate in the usual notation , and belief atoms or their negations are termed belief literals. 
+
+BDI architectures are based on the following constructs :
+
+\begin{itemize}
+    \item A set of beliefs
+    \item A set of goals 
+    \item A set of intentions , or better a subset of the goals with an associated stack of plans for achieving them.
+    \item A set of internal events : elicited by a belief change (update,addition,deletion) or by goal events(goal achievement or a new gol adoption)
+    \item A set of external events , perceptive events coming from the interaction with external entities(message arrival ,signals).
+    \item A plan library
+\end{itemize}
+
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{48.PNG}
+  \end{subfigure}
+\end{figure}
+
+Ag stands for agent , bs = beliefs state , ps = plan set , p = plan , h = body , g = goal , at = atom , u = update , te = triggerin event , ct = context
+
+\vspace{40mm}
+
+\subsection{Jelly-fish Busters}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{49.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{50.PNG}
+     \end{subfigure}
+\end{figure}
+
+myself is at location X and jellyfish too, the agent needs to pick the jellyfish in location X , then the agent moves to Y and it drops the jellyfish into the bin
+We cannot use this plan, at the beginning,  because in the beliefs jellyfish and the agent are not in the same location
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{51.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{52.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.49\linewidth}
+    \includegraphics[width=1\linewidth]{53.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{54.PNG}
+     \end{subfigure}
+\end{figure}
+
+Then it follows plan 1.
+
+
+
+\section{Uninformed Search}
+
+\subsection{Problem-Solving agents}
+
+Restricted form of general agent : 
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{5.PNG}
+  \end{subfigure}
+\end{figure}
+
+Example : Romania
+
+On holiday in Romania; currently in Arad. Flight leaves tomorrow from bucharest.
+
+Formulate goal : be in Bucharest
+
+Formulate problem : States ( various cities ) , actions ( drive between cities)
+
+Find solution : sequence of cities 
+
+\subsection{Problem Types}
+
+\begin{itemize}
+    
+    \item \textbf{Deterministic , fully observable} : Single state problem , Agent knows exactly which state it will be in; solution is a sequence.
+    \item \textbf{Non Observable} : Conformant problem, Agent may have no idea where it is; solution (if any) is a sequence.
+    \item \textbf{Nondeterministc} : Contigency problem, Percepts provide new information about current state, solution is a contigent plan or policy
+    \item \textbf{Unknown state space} : Exploration problem (Online)
+    
+\end{itemize}
+
+\subsubsection{The 8-puzzle}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{6.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Uninformed Search Strategies}
+
+Uninformed strategies use only the information available in the problem definition.
+
+\subsubsection{Breadth-first search}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{7.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+
+\subsubsection{Uniform-cost search}
+
+Implementation : fringe = queue ordered by path cost, lowest first. 
+
+\subsubsection{Depth-first search}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{8.PNG}
+  \end{subfigure}
+\end{figure}
+
+\section{Informed Search}
+
+\subsection{Best-first search}
+
+Idea : use an evaluation function for each node - estimate of "desirability". Expand most desirable node
+
+Implementation : fringe is a queue sorted in decreasing order of desirability.
+
+Special cases : greedy search and A* search.
+
+\subsubsection{Greedy search}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{9.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.59\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{10.PNG}
+     \end{subfigure}
+\end{figure}
+
+Evaluation function h(n) = estimate of cost from n to the closest goal.
+
+Greedy search expands the node that appears to be closest to goal.
+
+\subsection{A* search}
+
+Idea : avoid expanding paths that are already expensive.
+
+Evaluation function f(n) = g(n) + h(n) 
+
+g(n) is the cost so far to reach n , h(n) estimated cost to goal from n , f(n) estimated total cost of path through n to goal.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{11.PNG}
+  \end{subfigure}
+\end{figure}
+
+\section{Game Playing}
+\subsection{Minimax}
+
+Perfect play for deterministic , perfect-information games.
+
+Idea : choose move to position with the highest minimax value ( best achievable payoff against best play )
+
+\subsubsection{$\alpha-\beta$ pruning example}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{12.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.29\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{13.PNG}
+     \end{subfigure}
+\end{figure}
+
+$\alpha$ is the best value (to MAX) found so far off the current path. 
+
+If V is worse than $\alpha$ , MAX will avoid it : prune that branch.
+
+Define $\beta$ similarly for MIN
+
+\section{Planning}
+
+\subsection{Search vs Planning}
+
+Consider the task "get milk , bananas and a cordless drill". Standard search algorithms seem to fail miserably :
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{14.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{STRIPS}
+
+STRIPS (Stanford Research Institute Problem Solver) is an automated planner.
+
+The same name was later used to refer to the formal language of the inputs to this planner
+
+\subsubsection{States and Goals}
+
+States are a conjuction of positive literals. Literals may be propositional ones , such as Poor $\land$ Unknown , or first order ones , like At(Plane1,Melbourne) $\land$ At(Plane2,Sydney).
+
+In this latter case , they must be ground and function free. Function freedom ensures that any action schema for a given problem can be turned into a finite collection of purely propositional action representations with no variables.
+
+Goals are partially specified states, represented as conjunctions of positive ground literals , such as Rich $\land$ Famous or At(Plane2,Tahiti).
+
+\subsubsection{Action Schemas}
+
+An action is specified in terms of the preconditions that must hold before it can be executed and the effects that ensue when it is executed.
+
+Action(fly(p,from,to)
+
+PRECOND: At(p,from) $\land$ Plane(p) $\land$ Airport(from) $\land$ Airport(to)
+
+EFFECT : $\neg$ At(p.from) $\land$ At(p,to))
+
+\subsubsection{Applicable actions and their results}
+
+An action is \textbf{applicable} in any state that satisfies its precondition. For example , consider the current state described by : 
+
+At(P1,JFK) $\land$ At(P2,SFO) $\land$ Plane(P1) $\land$ Plane(P2)  $\land$ Airport(JFK) $\land$ Airport(SFO)
+
+This state satisfies the PRECOND , so the action described above is applicable to the current state
+
+\subsubsection{Action Results}
+
+Starting in state s, the \textbf{result} of executing an applicable action a is a state s' that is the same as s except that any positive literal P in the effect of a is added to s' and any negative literal $\neg$P is removed from s' .
+
+For example , after performing Fly(P1,JFK,SFO), the current state becomes At(P1,SFO) $\land$ At(P2,SFO) $\land$ Plane(P1) $\land$ Plane(P2)  $\land$ Airport(JFK) $\land$ Airport(SFO).
+
+Note that if a positive effect is already in s it is not added twice , and if a negative effect is not in s , then that part of the effect is ignored. Also , every literal not mentioned in the effect remains unchanged.
+
+The solution for a planning problem is just an action sequence that , when executed in the initial state , result in a state that satisfies the goal.
+
+\vspace{20mm}
+
+\subsubsection{Example : Transportation of air cargoes}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{15.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Searching for a plan}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{16.PNG}
+  \end{subfigure}
+\end{figure}
+
+A) Forward progression stat-space search , starting in the initial state and using the problem's actions to search forward for the goal state.
+
+B) Backward state-space search : a belief-state search starting at the goal state and using the inverse of the actions to search backward for the initial state.
+
+\subsection{Partial-order Planning}
+
+\subsubsection{State space vs. plan space}
+
+Standard search : node = concrete world state
+
+Planning search: node = partial plan
+
+Defn : Open condition is a precondition of a step not yet fulfilled.
+
+
+Operators on partial plans : Add a link from an existing action to an open condition, add a step to fulfil an open condition , order one step wrt another.
+
+\subsubsection{Partially ordered plans}
+
+Each partial plan has the following components : 
+
+\begin{enumerate}
+    \item A set of actions that make up the steps of the plan. They are taken from the set of actions in the planning problem. The empty plan just include Start and Finish.
+    \item A set of ordering constraints of the form A < B , read as "A before B"
+    \item A set of causal links written $A ->p B $ read as "A achieves p for B". p is an effect of action A , and a precondition of action B , and must remain true from the time of action A to the time of action B.
+    \item A set of open preconditions , namely preconditions not achieved by some action in the plan.
+\end{enumerate}
+
+\subsection{Consistent plans, solutions , plan space}
+
+A \textbf{consistent plan} is a plan that contains no cycles in the ordering constraints and no conflicts with the causal links.
+
+A consistent plan with no open preconditions is a \textbf{solutions}
+
+\subsubsection{Plan space}
+
+The graph space to search for solving the POP problem is defined as follows : 
+
+\begin{enumerate}
+    \item Nodes are partial plans
+    \item The initial plan contains Start and Finish , Start < Finish, no causal links , and all the preconditions of Finish are open preconditions.
+    \item Given one partial plan , its children in the plan graph are obtained by selecting one open precondition p on an action B and generating all the partial plans for every possible consistent way of choosing an action A that achieves p
+    \item Since partial plans generated in step 3 are consistent, the goal test just needs to check that there are no open preconditions.
+\end{enumerate}
+
+\subsubsection{Planning process}
+
+Operators on partial plans:
+
+\begin{itemize}
+    \item Add a link from an existing action to an open condition
+    \item Add a step to fulfill an open condition
+    \item Order one step wrt another to remove possible conflicts
+\end{itemize}
+
+Gradually move from incomplete/vague plans to complete.
+
+Backtrack if an open condition is unachievable.
+
+\subsubsection{Clobbering and promotion/demotion}
+
+A \textbf{clobberer} is a potentially intervening step that destroys the condition achieved by a causal link.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{17.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Properties of POP}
+
+Nondeterministic algorithm : backstracks at choice points on failure:
+
+\begin{itemize}
+    \item Choice of $S_{add}$ to achieve $S_need$
+    \item Choice of demotion or promotion for clobberer
+    \item Selection of $S_{need}$ is irrevocable
+\end{itemize}
+
+POP is sound, complete and systematic
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{18.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{19.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+
+\subsubsection{POP Example : putting shoes on}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{20.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{21.PNG}
+     \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{22.PNG}
+  \end{subfigure}
+\end{figure}
+
+\section{Communication as Action}
+
+Communication , in general , is the intentional exchange of information brought about by the production and perception of signs drawn from a shared system of conventional signs
+
+\subsection{Speech acts}
+
+Speaker \textrightarrow{ Utterance \textrightarrow { Hearer}}
+
+Speech acts achieve the speaker's goals: 
+
+\begin{itemize}
+    \item Inform : "There's a pit in front of you"
+    \item Query : "Can you see the gold?"
+    \item Command: "Pick it up"
+    \item Promise : "I'll share the gold with you"
+    \item Acknowledge : "OK"
+\end{itemize}
+
+\subsubsection{Stages in communication}
+
+\begin{itemize}
+    \item Intention : S wants to inform H that P
+    \item Generation : S select words W to express P in context C
+    \item S utters word W
+    \item Perception : H perceives W' in context C'
+    \item Analysis :H infers possible meanings $P_1,...,P_n$
+    \item Disambiguation :H infers intended meaning $P_i$
+    \item Incorporation : H incorporates $P_i$ into KB
+\end{itemize}
+
+How could this go wrong? 
+
+Insincerity (S does not believe P) , speech wreck(noise in the transmission) , ambiguous utterance.
+
+\subsection{FIPA specifications : an overview and communication}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{24.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{23.PNG}
+     \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{25.PNG}
+  \end{subfigure}
+\end{figure}
+
+\textbf{Accept proposal} : The action of accepting a previously submitted proposal to perform an action
+
+\subsubsection{FIPA Ontology Agent}
+
+The model of agent communication in FIPA is based on the assumption that two agents , who wish to converse , share a common ontology for the domain of discourse.
+It ensures that the agents ascribe the same meaning to the symbols used in the message.
+
+\subsubsection{FIPA Request Interaction Protocol}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{26.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Example 1}
+
+\textbf{Problem} : We want to represent the following agent interaction protocol involving Alice and Bob. Alice greets Bob with some nice words that may be either "Hello" or "Good Morning" or "Ciao". Bob either answers with some similar greeting , or says "Sgrunt!" if he is angry. The protocol stops.
+
+\textbf{Stage 1 . performatives and content language to be used} : we may use "inform", even if it is not the very best choice, since no more specific performative exists for greeting. We may use simple words or phrases in natural language as content language.
+
+\textbf{Stage 2 : Grouping messages that can be used interchangeably} :
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{27.PNG}
+  \end{subfigure}
+\end{figure}
+
+\textbf{Stage 3 : Expressing protocol AIP1 in terms of event types} : AIP1 = agb:(bga:$\epsilon \lor$ bsa: $\epsilon$)
+
+Semicolon means sequence. Alice greets Bob then Bob greets Alice and terminates (epsilon) or bob sgrunt Alice and terminates.
+
+\textbf{Stage 4 : Understanding the operational semantics} : 
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{28.PNG}
+  \end{subfigure}
+\end{figure}
+
+\textbf{Stage 5 : Understanding the denotational semantics} :
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{29.PNG}
+  \end{subfigure}
+\end{figure}
+
+\section{Agent Speak Language}
+
+\textbf{Beliefs} represent the information available to an agent. (publisher(wiley))
+
+\textbf{Goals} represent states of affairs the agent wants to realize. Achievement goals : (\textbf{!write(book)})
+
+Or attempts to retrieve from the belief base : Test goals (?publisher(P))
+
+An agent reacts to \textbf{events} by executing plans. Events happen as a consequence to changes in the agent's beliefs or goals.
+
+\textbf{Plans} are recipes for action , representing the agent's know-how. An AgentSpeak plan has the following general structure : 
+
+\textbf{triggering\_event : context $<-$ body}
+
+Where : \textbf{triggering\_event} denotes the events that the plan is meant to handle.
+\textbf{context} represent the circumstances in which the plan can be used.\
+\textbf{body} is the course of action to be used to handle the event if the context is believed true at the time a plan is being chosen to handle the event
+
+AgentsSpeak triggering events:
+
+\begin{itemize}
+    \item +b (belief addition)
+    \item -b (belief deletion)
+    \item +!g (achievement-goal addition)
+    \item -!g (achievement-goal deletion)
+    \item +?g (test-goal addition)
+    \item -?g (test-goal deletion)
+\end{itemize}
+
+The context is logical expression , typically a conjunction of literals to be checked whether they follow from the current state of the belief base.
+The body is a sequence of action and (sub)goals to achieve.
+
+\section{Jade}
+
+During the years , various tools have been proposed to transform standard MAS specifications into actual agent code , and a variety of middleware have been deployed to provide proper services supporting the execution of distributed MASs
+
+In order to be interoperable , such infrastructures should be compliant with the FIPA abstract architecture.
+
+JADE is a software framework fully implemented in Java. It simplifies the implementation of MASs through a middleware that complies with the FIPA specifications and through a set of tools that supports the debugging and deployment phases.
+
+\subsection{More details on JADE : the Halloworld agent}
+
+A \textbf{type of agent} is created by extending the jade.core.Agent class and redefining the setup() method.
+
+Each \textbf{Agent instance} is identified by an AID (jade.core.AID).
+
+An AID is composed of a unique name plus some addresses. An agent can retrieve its AID through the getAID() method of the Agent Class
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{30.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Local names , GUID and addresses}
+
+Agent names are of the form \textbf{$<local-name>@<platform-name>.$}
+
+The complete name of an agent must be globally unique.
+
+The default platform name is main-host : main-port/JADE
+
+The platform name can be set using -name option.
+
+Within a single JADE platform agents are referred through their names only.
+
+Given the name of an agent its AID can be created as : AID id = new AID(localname, AID.ISLOCALNAME); or AID id = new AID(name,AID.ISGUID);
+
+The addresses included in an AID are those of the platform MTPs and are only used in communication between agents living on different FIPA platforms.
+
+\subsection{Passing arguments to an agent}
+
+It is possible to pass arguments to an agent.
+
+java jade.Boot .... a:mypackage.MyAgent(arg1 arg2)
+
+The agent can retrieve its arguments through the getArguments() method of the Agent class.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{31.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\subsection{Agent Termination}
+
+An agent terminates when its \textbf{doDelete()} method is called.
+
+On termination the agent's \textbf{takeDown()} method is invoked ( intended to include clean-up operations).
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{32.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\subsection{The Behaviour class}
+
+The actual job that an agent does is typically carried out within "\textbf{behaviours}"
+
+Behaviours are created by extending the jade.core.behaviours.Behaviour class.
+
+To make an agent execute a task it is sufficient to create an instance of the corresponding Behaviour subclass and call the addBehaviour() method of the Agent class.
+
+Each Behaviour subclass must implement : 
+
+\begin{itemize}
+    \item public void action() : what the behaviour actually does
+    \item public boolean done(): whether the behaviour is finished
+\end{itemize}
+
+\subsection{Behaviour scheduling and execution}
+
+An agent can execute several behaviours in parallel , however , behaviour scheduling is not preemptive , but cooperative and everything occurs within a single Jave Thread.
+
+Behaviour switch occurs only when the action() method of the currently scheduled behaviour returns
+
+\subsection{The agent execution model}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{33.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\subsection{Behaviour types}
+
+\begin{itemize}
+    \item One shot behaviours : Complete immediately and their action() method is executed only once. Their done() method simply returns true. jade.core.behaviours.OneShotBehaviour class.
+    \item Cyclic behaviours : Never complete and their action() method executes the same operation each time is invoked. Their done() method simply returns false. jade.core.behaviours.CyclicBehavior class
+    \item Complex behaviours : Embed a state and execute in their action() method different operation depending on their state. Complete when a given condition is met.
+\end{itemize}
+
+\subsection{Scheduling operations at given points in time}
+
+JADE provides two ready-made classes by means of which it is possible to easily implement behaviours that execute certain operations at given points in time.
+
+\begin{itemize}
+    \item WakerBehaviour: the action() and done() method are already implemented so that the onWake() method (to be implemented) is executed after a given timeout. After that execution the behaviour completes.
+    \item TicketBehaviour: The action() and done() method are already implemented so that onTick()(to be implemented by subclasses) method is executed periodically with a given period. The behaviour runs forever unless its stop() method is executed.
+\end{itemize}
+
+The onStart() method of the Behaviour class is invoked only once before the first execution of the action() method. Suited for operations that must occur at the beginning of the behaviour.
+
+The onEnd() method of the Behaviour class is invoked only once after the done() method returns true. Suited for operations that must occur at the end of the behaviour.
+
+Each behaviour has a pointer to the agent executing it : the protected member variable myAgent.
+
+The removeBehaviour() method of the Agent class can be used to remove a behaviour from the agent pool of behaviours. The onEnd() method is not called.
+
+When the pool of active behaviours of an agent is empty the agent enters the IDLE state and its thread goes to sleep.
+
+\subsection{The communication model}
+
+Based on asynchronous message passing. Message format defined by the ACL language(FIPA)
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{34.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\subsection{The ACLMessage class}
+
+Messages exchanged by agents are instances of the jade.lang.acl.ACLMessage class.
+
+\subsubsection{Sending and receiving messages}
+
+Sending a message is as simple as creating an ACLMessage object and calling the send() method of the Agent class. 
+
+Reading messages from the private message queue is accomplished through the receive() method of the Agent class
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{35.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{36.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsection{Blocking a behaviour waiting for a message}
+
+A behaviour that processes incoming messages does not know exactly when a message will arrive : it should poll the message queue by continuously calling myAgent.receive().
+
+This of course would completely waste the CPU time.
+
+The block() method of the Behaviour class removes a behaviour from the agent pool and puts it in a blocked state.
+
+Each time a message is received all blocked behaviours are inserted back in the agent pool and have a chance to read and process the message.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{37.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\subsection{Selective reading from the message queue}
+
+The receive() method returns the first message in the message queue and removes it.
+
+If there are two (or more) behaviours receiving messages , one may steal a message that the other one was interested in.
+
+To avoid this it is possible to read only messages with certain characteristics specifying a jade.lang.acl.MessageTemplate parameter in the receive() method.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{38.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\subsection{Receiving messages in blocking mode}
+
+The Agent class also provides the blockingReceive() method that returns only when there is message in the message queue.
+
+There are overloaded versions that accept a MessageTemplate (the method returns only when there is a message matching the template) and or timeout(if it expires the method returns null).
+
+Since it is blocking call it is dangerous to use blockingReceive() within a behaviour. In fact no other behaviour can run until blockingReceive() returns.
+
+Use receive() +Behaviour.block() to receive messages within behaviours. Use blockingReceive() to receive messages within the agent setup() and takeDowun() methods.
+
+\subsection{Interacting with the DF Agent}
+
+The DF is an agent and as such it communicates using ACL. The ontology and language that the DF understands are specified by FIPA : it is possible to search/register to a DF agent of a remote platform.
+
+The jade.domain.DFService class provides static utility methods that facilitate the interactions with the DF.
+
+When an agent registers with the DF it must provide a description basically composed of : the agent ID , a collection of service descriptions.
+
+\section{NetLogo}
+
+NetLogo is a programmable modelling environment for simulating complex systems.
+
+Modelers can give instructions to hundreds of independent agents all operating in parallel.
+
+This makes it possible to explore the connection between : the micro-level behaviour o
+
+\subsection{Agents}
+
+The NetLogo world is made up of \textbf{agents}. Agents are beings that can follow instructions. Each agent can carry out its own activity , all simultaneously.
+
+In NetLogo there are three type of agents : 
+
+\begin{itemize}
+    \item Turtles : are agents that move around the world. The world is two dimensional and is divided up into a grid of patches
+    \item Patches : Each patch is a square piece of ground over which turtles can move
+    \item Observer : It does not have a location , you can imagine it as looking out over the world of turtles and patches
+\end{itemize}
+
+\subsubsection{Patches}
+
+Patches have coordinates. The patch in the center of the world has coordinates (0,0). We call the patch's coordinates pxcor and pycor (integers)
+
+The total number of patches is determined by the setting screen-edge-x and screen-edge-y.
+
+\subsubsection{Turtles}
+
+Turtles have coordinates too : xcor and ycor.
+
+Each turtle has an identifier \textbf{who}
+
+NetLogo always draws a turtle on-screen as if were standing in the center of its patch , but in fact , the turtle can be positioned at any point within the patch
+
+\subsection{Primitives}
+
+Commands and reporters tell agents what to do :
+
+\begin{itemize}
+    \item \textbf{Commands} : are actions for the agents to carry out
+    \item \textbf{Reporters} : carry out some operation and report a result
+\end{itemize}
+
+Commands and reporters built in NetLogo are called \textbf{Primitives}
+
+\subsection{Procedures}
+
+Commands and reporters you define yoursel are called \textbf{procedures}
+
+Each procedure has a name , preceded by the keyword to . The keyword marks the end of the commands in the procedure.
+
+Once you define a procedure , you can use it elsewhere in your program.
+
+Many commands and reporters take inputs values that the command or reporters uses in carrying out its actions.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{39.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\subsubsection{Procedures with input}
+
+Procedures can take inputs, just like many primitives do.
+
+To create a procedure that accepts inputs, put their names in square brackets after the procedure name. For example :
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{40.PNG}
+  \end{subfigure}
+  \end{figure}
+
+You might use the procedure by asking the turtles to each draw an octagon with a side length equal to its \textbf{who} number
+
+( ask turtles [ draw-polygon 8 who ] )
+
+\subsubsection{Reporter Procedures}
+
+Just like you can define your own commands, you can define your own reporters. You must do two special things.
+
+First , use \textbf{to-report} instead of to to begin your procedure. Then in the body of the procedure, use \textbf{report} the value you want to report.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{41.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\subsection{Variables}
+
+A variable can be : 
+\begin{itemize}
+    \item A global variable : there is only one value for the variable, and every agent can access it
+    \item A local variable : each turtle has its own value for every turtle variable, and each patch has its own value for every patch variable
+    \item Some variables are built in NetLogo : like color
+\end{itemize}
+
+You can make a global variable by adding a switch or a slider to your model , or by using \textbf{globals} keyword at the beginning of your code : globals [score]
+
+You can also define new turtle and patch variables using the \textbf{turtles-own} and \textbf{patches-own} (turtles own [friction]
+
+Use the \textbf{set} command to set them.
+
+A turtle can read and set patch variables of the patch it is standing on.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{42.PNG}
+  \end{subfigure}
+  \end{figure}
+
+\subsubsection{Local Variables}
+
+A local variable is defined and used only in the context of a particular procedure or part of a procedure.
+
+To create a local variable , use the \textbf{let} command.
+
+If you use let at the top of a procedure , the variable will exist throughout the procedure.
+
+If you use it inside a set of square brackets , for example inside an "ask", then it will exists only inside those brackets.    
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{43.PNG}
+  \end{subfigure}
+  \end{figure}
+
+  \subsection{Ask}
+
+  NetLogo uses the \textbf{ask} command to give commands to turtles, patches and links.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{44.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{45.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsection{Synchronization}
+
+When you ask a set of agents to run more than one command, each agent must finish before the next agent starts. For example : ask turtles [ fd 1 set color red] , first one turtle moves and turns red , then another turtle moves and turns red , and so on.
+
+If you write : ask turtles [fd 1] ask turtles [set color red], first all the turtles move , then they all turn red.
+
+\vspace{60mm}
+
+\subsection{Agentsets}
+
+An \textbf{agentset} is a set of agents. 
+
+It can contain either turtles , patches or links. It is not in any particular order.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{46.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{47.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+
+\subsection{Breeds}
+
+You can define different \textbf{breeds} of turtles.
+
+When you define a breed such as sheep , an agentset for that breed is automatically.
+
+\textbf{breed [plural\_name singular\_name]}. It defines a breed , first input is the name of the agentset and the second is the name of a single member of the breed. breed [ wolves wolf].
+
+A turtle's breed agentset is stored in the breed turtle variable. So you can test a turtle's breed like this : if breed = wolves [...]
+
+
+\end{document}
