@@ -1864,6 +1864,117 @@ There is a uniform distribution of text and background over space.
 
 \textbf{Examples}
 
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{116.PNG}
+  \end{subfigure}
+\end{figure}
 
+\vspace{80mm}
+
+\subsection{Clustering Methods}
+
+What if you don't have a specific color in mind?
+
+For more generic color segmentation: image pixels can be grouped in clusters of elements with similar colors.
+
+A classical choice is K-means, you already met several times.
+
+\subsubsection{K-means clustering reminder}
+
+Given a set of data $(x_1,...,x_n)$ the goal is to partition it into K sets $S = (S_1,...,S_K)$ so to minimize the within-cluster variance :
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{117.PNG}
+  \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{118.PNG}
+  \end{subfigure}
+\end{figure}
+
+\textbf{The challenge is : how to choose K}
+
+Try multiple K and search the ones that give the highest confidence by using a cluster quality indicator.
+
+This approach does not take into account the cluster size.
+
+Pros: simplicity mainly
+
+Cons: if we do not have priors on the choice of K we may obtain non deterministic results. The method does not prevent the formation of unbalanced clusters.
+
+\vspace{20mm}
+
+\subsection{Graph-based Image Segmentation}
+
+The goal of this approach is to devise a segmentation method that "extracts a global impression of an image".
+
+The segmentation process here becomes a graph partitioning problem.
+
+This involved the following questions : what is a precise criterion for a good partition? How can we make it computationally efficient?
+
+\subsection{Superpixels computation}
+
+Small image parts characterized by internal uniformity.
+
+Superpixels should be evenly distributed and should follow very well objects boundaries.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{119.PNG}
+  \end{subfigure}
+\end{figure}
+
+SLIC (Simple linear iterative clustering)
+
+Simple and fast algorithm , based on Kmeans,
+
+Search space limited to a region proportional to the desired super pixel size.
+
+A weighted distance measure combines color and spatial proximity.
+
+\section{Instance Segmentation}
+
+\subsection{Semantic Segmentation}
+
+\subsubsection{A typical CNN layer}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{120.PNG}
+  \end{subfigure}
+\end{figure}
+
+Semantic segmentation labels each pixel in the image with a category labels. Do not differentiate instances , only care about pixels.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{121.png}
+  \end{subfigure}
+\end{figure}
+
+\vspace{10mm}
+
+We can do it with sliding window technique
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{122.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{123.PNG}
+     \end{subfigure}
+\end{figure}
 
 \end{document}
