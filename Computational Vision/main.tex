@@ -1571,6 +1571,298 @@ Given a class of objects of interest (face , pedestrian) and given an input imag
 
 \subsection{Detection evaluation}
 
+\subsubsection{How are object detectors evaluated}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{95.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.39\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{96.PNG}
+     \end{subfigure}
+\end{figure}
+
+\subsection{Problem (re)definition}
+
+Given a set of classes of interest C ( e.g. Street objects , office objects) and given an input image I that contains N object instances : find the center , the class and the dimensions of boxe (aligned with the coordinate system) that best localize the objects in image I , formally : ${(c_i,x_i,y_i,w_i,h_i)}; c_i \in C, i = 1..N$
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{97.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Sliding Window}
+
+Apply a CNN to many different parts of the image , CNN classifies each crop as object or background.
+
+The problem is that it needs to apply CNN to huge number of locations and scales and so it's very compuationally expensive.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{98.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\subsubsection{Classification + Localization}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{99.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{10mm}
+
+\subsection{Region-based CNNs}
+
+\subsubsection{Region proposals}
+
+Find image regions that are likely to contain objects.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{100.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{R-CNN}
+
+Two steps : 
+
+\begin{enumerate}
+    \item Selective search : identification of region proposals
+    \item  CNN
+\end{enumerate}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{101.PNG}
+  \end{subfigure}
+\end{figure}
+
+
+\textbf{"Slow R-CNN"}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{102.PNG}
+  \end{subfigure}
+\end{figure}
+
+\vspace{40mm}
+
+\textbf{"Fast" R-CNN}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{103.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Faster R-CNN}
+
+The network learns its proposals : insert a \textbf{Region Proposal Network (RPN)} to predict proposals from features
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{104.PNG}
+  \end{subfigure}
+\end{figure}
+
+A convolutional backbone is used to extract features from the input image.
+
+A RPN is used to generate proposals ( regions with high probability of containing object. The network follows a brute-force approach to classify regions of the image to one of the two classes : background/object).
+
+These proposals are used to perform RoI pooling of the feature map and extract a region-based features.
+
+These features are then used to predict a class probability and a box offset.
+
+\subsubsection{Region Proposal Network}
+
+Red and green line forms the anchor box of fixed size centered on each point of the feature map.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{105.PNG}
+  \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{106.PNG}
+  \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{107.PNG}
+  \end{subfigure}
+\end{figure}
+
+\section{Image Segmentation}
+
+
+Segmentation is a difficult task to solve and to formulate. 
+
+Images can also be divided in somewhat uniform image regions.
+
+Uniformity is based on a quality (e.g. brightness , color or motion).
+
+\begin{itemize}
+    \item Image segmentation (regions that can be further analyzed)
+    \item Superpixels computation (features)
+\end{itemize}
+
+\subsection{Image Segmentation}
+
+\textbf{Unsupervised segmentation}: is based on pixels and appearance information.
+
+\vspace{5mm}
+
+\textbf{Supervised segmentation}: is guided by some semantic concept
+
+\subsubsection{Unsupervised image segmentation methods overview}
+
+\begin{itemize}
+    \item Edge-based methods: look for discontinuities
+    \item Region-based methods: look for similarity regions according to some criteria
+\end{itemize}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{108.PNG}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Region based methods}
+
+\textbf{Thresholding} ( followed by connected components computation). Region growing. Morphological watersheds.
+
+Clustering methods(K-means,mean shift).
+
+\subsubsection{Image segmentation : definition}
+
+Let R be the spatial region occupied by an image. Image segmentation may defined as the process of partitioning R into n subregions.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{109.PNG}
+  \end{subfigure}
+\end{figure}
+
+We already know a thresholding mehtod which is : \textbf{motion segmentation)}.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{110.PNG}
+  \end{subfigure}
+\end{figure}
+
+How to choose T automatically????
+
+\begin{enumerate}
+    \item Select an initial estimate of T
+    \item Segment the image using T (G1 are pixels so that f(x,y) > T, G2 the others)
+    \item Compute the mean intensity values in G1 and G2, let them be m1 and m2
+    \item Compute a new threshold : $T = 1/2 (m_1 + m_2)$
+    \item Repeat steps 2 to 4 until T does not change any more
+\end{enumerate}
+
+\subsubsection{Otsu's method for global thresholding}
+
+Objective : Segment foreground/background by maximizing the between class variance
+
+All computations are performed on the normalized histogram of the image (the value of each bin is pi).
+
+Let us consider a threshold $T(k) 0 < k < L-1$ (L is the maximum value in the range, eg 255) and use it to segment image pixels in two classes : C1 pixels in the range [0,k] and C2 pixels in the range [k+1,L-1].
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{111.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{112.PNG}
+     \end{subfigure}
+\end{figure}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{113.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{114.PNG}
+     \end{subfigure}
+\end{figure}
+
+\vspace{10mm}
+
+\subsubsection{Variable Thresholding}
+
+Objective: choosing different thresholds for different image parts
+
+Simple idea: subdivide an image into non overlapping rectangles.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{115.PNG}
+  \end{subfigure}
+\end{figure}
+
+\textbf{Variable Thresholding from local image properties}
+
+\vspace{5mm}
+
+Compute a threshold $T_{xy}$ in each point (x,y) based on its neighbourhood properties.
+
+A simple example of this approach is the following : $T_{xy} = a \sigma_{xy} + b m_{xy}$    $a,b > 0$
+
+\vspace{1mm}
+
+\textbf{Variable Thresholding by moving average}
+
+\vspace{5mm}
+
+This approach has been widely adopted for text segmentation.
+
+There is a uniform distribution of text and background over space.
+
+\subsection{Color Segmentation}
+
+\subsubsection{Color-based Thresholding : one possibility}
+
+\begin{enumerate}
+    \item Smooth the image
+    \item Transform to HSV space
+    \item Discard V
+    \item Choose thresholds for H and S appropriate for the task you are trying to address.
+\end{enumerate}
+
+\textbf{Examples}
 
 
 
