@@ -1977,4 +1977,355 @@ We can do it with sliding window technique
      \end{subfigure}
 \end{figure}
 
+\subsubsection{Downsampling : Pooling}
+
+Pooling can help with local invariance although some information is lost. No parameter to be estimated here.
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{124.png}
+  \end{subfigure}
+\end{figure}
+
+\vspace{30mm}
+
+\subsubsection{Upsampling : Unpooling}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{125.png}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Upsampling : Max Unpooling}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{126.png}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Downsampling : Convolution}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{127.png}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Understanding upsampling convolution}
+
+Let us consider this example where a 4x4 image is filtered with 3x3 convolution filters resulting in 2x2 matrix 
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{128.png}
+  \end{subfigure}
+\end{figure}
+
+Now we want to go back to the original image. We do the opposite.
+
+\subsubsection{Upsampling : Transposed Convolution}
+
+For each pixel value we use the conv filter to transpose the convolution. So, we have one output map for each pixel.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{129.png}
+  \end{subfigure}
+\end{figure}
+
+We overlap the transposed maps ( according to position , and we sum overlapping values obtaining the final output).
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{130.png}
+  \end{subfigure}
+\end{figure}
+
+Values are different! Transpose convolution kernels are learnable (training)
+
+\vspace{20mm}
+
+\subsection{Basic Neural Networks architectures for segmentation}
+
+\subsubsection{A basic network for semantic segmentation: the Unet}
+
+It is an Encoder-decoder network
+
+This is the architecture summary.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{131.png}
+  \end{subfigure}
+\end{figure}
+
+\subsection{Instance Segmentation}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{132.png}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Previously in Object Detection}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{133.PNG}
+  \end{subfigure}
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=1\textwidth]{134.PNG}
+     \end{subfigure}
+\end{figure}
+
+\vspace{20mm}
+
+\subsection{Mask RCNN}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{135.png}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Architecture}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.9\linewidth}
+    \includegraphics[width=1\linewidth]{136.png}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Motivation and main features}
+
+\begin{enumerate}
+    \item We get a fixed-size feature map obtained from a deep convolutional network with several convolutions and max pooling layers.
+    \item Region proposal provide in the first stage , many different ROI candidate.
+    \item ROI-Poooling : for every ROI , the corresponding features map region is scaled always in the same size (e.g 3x3).
+    \item So the corresponding region in feature map is divided in sections , and the max value is considered.
+    \item The resulting mapped and pooled ROI is fed to a FCN $->$ mask
+\end{enumerate}
+
+\vspace{20mm}
+
+\subsubsection{Faster RCNN - Region of Interest}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{137.png}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Faster RCNN - Region of Interest - Pooling (RoI Pooling)}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{138.png}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{Mask RCNN : Region of Interest Alignment}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{139.png}
+  \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{140.png}
+  \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.8\linewidth}
+    \includegraphics[width=1\linewidth]{141.png}
+  \end{subfigure}
+\end{figure}
+
+\vspace{20mm}
+
+Now we apply bilinear interpolation for each of the sampling points.
+
+Then, max pooling on the interpolated data and iterate for each block. 
+
+
+\subsubsection{Mask RCNN: The Mask Branch}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{142.png}
+  \end{subfigure}
+\end{figure}
+
+\section{Pose Estimation}
+
+\subsection{Problem Definition}
+
+\textbf{Problem} : estimating the configuration of the body (pose).
+
+While classical methods adopt wearable sensors or combinations of markers and motion capture (MoCap) systems , in Computer Vision this task is addressed using images as Inputs.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{143.png}
+  \end{subfigure}
+\end{figure}
+
+Pose can be estimated in 2D (apparent joints configuration on the image plane) or in 3D (estimating the pose on a 3D space)
+
+Different methods are based on different assumptions on how many people can be jointly analyzed : single person or multi-persons algorithms exist.
+
+\subsubsection{Top-down and bottom-up approaches}
+
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.6\linewidth}
+    \includegraphics[width=1\linewidth]{144.png}
+  \end{subfigure}
+\end{figure}
+
+Bottom-up approaches can be used as a richer alternative to people detectors.
+
+
+\subsection{Computer Vision Algorithms}
+
+\subsubsection{HPE following detection (top-down)}
+
+Top down approaches start from the output of a person detector.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=1\linewidth]{145.png}
+  \end{subfigure}
+\end{figure}
+
+A possibly strategy to address the task is to define the localization of each feature as a regression task.
+
+An alternative approach is the estimation of heat maps.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1\linewidth]{146.png}
+  \end{subfigure}
+\end{figure}
+
+Some of the challenges for HPE are : the unknown number of people , people can appear at any pose or scale , people contact and overlapping and runtime complexity grows with the number of people.
+
+\subsubsection{Bottom-up detection : OpenPose}
+
+It first detects parts (keypoints) belonging every person in the image , followed by assigning parts to distinct individuals. Shown below is the architecture of the OpenPose model.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{147.png}
+  \end{subfigure}
+\end{figure}
+
+\begin{enumerate}
+    \item Take the entire image as the input for a CNN
+    \item Predict confidence maps for body parts detection
+    \item Predict PAFs for part association
+    \item Perform a set of bipartite matching
+    \item Assemble into a full body pose
+\end{enumerate}
+
+\subsubsection{OpenPose : Schematic Architecture}
+
+An input RGB image is fed to a two branch multi-stage CNN.
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.9\linewidth}
+    \includegraphics[width=1\linewidth]{148.png}
+  \end{subfigure}
+\end{figure}
+
+\textbf{Two-branches}: The top branch , shown in beige, predicts the confidence maps of different body parts location such as the right eye , left eye, right elbow and others. The bottom branch, shown in blue , predicts the part affinity fields, which represents a degree of association between different body parts.
+
+\textbf{Multi-stage}: At step 0 an initial estimation of confidence maps and part affinity fields. In the next steps , the image is concatenated with the initial estimations to obtain refined estimations.
+
+Finally , a greedy inference algorithm produces the final output, with the identification of the pose.
+
+
+\subsubsection{OpenPose: confidence map}
+
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1\linewidth]{149.png}
+  \end{subfigure}
+\end{figure}
+
+Confidence map is the 2D representation of the belief that a particular body part can be located. A single body part will be represented on a single map. So , the number of maps is the same as the total number of the body parts.
+
+Examples : Computer-generated imagery, medical application , musical applications.
+
+\subsection{Evaluation Metrics}
+
+Defining with $x_p$ the predicted joint and with $x_{GT}$ the ground truth :
+
+\textbf{Percentage of Correct Parts - PCP}: the distance between two predicted join locations ($x_p^1$ and $x_p^2$) and the true limb joint location is less than half of the limb length (L) :  $|(x_p^1 - x_p^2) - (x_{GT}^1 - x_{GT}^2)| < L/2$
+
+\vspace{5mm}
+
+\textbf{Percentage of CorrectKey-points - PCK}: A detected joint is considered correct if the distance between the predicted ($x_p$) and the true joint ($x_{GT})$ is within a certain threshold (thr) :  $|x_p - x_{GT}| < thr $
+
+\subsubsection{Semantic Feature Detection}
+
+We focus here on bottom-up approaches.
+
+Sometimes instead than a full pose estimation , one may stop at the feature detection step.
+
+Why? Depending on the application we may require several/different types of features. Training the feature detector only is significantly more efficient.
+
+\subsubsection{Semantic Feature Detection: a semantic segmentation problem}
+
+Semantic features detection can be regarded as a semantic segmentation problem.
+
+Classes are the key-points of interest, plus the background.
+
+This is typically an imbalanced problem, since the number of pixels belonging to the background is significantly higher than the ones belonging to the key-points.
+
+Weighted version of the loss function , with a meaningful strategy for weights computation.
+
+We can use the Fully Convolutional Network (FCN) we have seen for semantic segmentation : Unet,LinkNet
+
+A set of annotated data is necessary to train the deep architectures.
+
+Usually, a set of 15 key-points is used for pose-estimation. Annotating 15 points for a high number of frames can be expensive and time-consuming.
+
+The solution is using transfer-learning: ImageNet pre-trained models as a backbone(encoder) for the FCNs
+
 \end{document}
